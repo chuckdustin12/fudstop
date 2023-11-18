@@ -1,31 +1,60 @@
+import sys
+from pathlib import Path
+
+# Add the project directory to the sys.path
+project_dir = str(Path(__file__).resolve().parents[2])
+if project_dir not in sys.path:
+    sys.path.append(project_dir)
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-import asyncpg
+
 import asyncio
-from fudstop.apis.polygonio.async_polygon_sdk import Polygon
-from fudstop.apis.polygonio.polygon_options import PolygonOptions
+
+from apis.polygonio.polygon_options import PolygonOptions
 from fudstop.list_sets.ticker_lists import all_tickers, most_active_tickers
 import pandas as pd
 
-opts = PolygonOptions()
-poly = Polygon()
+# Setting environment variables
+os.environ['DB_HOST'] = 'localhost'
+os.environ['DB_PASSWORD'] = 'fud'
+os.environ['DB_NAME'] = 'polygon'
+os.environ['DB_PORT'] = '5432'  # Environment variables are stored as strings
+os.environ['DB_USER'] = 'postgres'
+
+# Database configuration using environment variables
+db_config = {
+    "host": os.environ.get('DB_HOST', 'localhost'),
+    "port": int(os.environ.get('DB_PORT', 5432)),
+    "user": os.environ.get('DB_USER', 'postgres'),
+    "password": os.environ.get('DB_PASSWORD', 'fud'),
+    "database": os.environ.get('DB_NAME', 'polygon')
+}
+
+
+opts = PolygonOptions(**db_config)
 from asyncio import Semaphore
+from asyncpg.exceptions import UniqueViolationError
 sema = Semaphore(30)
 async def get_all_options(ticker):
+    
     async with sema:
         options = await opts.get_option_chain_all(ticker)
         df = pd.DataFrame(options.data_dict)
         print(type(options.data_dict))
-        
-        await opts.batch_insert_dataframe(df, 'options_data', unique_columns='option_symbol')
+        df = df.rename(columns={'cp': 'call_put'})
+        try:
+            await opts.batch_insert_dataframe(df, 'options_data', unique_columns='option_symbol', batch_size=1000)
+        except UniqueViolationError:
+            print(f'Skipping - Already exists.')
   
     
 
 async def run_all_options():
     await opts.connect()
+    most_active_tickers = ['PLTR']
     try:
         tasks = [get_all_options(i) for i in most_active_tickers]
 

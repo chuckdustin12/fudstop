@@ -36,7 +36,15 @@ from cogs.database import MyModal
 from apis.polygonio.polygon_options import PolygonOptions
 from apis.webull.opt_modal import OptionModal, SQLQueryModal
 from apis.gexbot.gexbot import GEXBot
-opts = PolygonOptions()
+
+db_config = {
+    "host": os.environ.get('DB_HOST', 'localhost'), # Default to this IP if 'DB_HOST' not found in environment variables
+    "port": int(os.environ.get('DB_PORT')), # Default to 5432 if 'DB_PORT' not found
+    "user": os.environ.get('DB_USER', 'postgres'), # Default to 'postgres' if 'DB_USER' not found
+    "password": os.environ.get('DB_PASSWORD', 'fud'), # Use the password from environment variable or default
+    "database": os.environ.get('DB_NAME', 'polygon') # Database name for the new jawless database
+}
+opts = PolygonOptions(**db_config)
 gexbot = GEXBot()
 bot = commands.Bot(command_prefix="!", intents=disnake.Intents.all())
 gptsdk=OpenAISDK()
@@ -298,8 +306,33 @@ async def gpt4(ctx):
 #         await ctx.send(file=disnake.File(fp=csv_buffer, filename='cfr_results.csv'))
     
 
+from apis.oic.oic_sdk import OICSDK
+oic_sdk = OICSDK()
+
+@bot.command()
+async def monitor(ctx, ticker):
+    """Monitors an option in great detail"""
+
+    df = oic_sdk.options_monitor(ticker=ticker)
+
+    df.as_dataframe.to_csv('data/oic/options_monitor.csv', index=False)
+
+    await ctx.send(file=disnake.File('data/oic/options_monitor.csv'))
 
 
+@bot.command()
+async def active(ctx):
+    """Returns the most active options from the OIC"""
+
+  
+
+
+    df = oic_sdk.most_active_options()
+
+    df.to_csv('data/oic/most_active_options.csv')
+
+
+    await ctx.send(file=disnake.File('data/oic/most_active_options.csv'))
 
 
     
@@ -333,28 +366,28 @@ from live_markets.stock_market import StockMarketLive
 
 
 
-stock_market = StockMarketLive()
-@bot.slash_command()
-async def stream(inter: disnake.AppCmdInter, ticker:str):
-    """Stream live trades for a ticker."""
-    await inter.response.defer()
+# stock_market = StockMarketLive()
+# @bot.slash_command()
+# async def stream(inter: disnake.AppCmdInter, ticker:str):
+#     """Stream live trades for a ticker."""
+#     await inter.response.defer()
     
-    await stock_market.connect()
-    counter = 0
-    while True:
-        counter = counter + 1
-        data = await stock_market.fetch_latest_trade(ticker)
-        if data:
-            # Format the message with the trade data
-            message = f"> # Latest trade for {ticker} | Price: ${data['price']} | Size: {data['size']} | Time: {data['timestamp']}"
-        else:
-            # No trade data found
-            message = f"> No recent trades found for {ticker}."
-        await inter.edit_original_message(f"> # {message}")
+#     await stock_market.connect()
+#     counter = 0
+#     while True:
+#         counter = counter + 1
+#         data = await stock_market.fetch_latest_trade(ticker)
+#         if data:
+#             # Format the message with the trade data
+#             message = f"> # Latest trade for {ticker} | Price: ${data['price']} | Size: {data['size']} | Time: {data['timestamp']}"
+#         else:
+#             # No trade data found
+#             message = f"> No recent trades found for {ticker}."
+#         await inter.edit_original_message(f"> # {message}")
 
-        if counter == 250:
-            await inter.send(f'> # Stream ended.')
-            break
+#         if counter == 250:
+#             await inter.send(f'> # Stream ended.')
+#             break
     
 @bot.command()
 async def cal(ctx):
@@ -436,7 +469,29 @@ async def test(ctx, ticker):
     await ctx.send(view=QueryView(ticker))
 
 
+async def fetch_options():
+    conn = await asyncpg.connect(user=os.environ.get('DB_USER'), password=os.environ.get('DB_PASSWORD'), database=os.environ.get('DB_NAME'), host=os.environ.get('DB_HOST'))
+    rows = await conn.fetch('SELECT * FROM get_lowest_options_in_price_range() limit 50')
+    await conn.close()
+    return rows
 
+@bot.command(name='cheapies')
+async def plays(ctx):
+    options = await fetch_options()
+    if options:
+        message = "Options:\n"
+        for option in options:
+            message += (f"{option['underlying_symbol']}, "
+                        f"{option['strike_price']}, "
+                        f"{option['call_put']}, "
+                        f"{option['expiry_date']}, "
+                        f"{option['close_price']}\n")
+            embed = disnake.Embed(title=f"Cheapies - All Time Lows", description=f"```py\n{message}```")
+            await ctx.send(embed=embed)
+    else:
+        message = "No options found."
+
+    await ctx.send(message)
 
 bot.load_extensions('fudstop/cogs')
 bot.run(os.environ.get('BOT'))

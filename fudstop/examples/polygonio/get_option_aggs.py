@@ -27,7 +27,7 @@ async def process_ticker(opts, ticker):
         aggs['option_symbol'] = ticker
         aggs['underlying_symbol'] = underlying_symbol
         aggs['strike'] = strike
-        aggs['call_put'] = call_put
+        aggs['call_put'] = str(call_put).lower
         aggs['expiry_date'] = expiry_date
 
         # Insert data into the database immediately after processing

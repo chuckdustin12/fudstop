@@ -2,9 +2,11 @@ import sys
 from pathlib import Path
 
 # Add the project directory to the sys.path
-project_dir = str(Path(__file__).resolve().parents[2])
+project_dir = str(Path(__file__).resolve().parents[1])
 if project_dir not in sys.path:
     sys.path.append(project_dir)
+from dotenv import load_dotenv
+load_dotenv()
 import os
 import sys
 import pandas as pd
@@ -14,8 +16,6 @@ import asyncpg
 import asyncio
 from asyncpg.exceptions import UniqueViolationError
 from asyncpg import create_pool
-from dotenv import load_dotenv
-load_dotenv()
 from asyncio import Lock
 from urllib.parse import urlencode
 from datetime import datetime, timedelta
@@ -40,14 +40,17 @@ def dtype_to_postgres(dtype):
     else:
         return 'TEXT'  # Default type
 class PolygonOptions:
-    def __init__(self, connection_string=None):
-        self.connection_string = connection_string
-        self.pool=None
-        self.host = os.environ.get('DB_HOST')
-        self.port = os.environ.get('DB_PORT')
-        self.user = os.environ.get('DB_USER')
-        self.password = os.environ.get('DB_PASSWORD')
-        self.database = os.environ.get('POLYGON')
+    def __init__(self, host, port, user, password, database):
+        self.conn = None
+        self.pool = None
+        self.host = host
+        self.port = port
+        self.user = user
+        self.password = password
+        self.database = database
+        self.connection_string = os.environ.get('POLYGON_STRING')
+
+        self.database = os.environ.get('DB_NAME')
 
         self.api_key = os.environ.get('YOUR_POLYGON_KEY')
         self.today = datetime.now().strftime('%Y-%m-%d')
@@ -63,22 +66,25 @@ class PolygonOptions:
         self.one_year_ago = (datetime.now() - timedelta(days=365)).strftime('%Y-%m-%d')
 
 
-    async def __aenter__(self):
-        await self.connect()
-        return self
 
-    async def __aexit__(self, exc_type, exc, tb):
-        await self.close()
+        self.db_config = {
+            "host": os.environ.get('DB_HOST', 'localhost'), # Default to this IP if 'DB_HOST' not found in environment variables
+            "port": int(os.environ.get('DB_PORT')), # Default to 5432 if 'DB_PORT' not found
+            "user": os.environ.get('DB_USER', 'postgres'), # Default to 'postgres' if 'DB_USER' not found
+            "password": os.environ.get('DB_PASSWORD', 'fud'), # Use the password from environment variable or default
+            "database": os.environ.get('DB_NAME', 'polygon') # Database name for the new jawless database
+        }
 
 
 
 
     async def connect(self):
-        self.connection_string = self.connection_string
-        self.pool = await asyncpg.create_pool(self.connection_string)
+       
+        self.pool = await asyncpg.create_pool(**self.db_config)
 
         return self.pool
     async def create_table(self, df, table_name, unique_column):
+     
         print("Connected to the database.")
         dtype_mapping = {
             'int64': 'INTEGER',
@@ -249,6 +255,7 @@ class PolygonOptions:
         WORKS - Creates table - inserts data based on DTYPES.
         
         """
+     
         async with lock:
             if not await self.table_exists(table_name):
                 await self.create_table(df, table_name, unique_columns)
