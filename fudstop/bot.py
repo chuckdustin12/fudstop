@@ -329,7 +329,7 @@ async def active(ctx):
 
     df = oic_sdk.most_active_options()
 
-    df.to_csv('data/oic/most_active_options.csv')
+    df.to_csv('data/oic/most_active_options.csv', index=False)
 
 
     await ctx.send(file=disnake.File('data/oic/most_active_options.csv'))
