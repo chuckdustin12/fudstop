@@ -3,6 +3,16 @@ from dotenv import load_dotenv
 import requests
 import pandas as pd
 from .oic_models import OICOptionsMonitor
+from ..polygonio.polygon_options import PolygonOptions
+db_config = {
+    "host": os.environ.get('DB_HOST'), # Default to this IP if 'DB_HOST' not found in environment variables
+    "port": int(os.environ.get('DB_PORT')), # Default to 5432 if 'DB_PORT' not found
+    "user": os.environ.get('DB_USER'), # Default to 'postgres' if 'DB_USER' not found
+    "password": os.environ.get('DB_PASSWORD'), # Use the password from environment variable or default
+    "database": os.environ.get('DB_NAME') # Database name for the new jawless database
+}
+opts = PolygonOptions(**db_config)
+import time
 load_dotenv()
 
 
@@ -10,11 +20,13 @@ class OICSDK:
     def __init__(self):
         self.session = requests.Session()
         self.refresh_key_payload = {
-            "clientKey": f"{os.environ.get('YOUR_OIC_KEY')}",
+            "clientKey": f"{os.environ.get('OIC_KEY')}",
             "clientName": "OIC_test"
         }
         self.token = None
+
         self.initialize_token()
+
 
     def initialize_token(self):
         """
@@ -80,7 +92,8 @@ class OICSDK:
             print(price)
             return price
 
-    def options_monitor(self, ticker):
+    async def options_monitor(self, ticker):
+        await opts.connect()
         stock_id = self.get_option_id(ticker)
         stock_price = self.get_price(ticker)
         print(stock_price)
@@ -95,8 +108,13 @@ class OICSDK:
 
 
         data = OICOptionsMonitor(r)
-
-
+        try:
+            df = data.as_dataframe
+            await opts.batch_insert_dataframe(df, table_name='monitor', unique_columns='insertion_timestamp', batch_size=1)
+        except Exception as e:
+            print(e)
+    
+      
         return data
     
 

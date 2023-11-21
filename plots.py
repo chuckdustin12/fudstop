@@ -52,5 +52,6 @@ def plot_options_data(file_path):
     plt.legend()
     plt.grid(True, color='gray')
     plt.savefig('/mnt/data/')
+    plt.show()
 
 

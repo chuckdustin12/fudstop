@@ -1,21 +1,19 @@
-import sys
-from pathlib import Path
 
-# Add the project directory to the sys.path
-project_dir = str(Path(__file__).resolve().parents[1])
-if project_dir not in sys.path:
-    sys.path.append(project_dir)
 import os
 import sys
 from pathlib import Path
 import disnake
+from disnake.ext.commands.errors import CommandInvokeError
+from pytrends.request import TrendReq
 from disnake.ext import commands
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from apis.webull.webull_screener import WebulScreener, ScreenerSelect
 from datetime import datetime
 from apis.openai_ import OpenAISDK
+from fudstop.apis.polygonio.polygon_options import PolygonOptions
 import disnake
+from apis.y_finance.yf_sdk import yfSDK
 import base64
 from disnake.ext import commands
 from list_sets.ticker_lists import most_active_tickers
@@ -36,6 +34,25 @@ from cogs.database import MyModal
 from apis.polygonio.polygon_options import PolygonOptions
 from apis.webull.opt_modal import OptionModal, SQLQueryModal
 from apis.gexbot.gexbot import GEXBot
+td9_ids = [
+    int("1158471263984029777"),  # Channel: td9⏺5minute
+    int("1158488492163211264"),  # Channel: td9⏺day
+    int("1158867480853352583"),  # Channel: td9⏺15minute
+    int("1158867482824675358"),  # Channel: td9⏺30minute
+    int("1158868591911899298"),  # Channel: td9⏺hour
+    int("1158868593967108096"),  # Channel: td9⏺2hr
+    int("1158868595619672135"),  # Channel: td9⏺4hr
+    int("1161334711197630566"),  # Channel: td9⏺20minute
+    int("1151905252392575067")   # Additional channel ID
+]
+# List of channel IDs as integers
+opt_vol_ids = [
+    int("1156645245287673988"),  # Channel: 500➖1k➖vol
+    int("1156645246847963208"),  # Channel: 1k➖10k➖vol
+    int("1156645248932515910"),  # Channel: 10k➖50k➖vol
+    int("1156645254460608613"),
+    int("1154854338167066634")   # Channel: 50k➕vol
+]
 
 db_config = {
     "host": os.environ.get('DB_HOST', 'localhost'), # Default to this IP if 'DB_HOST' not found in environment variables
@@ -48,6 +65,7 @@ opts = PolygonOptions(**db_config)
 gexbot = GEXBot()
 bot = commands.Bot(command_prefix="!", intents=disnake.Intents.all())
 gptsdk=OpenAISDK()
+opts = PolygonOptions(**db_config)
 from cogs.database import QueryView
 from list_sets.ticker_lists import gex_tickers
 from typing import List
@@ -58,6 +76,8 @@ import openai
 import os
 from dotenv import load_dotenv
 load_dotenv()
+
+sdk = yfSDK()
 # Initialize the OpenAI client with your API key
 openai.api_key = os.getenv("YOUR_OPENAI_KEY")
 
@@ -83,6 +103,12 @@ async def on_ready():
 @bot.event
 async def on_message(message: disnake.Message):
     """Use  GPT4 Vision to listen for image URLs"""
+    embeds = message.embeds
+
+
+    titles = [i.title for i in embeds]
+    descriptions = [i.description for i in embeds]
+    fields = [i.fields for i in embeds]
 
     if message.channel.id == 1175195864814321834:
         if message.content.endswith('.jpg'):
@@ -105,6 +131,27 @@ async def on_message(message: disnake.Message):
             embed.set_thumbnail(url)
 
             await message.channel.send(embed=embed)
+
+
+    if message.channel.id in td9_ids:
+        description = embeds[0].description
+        description = description.split('py\n')[3]
+        title = embeds[0].title
+        timestamp = embeds[0].timestamp
+        timestamp = str(timestamp.astimezone()).split('.')[0]
+        print(description,title, timestamp)
+        
+
+    if message.channel.id in opt_vol_ids:
+        description = embeds[0].description
+        description = description.split('py\n')[0]
+        title = embeds[0].title
+        timestamp = embeds[0].timestamp
+        timestamp = str(timestamp.astimezone()).split('.')[0]
+
+
+        footer = embeds[0].footer.text
+        print(footer, timestamp)
 
 
     await bot.process_commands(message)
@@ -166,12 +213,13 @@ async def screener(inter: disnake.AppCmdInter,
         volume_gte=volume_gte, volume_lte=volume_lte
     )
     query_result_df = pd.DataFrame(query_result)
+    query_result_df = query_result_df.drop(columns=['id'])
     chunks = [query_result_df[i:i + 3860] for i in range(0, len(query_result_df), 3860)]
     
     embeds =[]
     for chunk in chunks:
     
-        embed = disnake.Embed(title=f"Screener Results:", description=f"```py\n{query_result_df}```")
+        embed = disnake.Embed(title=f"Screener Results:", description=f"```py\n{chunk}```")
         # Here, handle the query_result as needed, e.g., sending a message
         view = disnake.ui.View()
         ids = query_result.get('id')
@@ -182,7 +230,7 @@ async def screener(inter: disnake.AppCmdInter,
         embed.set_footer(text=f'Implemented by FUDSTOP')
         embeds.append(embed)
     view.add_item(ScreenerSelect(query_result))
-    await inter.edit_original_message(embed=embed, view=view)
+    await inter.edit_original_message(embed=embeds[0], view=AlertMenus(embeds).add_item(ScreenerSelect(query_result)))
         
 
 
@@ -312,12 +360,14 @@ oic_sdk = OICSDK()
 @bot.command()
 async def monitor(ctx, ticker):
     """Monitors an option in great detail"""
+    try:
+        df = await oic_sdk.options_monitor(ticker=ticker)
 
-    df = oic_sdk.options_monitor(ticker=ticker)
-
-    df.as_dataframe.to_csv('data/oic/options_monitor.csv', index=False)
-
-    await ctx.send(file=disnake.File('data/oic/options_monitor.csv'))
+        df.as_dataframe.to_csv('data/oic/options_monitor.csv', index=False)
+        
+        await ctx.send(file=disnake.File('data/oic/options_monitor.csv'))
+    except CommandInvokeError:
+        await bot.restar
 
 
 @bot.command()
@@ -471,7 +521,61 @@ async def test(ctx, ticker):
 
 async def fetch_options():
     conn = await asyncpg.connect(user=os.environ.get('DB_USER'), password=os.environ.get('DB_PASSWORD'), database=os.environ.get('DB_NAME'), host=os.environ.get('DB_HOST'))
-    rows = await conn.fetch('SELECT * FROM get_lowest_options_in_price_range() limit 50')
+    rows = await conn.fetch("""WITH LatestPrices AS (
+    SELECT 
+        a.ticker, 
+        a.strike, 
+        a.expiry, 
+        a.call_put, 
+        a.theta,
+        b.low AS current_price,
+        a.bid, 
+        a.ask,
+        ROW_NUMBER() OVER (PARTITION BY a.ticker, a.strike, a.expiry, a.call_put ORDER BY b.timestamp DESC) AS rn
+    FROM 
+        options_data a
+    INNER JOIN 
+        option_aggs b ON a.ticker = b.ticker
+                      AND a.strike = b.strike
+                      AND a.expiry = b.expiry
+                      AND a.call_put = b.call_put
+    WHERE 
+        a.bid >= 0.14 AND a.ask <= 1.00
+        AND a.theta >= -0.02
+),
+AllTimeLows AS (
+    SELECT 
+        a.ticker, 
+        a.strike, 
+        a.expiry, 
+        a.call_put, 
+        MIN(b.low) AS all_time_low
+    FROM 
+        options_data a
+    INNER JOIN 
+        option_aggs b ON a.ticker = b.ticker
+                      AND a.strike = b.strike
+                      AND a.expiry = b.expiry
+                      AND a.call_put = b.call_put
+    GROUP BY 
+        a.ticker, a.strike, a.expiry, a.call_put
+)
+SELECT 
+    l.ticker, 
+    l.strike, 
+    l.expiry, 
+    l.call_put, 
+    l.current_price
+FROM 
+    LatestPrices l
+INNER JOIN 
+    AllTimeLows a ON l.ticker = a.ticker
+                 AND l.strike = a.strike
+                 AND l.expiry = a.expiry
+                 AND l.call_put = a.call_put
+                 AND l.current_price = a.all_time_low
+WHERE 
+    l.rn = 1;""")
     await conn.close()
     return rows
 
@@ -481,17 +585,232 @@ async def plays(ctx):
     if options:
         message = "Options:\n"
         for option in options:
-            message += (f"{option['underlying_symbol']}, "
-                        f"{option['strike_price']}, "
+            message += (f"{option['ticker']}, "
+                        f"{option['strike']}, "
                         f"{option['call_put']}, "
-                        f"{option['expiry_date']}, "
-                        f"{option['close_price']}\n")
-            embed = disnake.Embed(title=f"Cheapies - All Time Lows", description=f"```py\n{message}```")
-            await ctx.send(embed=embed)
+                        f"{option['expiry']}, "
+                        f"{option['current_price']}\n")
+        embed = disnake.Embed(title=f"Cheapies - All Time Lows", description=f"```py\n{message}```")
+        await ctx.send(embed=embed)
     else:
         message = "No options found."
 
-    await ctx.send(message)
 
-bot.load_extensions('fudstop/cogs')
+pytrends = TrendReq(hl='en-US', tz=360)
+@bot.command()
+async def trends(ctx):
+
+
+    
+    trending_searches_df = pytrends.trending_searches(pn='united_states')  # you can change the region
+    embed = disnake.Embed(title=f"Current Trends on Google:", description=f"```py\n{trending_searches_df}```", color=disnake.Colour.dark_green())
+    await ctx.send(embed=embed)
+
+
+@bot.command()
+async def mf(ctx, ticker: str):
+    """Gets mutual fund holdings for a ticker - top 10"""
+    try:
+        data = sdk.mutual_fund_holders(ticker)
+        
+        filename = f'data/yf_{ticker}_mf_holders.csv'
+        data.to_csv(filename)
+        
+        embed = disnake.Embed(
+            title=f"Mutual Fund Holders - {ticker}", 
+            description=f"Your Download is Ready!", 
+            color=disnake.Colour.dark_teal()
+        )
+        embed.set_footer(text=f'Implemented by FUDSTOP')
+        
+        await ctx.send(embed=embed)
+        await ctx.send(file=disnake.File(filename))
+    except Exception as e:
+        await ctx.send(f"An error occurred: {e}")
+
+
+@bot.command()
+async def balance(ctx, ticker: str):
+    """Gets balance sheet information for a ticker"""
+    try:
+        data = sdk.balance_sheet(ticker)
+        
+        filename = f'data/yf_balance_sheet.csv'
+        data.to_csv(filename)
+        
+        await ctx.send(f"Balance Sheet for {ticker}:")
+        await ctx.send(file=disnake.File(filename))
+    except Exception as e:
+        await ctx.send(f"An error occurred: {e}")
+
+@bot.command()
+async def cashflow(ctx, ticker: str):
+    """Gets cash flow information for a ticker"""
+    try:
+        data = sdk.get_cash_flow(ticker)
+        
+        filename = f'data/yf_cash_flow.csv'
+        data.to_csv(filename)
+        
+        await ctx.send(f"Cash Flow for {ticker}:")
+        await ctx.send(file=disnake.File(filename))
+    except Exception as e:
+        await ctx.send(f"An error occurred: {e}")
+
+@bot.command()
+async def financials(ctx, ticker: str):
+    """Gets all financials for a ticker"""
+    try:
+        data = sdk.financials(ticker)
+        
+        filename = f'data/yf_financials.csv'
+        data.to_csv(filename)
+        
+        await ctx.send(f"Financials for {ticker}:")
+        await ctx.send(file=disnake.File(filename))
+    except Exception as e:
+        await ctx.send(f"An error occurred: {e}")
+
+
+# Command for the income_statement method within yfSDK
+@bot.command()
+async def statement(ctx, ticker: str, frequency: str = 'quarterly', pretty: bool = False, as_dict: bool = False):
+    """Gets the income statement for a ticker"""
+    data = sdk.income_statement(ticker, frequency=frequency, pretty=pretty, as_dict=as_dict)
+    filename = f'data/yf_income_statement.csv'
+    data.to_csv(filename)
+    await ctx.send(file=disnake.File(filename))
+
+# Command for the get_info method within yfSDK
+@bot.command()
+async def info(ctx, ticker: str):
+    """Returns a large dictionary of information for a ticker"""
+    data = sdk.get_info(ticker)
+    filename = f'data/yf_info.csv'
+    data.to_csv(filename)
+    await ctx.send(file=disnake.File(filename))
+
+# Command for the institutional_holdings method within yfSDK
+@bot.command()
+async def whales(ctx, ticker: str):
+    """Gets institutional holdings for a ticker"""
+    data = sdk.institutional_holdings(ticker)
+    filename = f'data/yf_institutional_holdings.csv'
+    data.to_csv(filename)
+    await ctx.send(file=disnake.File(filename))
+
+
+@bot.command()
+async def div(ctx, ticker: str):
+    """Gets dividends for a ticker - if any."""
+    data = sdk.dividends(ticker)
+    filename = f'data/dividends.csv'
+    data.to_csv(filename)
+    await ctx.send(file=disnake.File(filename))
+
+
+@bot.command()
+async def allinfo(ctx, ticker: str):
+    """Gets all relevant company data for a ticker."""
+    data = sdk.fast_info(ticker)
+    filename = f'data/fast_info.csv'
+    data.to_csv(filename)
+    await ctx.send(file=disnake.File(filename))
+
+
+@bot.command()
+async def candles(ctx, *, ticker: str):
+    """Gets all candlestick data for a ticker"""
+    data = sdk.get_all_candles(ticker)
+    filename = f'data/all_candles.csv'
+    data.to_csv(filename)
+    await ctx.send(file=disnake.File(filename))
+
+
+# Command for the news method within yfSDK
+@bot.command()
+async def news(ctx, ticker: str):
+    """Gets ticker news"""
+    data = sdk.news(ticker)
+    filename = f'data/yf_{ticker}_news.csv'
+    data.to_csv(filename)
+    await ctx.send(file=disnake.File(filename))
+
+# Command for the atm_calls method within yfSDK
+@bot.command()
+async def calls(ctx, ticker: str):
+    """Gets at the money calls for a ticker"""
+    data = sdk.atm_calls(ticker)
+    data = pd.DataFrame(data)
+    filename = f'data/yf_atm_calls.csv'
+    data.to_csv(filename)
+    await ctx.send(file=disnake.File(filename))
+
+@bot.command()
+async def iv(ctx, ticker, strike, call_put, expiry):
+    """Gets IV for a ticker"""
+    
+ 
+    await opts.connect()
+    async for results in opts.fetch_iter(query=f"""select option_symbol from options_data where ticker = '{ticker}' and strike = {strike} and expiry = '{expiry}' and call_put = '{call_put}';"""):
+        view = disnake.ui.View()
+        option_symbol = results[0]
+        data = []
+        class Select(disnake.ui.Select):
+            def __init__(self):
+                self.option_symbol = option_symbol
+                super().__init__( 
+                    placeholder='Select -->',
+                    min_values=1,
+                    max_values=1,
+                    options= [disnake.SelectOption(label=f'{option_symbol}')]
+                )
+
+            async def callback(self, inter:disnake.AppCmdInter):
+                while True:
+                    await inter.response.defer()
+
+                    data = await opts.get_universal_snapshot(ticker=option_symbol)
+                    df = pd.DataFrame(data)
+                    # Selecting the 'iv' column
+                    print(df.columns)
+                    iv_column = df['IV']
+
+                    await inter.edit_original_message(iv_column)
+        view.add_item(Select())
+        await ctx.send(view=view)
+
+@bot.command()
+async def puts(ctx, ticker: str):
+    """Gets at the money puts for a ticker"""
+    data = sdk.atm_puts(ticker)
+    data = pd.DataFrame(data)
+    filename = f'data/yf_atm_puts.csv'
+    data.to_csv(filename)
+    await ctx.send(file=disnake.File(filename))
+
+
+@bot.command()
+async def related(ctx, keyword):
+    related_queries = pytrends.related_queries()
+    # Define keywords
+    keywords = [f"{keyword}"]
+
+    # Build payload
+    pytrends.build_payload(keywords, timeframe='today 12-m')
+
+    # Fetch related queries
+    related_queries = pytrends.related_queries()
+
+    
+    embed = disnake.Embed(title=f"Current Trends on Google:", description=f"```py\n{related_queries}```", color=disnake.Colour.dark_green())
+    await ctx.send(embed=embed)
+
+cogs_dir = "C:/users/chuck/fudstop/fudstop/cogs"
+print("Path being used:", cogs_dir)
+for extension in disnake.utils.search_directory(cogs_dir):
+    bot.load_extension(extension)
+
+
+
 bot.run(os.environ.get('BOT'))

@@ -37,7 +37,7 @@ db_config = {
 opts = PolygonOptions(**db_config)
 from asyncio import Semaphore
 from asyncpg.exceptions import UniqueViolationError
-sema = Semaphore(30)
+sema = Semaphore(15)
 async def get_all_options(ticker):
     
     async with sema:
@@ -54,7 +54,7 @@ async def get_all_options(ticker):
 
 async def run_all_options():
     await opts.connect()
-    most_active_tickers = ['PLTR']
+   
     try:
         tasks = [get_all_options(i) for i in most_active_tickers]
 

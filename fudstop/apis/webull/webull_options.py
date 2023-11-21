@@ -51,30 +51,30 @@ class WebullOptions:
         self.eight_days_from_now = (datetime.now() + timedelta(days=8)).strftime('%Y-%m-%d')
         self.eight_days_ago = (datetime.now() - timedelta(days=8)).strftime('%Y-%m-%d')
         self.headers = {
-        "Access_token": "dc_us_tech1.18ba751f1ae-05a653bff5ec4b10a2da53487bd4dfb6",
+        "Access_token": "dc_us_tech1.18bee393f89-0e09636184d94d479b7ffd3399473492",
         "Accept": "*/*",
         "App": "global",
         "App-Group": "broker",
         "Appid": "wb_web_app",
-        "Content-Type": "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
         "Device-Type": "Web",
         "Did": "8tb5au1228olpj2jss5vittmtk7pcvf6",
         "Hl": "en",
         "Locale": "eng",
         "Os": "web",
-        "Osv": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36",
+        "Osv": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
         "Ph": "Windows Chrome",
         "Platform": "web",
         "Referer": "https://app.webull.com/",
-        "Reqid": "a9d8d422e0e84041a035fb2389f18dae",
+        "Reqid": "2487cd9c2728413cbdf130fb0fd8c1f6",
         "Sec-Ch-Ua": "\"Chromium\";v=\"118\", \"Google Chrome\";v=\"118\", \"Not=A?Brand\";v=\"99\"",
         "Sec-Ch-Ua-Mobile": "?0",
         "Sec-Ch-Ua-Platform": "\"Windows\"",
         "T_time": "1698276695206",
         "Tz": "America/Los_Angeles",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36",
-        "Ver": "3.40.11",
-        "X-S": "49ef20ad66d1e24a83ff8b2015bc13c6d133285c5665dbbe4aa6032572749931",
+        "Ver": "4.0.6",
+        "X-S": "3140cae1c7852134b97986a6da68c054739af0243f17102af3c948a6b8838b19",
         "X-Sv": "xodp2vg9"
     }
 
@@ -374,8 +374,10 @@ class WebullOptions:
                         df = df.rename(columns={'open_interest_change': 'oi_change'})
                         
                         await self.insert_dataframe_in_batches(df, 'options_data')
+                        dataframes.append(df)
+        return dataframes
             
-        print(f"Finished processing for ticker: {ticker}")
+        
 
   
 

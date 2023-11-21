@@ -21,7 +21,7 @@ class OpenAISDK:
             {
             "role": "user",
             "content": [
-                {"type": "text", "text": "Analyze the image. If it's of a stock chart - analyze in an attempt to find any meaningful patterns."},
+                {"type": "text", "text": "Examine the validity of this image by reading the text if any. If no text-  provide an overall analysis."},
                 {
                 "type": "image_url",
                 "image_url": {

@@ -119,7 +119,7 @@ class WebulScreener:
         # Build the payload
         payload = {
             "filter": filter_dict,
-            "page": {'fetchSize': 15}
+            "page": {'fetchSize': 25}
         }
 
         

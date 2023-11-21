@@ -11,6 +11,7 @@ update_fudstop.py
 environment.yml
 .env
 dist/
+*.csv
 build/
 .Python
 *.egg-info/

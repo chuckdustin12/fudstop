@@ -53,15 +53,36 @@ def flatten_object(obj, parent_key='', separator='_'):
         else:
             items[new_key] = v
     return items
-def format_large_numbers_in_dataframe(df, columns_to_format):
+
+def format_large_number(number):
     """
-    Formats selected columns in a DataFrame to readable large numbers.
+    Formats a number into a human-readable format (e.g., 1K, 1M, 1B, etc.)
+    """
+    if pd.isnull(number):
+        return number  # Return NaN as is
+    if number < 1000:
+        return str(number)
+    elif 1000 <= number < 1000000:
+        return f"{number/1000:.1f}K"
+    elif 1000000 <= number < 1000000000:
+        return f"{number/1000000:.1f}M"
+    elif 1000000000 <= number:
+        return f"{number/1000000000:.1f}B"
+    else:
+        return str(number)
+
+def format_large_numbers_in_dataframe(df):
+    """
+    Dynamically formats all numeric columns in a DataFrame to readable large numbers.
     """
     formatted_df = df.copy()
-    for column in columns_to_format:
-        if column in formatted_df.columns:
-            formatted_df[column] = formatted_df[column].apply(format_large_number)
+    numeric_columns = formatted_df.select_dtypes(include=['number']).columns
+
+    for column in numeric_columns:
+        formatted_df[column] = formatted_df[column].apply(format_large_number)
+    
     return formatted_df
+
 # Example function to format selected keys in a dictionary
 def format_large_numbers_in_dict(data_dict, keys_to_format):
     """
@@ -72,26 +93,7 @@ def format_large_numbers_in_dict(data_dict, keys_to_format):
         if key in formatted_dict:
             formatted_dict[key] = format_large_number(formatted_dict[key])
     return formatted_dict
-def format_large_number(num):
-    if isinstance(num, list):
-        return [format_large_number(n) for n in num]
-    elif isinstance(num, str):
-        try:
-            num = float(num)
-        except ValueError:
-            return num  # or however you want to handle this case
-    if num is None:
-        return
-    if abs(num) >= 1_000_000_000_000:
-        return f"{num / 1_000_000_000_000:.2f} T"
-    elif abs(num) >= 1_000_000_000:
-        return f"{num / 1_000_000_000:.2f} B"
-    elif abs(num) >= 1_000_000:
-        return f"{num / 1_000_000:.2f} M"
-    elif abs(num) >= 1_000:
-        return f"{num / 1_000:.2f} K"
-    else:
-        return str(num)
+
     
 def calculate_td9_series(df):
     setup_count = 0
