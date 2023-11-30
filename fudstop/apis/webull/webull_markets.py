@@ -24,10 +24,11 @@ class WebullMarkets(DatabaseManager):
 
         self.headers = {
         "App": "global",
+        'Access-Token': os.environ.get('webull_access_token'),
         "App-Group": "broker",
         "Appid": "wb_web_app",
         "Device-Type": "Web",
-        "Did": "8tb5au1228olpj2jss5vittmtk7pcvf6",
+        "Did": os.environ.get('DID'),
         "Hl": "en",
         "Locale": "eng",
         "Os": "web",
@@ -35,7 +36,7 @@ class WebullMarkets(DatabaseManager):
         "Ph": "Windows Chrome",
         "Platform": "web",
         "Referer": "https://app.webull.com/",
-        "Reqid": "a9d8d422e0e84041a035fb2389f18dae",
+        "Reqid": os.environ.get('REQ_ID'),
         "Sec-Ch-Ua": "\"Chromium\";v=\"118\", \"Google Chrome\";v=\"118\", \"Not=A?Brand\";v=\"99\"",
         "Sec-Ch-Ua-Mobile": "?0",
         "Sec-Ch-Ua-Platform": "\"Windows\"",
@@ -43,7 +44,7 @@ class WebullMarkets(DatabaseManager):
         "Tz": "America/Los_Angeles",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36",
         "Ver": "3.40.11",
-        "X-S": "49ef20ad66d1e24a83ff8b2015bc13c6d133285c5665dbbe4aa6032572749931",
+        "X-S": os.environ.get('YOUR_X-S'),
         "X-Sv": "xodp2vg9"
     }
 

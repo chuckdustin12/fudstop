@@ -28,14 +28,14 @@ class WebulScreener:
         self.eight_days_from_now = (datetime.now() + timedelta(days=8)).strftime('%Y-%m-%d')
         self.eight_days_ago = (datetime.now() - timedelta(days=8)).strftime('%Y-%m-%d')
         self.headers = {
-        "Access_token": os.environ.get('YOUR_ACCESS_TOKEN'),
+        "Access_token": os.environ.get('webull_access_token'),
         "Accept": "*/*",
         "App": "global",
         "App-Group": "broker",
         "Appid": "wb_web_app",
         "Content-Type": "application/json",
         "Device-Type": "Web",
-        "Did": os.environ.get('YOUR_DID'),
+        "Did": os.environ.get('DID'),
         "Hl": "en",
         "Locale": "eng",
         "Os": "web",
@@ -43,7 +43,7 @@ class WebulScreener:
         "Ph": "Windows Chrome",
         "Platform": "web",
         "Referer": "https://app.webull.com/",
-        "Reqid": os.environ.get('YOUR_REQID'),
+        "Reqid": os.environ.get('REQ_ID'),
         "Sec-Ch-Ua": "\"Chromium\";v=\"118\", \"Google Chrome\";v=\"118\", \"Not=A?Brand\";v=\"99\"",
         "Sec-Ch-Ua-Mobile": "?0",
         "Sec-Ch-Ua-Platform": "\"Windows\"",

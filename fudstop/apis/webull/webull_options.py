@@ -56,14 +56,14 @@ class WebullOptions:
         self.eight_days_from_now = (datetime.now() + timedelta(days=8)).strftime('%Y-%m-%d')
         self.eight_days_ago = (datetime.now() - timedelta(days=8)).strftime('%Y-%m-%d')
         self.headers = {
-        "Access_token": "dc_us_tech1.18bf5a4bbf1-ab764a65993548e5812e0db0ee8e9031",
+        "Access_token": os.environ.get('webull_access_token'),
         "Accept": "*/*",
         "App": "global",
         "App-Group": "broker",
         "Appid": "wb_web_app",
         "Content-Type": "application/json;charset=UTF-8",
         "Device-Type": "Web",
-        "Did": "8tb5au1228olpj2jss5vittmtk7pcvf6",
+        "Did": os.environ.get('DID'),
         "Hl": "en",
         "Locale": "eng",
         "Os": "web",
@@ -71,6 +71,7 @@ class WebullOptions:
         "Ph": "Windows Chrome",
         "Platform": "web",
         "Referer": "https://app.webull.com/",
+        'Reqid': os.environ.get('REQ_ID'),
         "Sec-Ch-Ua": "\"Chromium\";v=\"118\", \"Google Chrome\";v=\"118\", \"Not=A?Brand\";v=\"99\"",
         "Sec-Ch-Ua-Mobile": "?0",
         "Sec-Ch-Ua-Platform": "\"Windows\"",

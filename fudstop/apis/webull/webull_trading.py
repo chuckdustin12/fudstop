@@ -1,3 +1,4 @@
+import os
 import sys
 from pathlib import Path
 
@@ -5,7 +6,8 @@ from pathlib import Path
 project_dir = str(Path(__file__).resolve().parents[2])
 if project_dir not in sys.path:
     sys.path.append(project_dir)
-
+from dotenv import load_dotenv
+load_dotenv()
 import aiohttp
 import pandas as pd
 from pytz import timezone
@@ -41,13 +43,13 @@ class WebullTrading:
         self.timeframes = ['m1','m5', 'm10', 'm15', 'm20', 'm30', 'm60', 'm120', 'm240', 'd1']
 
         self.headers = {
-        "Access_token": "dc_us_tech1.18b823d6464-740891123215488abcbb16481b9d99c1",
+        "Access_token": os.environ.get('webull_access_token'),
         "App": "global",
         "App-Group": "broker",
         "Appid": "wb_web_app",
         "Content-Type": "application/json",
         "Device-Type": "Web",
-        "Did": "8tb5au1228olpj2jss5vittmtk7pcvf6",
+        "Did": os.environ.get('DID'),
         "Hl": "en",
         "Locale": "eng",
         "Os": "web",
@@ -55,7 +57,7 @@ class WebullTrading:
         "Ph": "Windows Chrome",
         "Platform": "web",
         "Referer": "https://app.webull.com/",
-        "Reqid": "a9d8d422e0e84041a035fb2389f18dae",
+        "Reqid": os.environ.get('REQ_ID'),
         "Sec-Ch-Ua": "\"Chromium\";v=\"118\", \"Google Chrome\";v=\"118\", \"Not=A?Brand\";v=\"99\"",
         "Sec-Ch-Ua-Mobile": "?0",
         "Sec-Ch-Ua-Platform": "\"Windows\"",
