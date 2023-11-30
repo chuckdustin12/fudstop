@@ -7,7 +7,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='fudstop',
-    version='0.4.1',
+    version='0.4.3',
     packages=find_packages(),
     install_requires=requirements,
 )

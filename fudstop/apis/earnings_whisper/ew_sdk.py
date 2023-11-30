@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 session = requests.session()
 
-from ew_models import TopSentimentHeatmap, SpyData, UpcomingRussellAndSectors, DatedChartData, Messages, Pivots, TodaysResults, CalData
+from .ew_models import TopSentimentHeatmap, SpyData, UpcomingRussellAndSectors, DatedChartData, Messages, Pivots, TodaysResults, CalData
 from datetime import datetime
 
 # Get the current date
@@ -56,6 +56,10 @@ class EarningsWhisper:
     
 
     def get_top_sentiment(self):
+        """
+        Returns top tickers by sentiment towards earnings.
+        
+        """
         r = requests.get("https://www.earningswhispers.com/api/gettopsentheat", headers=self.headers).json()
         data = TopSentimentHeatmap(r)
         return data

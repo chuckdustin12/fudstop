@@ -7,7 +7,10 @@ if project_dir not in sys.path:
     sys.path.append(project_dir)
 from dotenv import load_dotenv
 load_dotenv()
+from .models.technicals import RSI
+from aiohttp.client_exceptions import ClientConnectionError, ClientConnectorError, ClientError, ClientOSError,ContentTypeError
 import os
+from .polygon_helpers import get_human_readable_string
 import sys
 import pandas as pd
 from pathlib import Path
@@ -21,7 +24,7 @@ from urllib.parse import urlencode
 from datetime import datetime, timedelta
 from ..webull.webull_trading import WebullTrading
 import numpy as np
-from .models.option_models.universal_snapshot import UniversalOptionSnapshot
+from .models.option_models.universal_snapshot import UniversalOptionSnapshot, UniversalSnapshot
 from .polygon_helpers import flatten_nested_dict, flatten_dict
 lock = Lock()
 trading = WebullTrading()
@@ -40,14 +43,8 @@ def dtype_to_postgres(dtype):
     else:
         return 'TEXT'  # Default type
 class PolygonOptions:
-    def __init__(self, host, port, user, password, database):
+    def __init__(self):
         self.conn = None
-        self.pool = None
-        self.host = host
-        self.port = port
-        self.user = user
-        self.password = password
-        self.database = database
         self.connection_string = os.environ.get('POLYGON_STRING')
 
         self.database = os.environ.get('DB_NAME')
@@ -199,12 +196,100 @@ class PolygonOptions:
         >>> as_dataframe: whether to return as a dataframe or not (default false)
         """
         url = f"https://api.polygon.io/v3/trades/{ticker}?limit=50000&apiKey={self.api_key}"
-        print(url)
+       
+        try:
+
+            data = await self.paginate_concurrent(url, as_dataframe=True)
+            if data is not None:
+                return data
+        except Exception as e:
+            print(f'Error')
+
+    async def rsi(self, ticker:str, timespan:str, limit:str='1000', window:int=14, date_from:str=None, date_to:str=None, session=None):
+        """
+        Arguments:
+
+        >>> ticker
+
+        >>> AVAILABLE TIMESPANS:
+
+        minute
+        hour
+        day
+        week
+        month
+        quarter
+        year
+
+        >>> date_from (optional) 
+        >>> date_to (optional)
+        >>> window: the RSI window (default 14)
+        >>> limit: the number of N timespans to survey
+        
+        """
+
+        if date_from is None:
+            date_from = self.eight_days_ago
+
+        if date_to is None:
+            date_to = self.today
+
+
+        endpoint = f"https://api.polygon.io/v1/indicators/rsi/{ticker}?timespan={timespan}&timestamp.gte={date_from}&timestamp.lte={date_to}&limit={limit}&window={window}&apiKey={self.api_key}"
+ 
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.get(endpoint) as resp:
+                    datas = await resp.json()
+                    if datas is not None:
+
+                        
+  
+                
+                        return RSI(datas, ticker)
+            except (ClientConnectorError, ClientOSError, ContentTypeError):
+                print(f"ERROR - {ticker}")
+    async def rsi_snapshot(self, ticker:str):
+        components = get_human_readable_string(ticker)
+        symbol = components.get('underlying_symbol')
+        strike = components.get('strike_price')
+        expiry = components.get('expiry_date')
+        call_put = components.get('call_put')
+        call_put = str(call_put).lower()
+        timespans = ['minute', 'hour', 'day', 'week', 'month']
+        all_data_dicts=[]
+        for timespan in timespans:
+            rsi =await self.rsi(ticker, timespan, limit='1')
     
 
-        data = await self.paginate_concurrent(url, as_dataframe=True)
-        if data is not None:
-            return data
+            # Check if rsi or rsi.rsi_value[0] is None
+            # Check if rsi is not None and that rsi.rsi_value itself is not None and has at least one element
+            if rsi is not None and rsi.rsi_value is not None and len(rsi.rsi_value) > 0:
+                data_dict = { 
+                    'timespan': timespan,
+                    'option_symbol': ticker,
+                    'ticker': symbol,
+                    'strike': strike,
+                    'expiry': expiry,
+                    'call_put': call_put,
+                    'rsi': rsi.rsi_value[0]
+                }
+            else:
+                # Handle the None case appropriately
+                # For example, you can set a default value or perform a different action
+                data_dict = { 
+                    'timespan': timespan,
+                    'option_symbol': ticker,
+                    'ticker': symbol,
+                    'strike': strike,
+                    'expiry': expiry,
+                    'call_put': call_put,
+                    'rsi': 0  # Replace 'default_value' with an appropriate fallback
+                }
+            all_data_dicts.append(data_dict)
+        df = pd.DataFrame(all_data_dicts)
+        
+        return df
 
     async def option_aggregates(self, ticker:str, timespan:str='second', date_from:str='2019-09-17', date_to:str=None, limit=50000, 
     as_dataframe:bool=False):
@@ -713,7 +798,189 @@ class PolygonOptions:
                 async for record in conn.cursor(query):
                     yield record
 
+    async def group_options_by_expiry(self, all_options: UniversalOptionSnapshot):
+        """Takes all options and groups by expiration date."""
+        
 
+
+    async def chunk_250(self, all_options: UniversalOptionSnapshot):
+        """Chunks all options into sizes of 250"""
+        # Calculate the number of chunks
+        total_items = len(all_options.ticker)  # Replace with the actual length of all_options
+        chunk_size = 250
+        num_chunks = (total_items + chunk_size - 1) // chunk_size  # Calculate the total number of chunks
+
+        # Iterate over each chunk
+        for i in range(num_chunks):
+            start_index = i * chunk_size
+            end_index = start_index + chunk_size
+            chunk = all_options[start_index:end_index]  # Get the current chunk
+
+            # Process or print the current chunk
+            yield chunk
+
+    async def full_skew(self, ticker:str):
+        """
+        Gets the lowest IV call/put for all expirations.
+
+        Arguments:
+
+        >>> ticker: the ticker to get the full skew for.
+
+        """
+
+        all_options = await self.get_option_chain_all(ticker)
+        all_options_df = all_options.df
+
+        # Empty list to store the lowest IV call and put options
+        lowest_iv_options = []
+
+        # Grouping by the 'expiry' column
+        grouped = all_options_df.groupby('expiry')
+        for expiry, group in grouped:
+            # Filter call and put options
+            calls = group[group['cp'] == 'call']
+            puts = group[group['cp'] == 'put']
+
+            # Combine calls and puts into one DataFrame
+            combined_options = pd.concat([calls, puts])
+
+            # Find the option (call or put) with the lowest IV
+            lowest_iv_option = combined_options.loc[combined_options['iv'].idxmin()]
+
+            # Add the lowest IV option to the list
+            lowest_iv_options.append(lowest_iv_option)
+
+        # Concatenate into a final DataFrame
+        final_df = pd.DataFrame(lowest_iv_options)
+        print(final_df.columns)
+        columns_to_save = ['ticker', 'underlying_price', 'strike', 'expiry', 'dte', 'cp','gamma','vega','iv','vol','oi','ask', 'bid']
+        # Define the list of columns you want to keep
+        columns_to_keep = ['strike', 'expiry', 'cp', 'iv']  # Replace with your desired columns
+
+        # Select only these columns from the DataFrame
+        filtered_df = final_df[columns_to_keep]
+        save_df = final_df[columns_to_save]
+
+        save_df.to_csv('full_skew.csv', index=False)
+
+        # Extract the constant values
+        ticker = final_df['ticker'].iloc[0]  # Extracts the first value from the 'ticker' column
+        underlying_price = final_df['underlying_price'].iloc[0]  # Extracts the first value from the 'underlying_price' column
+
+        return filtered_df, underlying_price
+    
+
+    async def vol_oi_top_strike(self, ticker: str):
+        """
+        Gets the strikes with the highest volume and open interest across all expirations
+        for both call and put options, returning specific columns.
+        """
+
+        all_options = await self.get_option_chain_all(ticker)
+        all_options_df = all_options.df
+
+        # Columns to return
+        columns_to_return = ['ticker', 'strike', 'expiry', 'cp', 'oi', 'vol']
+
+        # Create an empty DataFrame to store the final results
+        final_df = pd.DataFrame()
+
+        # Group by 'cp' (call/put) and 'expiry'
+        grouped = all_options_df.groupby(['cp', 'expiry'])
+
+        for (option_type, expiry), group in grouped:
+            # Find the row with the max volume
+            max_vol_row = group[group['vol'] == group['vol'].max()]
+
+            # Find the row with the max open interest
+            max_oi_row = group[group['oi'] == group['oi'].max()]
+
+            # Append these rows to the final DataFrame
+            # Selecting only the required columns
+            final_df = pd.concat([final_df, max_vol_row[columns_to_return], max_oi_row[columns_to_return]])
+
+        # Resetting the index of the final DataFrame
+        final_df.reset_index(drop=True, inplace=True)
+
+        return final_df
+
+    async def lowest_theta(self, ticker: str):
+        """
+        Gets the option with the lowest theta for each expiry across all options,
+        selecting the lowest out of the call or put for each expiry.
+        """
+
+        all_options = await self.get_option_chain_all(ticker)
+        all_options_df = all_options.df
+
+        # Ensure 'theta' is in numeric format
+        all_options_df['theta'] = pd.to_numeric(all_options_df['theta'], errors='coerce')
+
+        # Create an empty DataFrame to store the final results
+        final_df = pd.DataFrame()
+
+        # Group by 'expiry'
+        grouped = all_options_df.groupby('expiry')
+
+        for expiry, group in grouped:
+            # Separate calls and puts
+            calls = group[group['cp'] == 'call']
+            puts = group[group['cp'] == 'put']
+
+            # Find the row with the lowest theta for calls and puts
+            min_theta_call = calls[calls['theta'] == calls['theta'].max()]
+            min_theta_put = puts[puts['theta'] == puts['theta'].max()]
+
+            # Select the one with the absolute lowest theta
+            min_theta_option = pd.concat([min_theta_call, min_theta_put]).nsmallest(1, 'theta')
+
+            # Append this row to the final DataFrame
+            final_df = pd.concat([final_df, min_theta_option])
+
+        # Resetting the index of the final DataFrame
+        final_df.reset_index(drop=True, inplace=True)
+
+        return final_df
+    
+
+    async def highest_velocity(self, ticker: str):
+        """
+        Gets the option with the highest velocity for each expiry across all options,
+        selecting the highest out of the call or put for each expiry.
+        """
+
+        all_options = await self.get_option_chain_all(ticker)
+        all_options_df = all_options.df
+
+        # Ensure 'velocity' is in numeric format
+        all_options_df['velocity'] = pd.to_numeric(all_options_df['velocity'], errors='coerce')
+
+        # Create an empty DataFrame to store the final results
+        final_df = pd.DataFrame()
+
+        # Group by 'expiry'
+        grouped = all_options_df.groupby('expiry')
+
+        for expiry, group in grouped:
+            # Separate calls and puts
+            calls = group[group['cp'] == 'call']
+            puts = group[group['cp'] == 'put']
+
+            # Find the row with the highest velocity for calls and puts
+            max_velocity_call = calls[calls['velocity'] == calls['velocity'].max()]
+            max_velocity_put = puts[puts['velocity'] == puts['velocity'].max()]
+
+            # Select the one with the absolute highest velocity
+            max_velocity_option = pd.concat([max_velocity_call, max_velocity_put]).nlargest(1, 'velocity')
+
+            # Append this row to the final DataFrame
+            final_df = pd.concat([final_df, max_velocity_option])
+
+        # Resetting the index of the final DataFrame
+        final_df.reset_index(drop=True, inplace=True)
+
+        return final_df
 
     async def close(self):
         if self.pool:

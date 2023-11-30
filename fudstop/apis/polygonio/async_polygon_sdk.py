@@ -9,10 +9,10 @@ if project_dir not in sys.path:
 from dotenv import load_dotenv
 load_dotenv()
 from asyncpg import create_pool
-
+from urllib.parse import unquote
 import os
-from typing import List, Dict
-
+from typing import List, Dict, Optional
+import pandas as pd
 import asyncio
 from aiohttp.client_exceptions import ClientConnectorError, ClientOSError, ClientConnectionError, ContentTypeError
 
@@ -30,7 +30,7 @@ from apis.helpers import flatten_dict
 
 YOUR_POLYGON_KEY = os.environ.get('YOUR_POLYGON_KEY')
 
-print(YOUR_POLYGON_KEY)
+
 session = requests.session()
 class Polygon:
     def __init__(self, connection_string=None):
@@ -53,11 +53,11 @@ class Polygon:
                 )
             else:
                 self.pool = await create_pool(
-                    host=self.host,
-                    port=self.port,
-                    user=self.user,
-                    password=self.password,
-                    database=self.database,
+                    host=os.environ.get('DB_HOST'),
+                    port=os.environ.get('DB_PORT'),
+                    user=os.environ.get('DB_USER'),
+                    password=os.environ.get('DB_PASSWORD'),
+                    database='polygon',
                     min_size=1,
                     max_size=10
                 )
@@ -68,7 +68,7 @@ class Polygon:
         values = ', '.join([f"${i+1}" for i in range(len(data))])
         
         query = f'INSERT INTO {table_name} ({fields}) VALUES ({values})'
-        print(self.connection_string)
+      
         async with self.pool.acquire() as conn:
             try:
                 await conn.execute(query, *data.values())
@@ -225,7 +225,7 @@ class Polygon:
 
     async def company_info(self, ticker) -> CombinedCompanyResults:
         url = f"https://api.polygon.io/v3/reference/tickers/{ticker}?apiKey={self.api_key}"
-        print(url)
+       
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 data = await response.json()
@@ -326,7 +326,7 @@ class Polygon:
         params = {
             "apiKey": self.api_key,
         }
-        print(url)
+    
         async with aiohttp.ClientSession() as session:
             async with session.get(url, params=params) as response:
                 response_data = await response.json()
@@ -334,7 +334,7 @@ class Polygon:
 
 
                 tickers = response_data['tickers']
-                print(tickers)
+             
                 ticker_data = [StockSnapshot(ticker) for ticker in response_data['tickers'] if ticker is not None]
 
                 if save_all_tickers:
@@ -378,7 +378,7 @@ class Polygon:
 
 
         endpoint = f"https://api.polygon.io/v1/indicators/rsi/{ticker}?timespan={timespan}&timestamp.gte={date_from}&timestamp.lte={date_to}&limit={limit}&window={window}&apiKey={self.api_key}"
-        print(endpoint)
+ 
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.get(endpoint) as resp:
@@ -391,7 +391,22 @@ class Polygon:
                         return RSI(datas, ticker)
             except (ClientConnectorError, ClientOSError, ContentTypeError):
                 print(f"ERROR - {ticker}")
-                
+
+
+    async def rsi_snapshot(self, ticker:str):
+        timespans = ['minute', 'hour', 'day', 'week', 'month']
+        all_data_dicts=[]
+        for timespan in timespans:
+            rsi =await self.rsi(ticker, timespan, limit='1')
+
+            data_dict = { 
+                'ticker': ticker,
+                'rsi': rsi.rsi_value[0]
+            }
+            all_data_dicts.append(data_dict)
+        df = pd.DataFrame(all_data_dicts)
+        
+        return df
 
 
     async def sma(self, ticker:str, timespan:str, limit:str='1000', window:str='9', date_from:str=None, date_to:str=None):
@@ -539,4 +554,42 @@ class Polygon:
             tasks = [self.rsi(ticker, timespan) for ticker in tickers for timespan in timespans]
             await asyncio.gather(*tasks)
                 
-              
+                
+    async def get_polygon_logo(self, symbol: str) -> Optional[str]:
+            """
+            Fetches the URL of the logo for the given stock symbol from Polygon.io.
+
+            Args:
+                symbol: A string representing the stock symbol to fetch the logo for.
+
+            Returns:
+                A string representing the URL of the logo for the given stock symbol, or None if no logo is found.
+
+            Usage:
+                To fetch the URL of the logo for a given stock symbol, you can call:
+                ```
+                symbol = "AAPL"
+                logo_url = await sdk.get_polygon_logo(symbol)
+                if logo_url is not None:
+                    print(f"Logo URL: {logo_url}")
+                else:
+                    print(f"No logo found for symbol {symbol}")
+                ```
+            """
+            url = f'https://api.polygon.io/v3/reference/tickers/{symbol}?apiKey={self.api_key}'
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as response:
+                    data = await response.json()
+                    
+                    if 'results' not in data:
+                        # No results found
+                        return None
+                    
+                    results = data['results']
+                    branding = results.get('branding')
+
+                    if branding and 'icon_url' in branding:
+                        encoded_url = branding['icon_url']
+                        decoded_url = unquote(encoded_url)
+                        url_with_api_key = f"{decoded_url}?apiKey={self.api_key}"
+                        return url_with_api_key

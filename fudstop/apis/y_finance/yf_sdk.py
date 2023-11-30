@@ -1,10 +1,4 @@
-import sys
-from pathlib import Path
 
-# Add the project directory to the sys.path
-project_dir = str(Path(__file__).resolve().parents[1])
-if project_dir not in sys.path:
-    sys.path.append(project_dir)
 
 
 import yfinance as yf
@@ -341,14 +335,19 @@ class yfSDK:
         
         """
 
-        calls = yf.Ticker(ticker).option_chain().calls
+        calls = yf.Ticker(ticker)._download_options()
+
+        call_options = calls['calls']
+
+
+        df = pd.DataFrame(call_options)
 
 
         
 
 
 
-        return calls
+        return df
 
     def atm_puts(self, ticker:str):
         """
@@ -356,8 +355,17 @@ class yfSDK:
         
         """
 
-        puts = yf.Ticker(ticker).option_chain().puts
-        df=  pd.DataFrame(puts)
+        puts = yf.Ticker(ticker)._download_options()
+
+        put_options = puts['puts']
+
+
+        df = pd.DataFrame(put_options)
+
+
+        
+
+
+
         return df
-    
 

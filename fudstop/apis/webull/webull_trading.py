@@ -19,7 +19,7 @@ from .trade_models.news import NewsItem
 from .trade_models.forecast_evaluator import ForecastEvaluator
 from .trade_models.short_interest import ShortInterest
 from .trade_models.volume_analysis import WebullVolAnalysis
-from .trade_models.ticker_query import WebullStockData
+from .trade_models.ticker_query import WebullStockData, MultiQuote
 from .trade_models.analyst_ratings import Analysis
 
 
@@ -267,3 +267,25 @@ class WebullTrading:
         return data
     
 
+    async def multi_quote(self, symbols:str):
+        counter = 0
+        while True:
+            counter = counter + 1
+           
+            ticker_ids = [await self.get_ticker_id(i) for i in symbols]
+            ticker_ids = str(ticker_ids)
+            ticker_ids = ','.join([ticker_ids]).replace(']', '').replace('[', '').replace(' ', '')
+            endpoint = f"https://quotes-gw.webullfintech.com/api/bgw/quote/realtime?ids={ticker_ids}&includeSecu=1&delay=0&more=1"
+
+            async with aiohttp.ClientSession(headers=self.headers) as session:
+                async with session.get(endpoint) as resp:
+                    datas = await resp.json()
+                    all_data = MultiQuote(datas)
+
+                    for sym,price, vol, vr in zip(all_data.symbol, all_data.close, all_data.volume, all_data.vibrateRatio):
+                        yield(f'SYM(1): | {sym} | PRICE(3): | {price} | VOL:(5): | {vol} | VIBRATION:(7): | {vr}')
+
+                        if counter == 250:
+                            print(f"Stream ending...")
+                        
+                            break

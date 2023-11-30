@@ -9,6 +9,7 @@ from decimal import Decimal
 import matplotlib.dates as mdates
 import aiohttp
 import asyncio
+from .treasury_models import AvgInterestRates
 from asyncpg.exceptions import UndefinedTableError
 from datetime import datetime, timedelta
 import pandas as pd
@@ -234,5 +235,13 @@ class Treasury:
 
 
 
+    def avg_interest_rates(self):
+        """Gets avg. interest rates for US treasury"""
+
+        r = requests.get("https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/avg_interest_rates?sort=-record_date").json()
+        data = r['data']
+
+
+        return AvgInterestRates(data)
 
 

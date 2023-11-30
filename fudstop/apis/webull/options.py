@@ -1,13 +1,14 @@
 import sys
 from pathlib import Path
 
-# Add the project directory to the sys.path
+# Add the project fetch to the sys.path
 project_dir = str(Path(__file__).resolve().parents[1])
 if project_dir not in sys.path:
     sys.path.append(project_dir)
 
 import pandas as pd
 from .webull_helpers import flatten_list_of_dicts, flatten_dict
+
 
 class WebullOptionsData:
     def __init__(self, data):
@@ -108,7 +109,6 @@ class WebullOptionsData:
 
         except ValueError:
             print(f'Arrays not same length - skipping!')
-
 
 
 

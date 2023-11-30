@@ -2,16 +2,20 @@
 import os
 import sys
 from pathlib import Path
+import re
 import disnake
+from cogs.main_view import MainView
 from disnake.ext.commands.errors import CommandInvokeError
 from pytrends.request import TrendReq
 from disnake.ext import commands
+from tabulate import tabulate
+from asyncpg.exceptions import UniqueViolationError
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from apis.webull.webull_screener import WebulScreener, ScreenerSelect
 from datetime import datetime
 from apis.openai_ import OpenAISDK
-from fudstop.apis.polygonio.polygon_options import PolygonOptions
+from apis.polygonio.polygon_options import PolygonOptions
 import disnake
 from apis.y_finance.yf_sdk import yfSDK
 import base64
@@ -34,6 +38,33 @@ from cogs.database import MyModal
 from apis.polygonio.polygon_options import PolygonOptions
 from apis.webull.opt_modal import OptionModal, SQLQueryModal
 from apis.gexbot.gexbot import GEXBot
+SEC_FILINGS=[1153827348454584443, 1153827546706747455, 1153828102389104771, 1153828288372949062, 1153828427342807110, 1153828752183283752, 1153828753756135424, 1153829229943865344, 1153829615874355240, 1153833634097278976, 1156987190400786452, 1157034088310509568, 1157038070156234843, 1157038883184320624, 1157107615994761236, 1157107859688013866, 1174774750741020752, 1175108609751916606, 1175109001390866473, 1175109208987947108, 1175109603126693958, 1175110342884462604, 1175111342861058099, 1175112249061421207, 1175112431228424262, 1175112609222119467, 1175113168993923082, 1175113782083727504, 1175115817722073168, 1178053558239756288]
+
+
+MOMENTUM_SCALPS =  [1136061999751631000, 1113439351246946415, 1113563471141941420, 1153564391606849568]
+
+
+TRADYTICS =  [1112740350059098162, 1112740518753996851, 1112740590845702305, 1112755591358722199, 1112755644357947523, 1112768180469891255, 1112768263911387157, 1151947923970605076, 1112768289303711945, 1112768500923109416, 1112768636961181717, 1151947255167856680, 1151947507069366363]
+
+SECTOR_DARKPOOLS =  [1152761279593840640, 1152761281200279632, 1152761528035070033, 1153325170451288064, 1152761724752105513, 1152761278176170046, 1152761733920858152, 1152761735275630632, 1152761276913680524, 1152761736630390925, 1152761897033154641, 1152761738060644483]
+
+RSI_FEEDS =  [1124185351477526539, 1131240086378393600, 1152294859303043152, 1131238736353562745, 1176615805941723259, 1162153100828754053, 1162153373693399121]
+
+OPTION_FEEDS =  [1134556646278975599, 1154854338167066634, 1077621690131021894, 1165777024091160596, 1156649967214137404, 1165783348443086878, 1156645245287673988, 1156645246847963208, 1156645248932515910, 1156645254460608613, 1165783313907195994, 1165781494040641536, 1165781495739330620, 1165781498096521306, 1165781499212210236, 1167521435514847312]
+
+REDDIT =  [1152766178385731681, 1152766191367098450, 1152766193464262736, 1152766195100024832, 1152766447089627146, 1152968556720431115, 1152973376017682482]
+
+RSS_FEEDS = [1028667813168173167, 1019360302250332301, 1028668345702166698, 1053789985909768254, 1042559047896932362, 1019360339856470146, 1053789646926123086, 1053789818007584938, 1053789896352993341]
+
+STOCK_CONDITIONS = [1149131544422776883, 1149131587670257776, 1161659695157756074, 1161661864443396186, 1161662498278228019, 1161663210236162149, 1161663337726230628, 1174718171459108935]
+
+OPTIONS_CONDITIONS = [1113143417334157332, 1113149881352192030, 1161370852055601163, 1113144168567537795, 1113146480455331840, 1129489929773260872, 1113147180140728383, 1129885678063337474, 1133412240331112448, 1133412527406059600, 1133426263546134568, 1133417470363971794, 1133451695985266738, 1134554830627672135, 1129905458480689242, 1148975826382102568, 1151231796994904094, 1155882061081612318, 1155894099770085476, 1155894448992034857, 1155894842736529490, 1155895232727089162, 1174013415073775726]
+
+OPEN_BB = [1089364481672478780, 1035273203683172434, 1089364148535701544, 1089364318274990191]
+
+STOCK_FEEDS = [1149077047331790848, 1149077345458737172, 1148283428471582870, 1149074180013310093, 1151224045212270732, 1151223877108781169, 1149081836727828550, 1149081838569148497, 1148283426730934303, 1152279428219555840, 1152279430115381248, 1153468681901322460, 1153468687311970384, 1170147962396102757]
+
+CRYPTO = [1162159268598911047, 1178482490864832594]
 td9_ids = [
     int("1158471263984029777"),  # Channel: td9⏺5minute
     int("1158488492163211264"),  # Channel: td9⏺day
@@ -43,7 +74,9 @@ td9_ids = [
     int("1158868593967108096"),  # Channel: td9⏺2hr
     int("1158868595619672135"),  # Channel: td9⏺4hr
     int("1161334711197630566"),  # Channel: td9⏺20minute
-    int("1151905252392575067")   # Additional channel ID
+    int("1151905252392575067"),  # Channel: td9[]Minute
+    int("1178480622596018226"), # td9 week
+    int("1178480910623047822"), # td9 month
 ]
 # List of channel IDs as integers
 opt_vol_ids = [
@@ -61,11 +94,10 @@ db_config = {
     "password": os.environ.get('DB_PASSWORD', 'fud'), # Use the password from environment variable or default
     "database": os.environ.get('DB_NAME', 'polygon') # Database name for the new jawless database
 }
-opts = PolygonOptions(**db_config)
+opts = PolygonOptions()
 gexbot = GEXBot()
 bot = commands.Bot(command_prefix="!", intents=disnake.Intents.all())
 gptsdk=OpenAISDK()
-opts = PolygonOptions(**db_config)
 from cogs.database import QueryView
 from list_sets.ticker_lists import gex_tickers
 from typing import List
@@ -77,9 +109,32 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-sdk = yfSDK()
+
+# Function to format timestamp
+def format_timestamp(ts):
+    if isinstance(ts, str):
+        return datetime.fromisoformat(ts).strftime('%y-%m-%d')
+    elif isinstance(ts, datetime):
+        return ts.strftime('%y-%m-%d')
+    else:
+        return ts  # In case it's neither a string nor a datetime object
+
+# Apply formatting to td9_data
 # Initialize the OpenAI client with your API key
 openai.api_key = os.getenv("YOUR_OPENAI_KEY")
+
+td9_timespan_dict = {
+    'm1': '1 minute',
+    'm5': '5 minute',
+    'm15': '15 minute',
+    'm30': '30 minute',
+    'm60': '1 hour',
+    'm120': '2 hour',
+    'm240': '4 hour',
+    'd1': 'daily',
+    'w': 'weekly',
+    'm': 'monthly'
+}
 
 @bot.event
 async def on_ready():
@@ -100,60 +155,381 @@ async def on_ready():
             print(f"Encountered an error with channel {channel.id}: {e}")
             # Continue with the next channel
             continue
+
+now = datetime.now()
 @bot.event
 async def on_message(message: disnake.Message):
     """Use  GPT4 Vision to listen for image URLs"""
-    embeds = message.embeds
 
-
-    titles = [i.title for i in embeds]
-    descriptions = [i.description for i in embeds]
-    fields = [i.fields for i in embeds]
-
-    if message.channel.id == 1175195864814321834:
-        if message.content.endswith('.jpg'):
-            url = message.content
-            analysis = gptsdk.analyze_stock(url)
-
-            embed = disnake.Embed(title=f"GPT Vision", description=f"> **{analysis}**", color=disnake.Colour.random())
-            embed.set_thumbnail(url)
-
-            await message.author.send(embed=embed)
-
-
-    if message.channel.id == 1175195864814321834:
-        if message.attachments:
-            print(message.content)
-            url = message.attachments[0].proxy_url
-            analysis = gptsdk.analyze_stock(url)
-
-            embed = disnake.Embed(title=f"GPT Vision", description=f"> **{analysis}**", color=disnake.Colour.random())
-            embed.set_thumbnail(url)
-
-            await message.channel.send(embed=embed)
-
-
-    if message.channel.id in td9_ids:
-        description = embeds[0].description
-        description = description.split('py\n')[3]
-        title = embeds[0].title
-        timestamp = embeds[0].timestamp
-        timestamp = str(timestamp.astimezone()).split('.')[0]
-        print(description,title, timestamp)
+    if message.author.id == 800519694754644029:
+        message = message.content.split('>')
+        
         
 
-    if message.channel.id in opt_vol_ids:
-        description = embeds[0].description
-        description = description.split('py\n')[0]
+    if message.channel.id == 896207280117264434:
+        content = message.content
+        username = message.author.name
+        timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
+        # Assuming you have a connection pool or a single connection to your database
+        conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+        
+        # Insert data into the market_data table
+        await conn.execute('''
+            INSERT INTO messages(message, username, timestamp)
+            VALUES($1, $2, $3)
+            ''', content, username, timestamp)
+        
+        # Close the connection if you're not using a connection pool
+        await conn.close()
+
+    embeds = message.embeds
+    if embeds is not None and len(embeds) > 0:
         title = embeds[0].title
-        timestamp = embeds[0].timestamp
-        timestamp = str(timestamp.astimezone()).split('.')[0]
+        description = embeds[0].description
 
 
-        footer = embeds[0].footer.text
-        print(footer, timestamp)
+        if title is not None and 'Flow' in title:
+    
+            ticker = title.split(": ")[1]
+    
+
+            fields = embeds[0].fields
+
+            names = [i.name for i in fields]
+            values = [i.value for i in fields]
+
+        
+            sentiment = values[1].split(' :')[0].lower()
+
+            data = values[3]
+
+            data  = data.split('\n')
+
+            data = [i.replace(",","").replace('$','').replace('>','').replace('%','').lower().split(': ')[1] for i in data]
+  
+            if len(data) == 9:
+            
+                flow_type = title
+                strike = data[0]
+                call_put = data[1]
+                expiry = data[2]
+                side = data[3].split(' :')[0]
+                volume = data[4]
+                oi = data[5]
+                multiplier=data[6]
+                iv = data[7]
+                dte = data[8]
+            
+                timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
+                try:
+                    # Assuming you have a connection pool or a single connection to your database
+                    conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+                    
+                    # Insert data into the market_data table
+                    await conn.execute('''
+                        INSERT INTO flow(flow_type, ticker, strike, call_put, expiry, side, volume, oi, multiplier, iv, dte, timestamp, sentiment)
+                        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+                        ''', flow_type, ticker, strike, call_put, expiry, side, volume, oi, multiplier, iv, dte, timestamp, sentiment)
+                    
+                    # Close the connection if you're not using a connection pool
+                    await conn.close()
+                except UniqueViolationError:
+                    pass
 
 
+        if title is not None and 'Bullseye' in title:
+            print(f"BULLSEYE: {title}")
+
+        if title is not None and 'RSI |' in title:
+            footer = embeds[0].footer.text
+            
+
+
+            footer = footer.split(' | ')
+
+            ticker = footer[0]
+            rsi = footer[1].replace(']', '').replace('[', '')
+            timespan = footer[2]
+            status = footer[3]
+            timestamp = embeds[0].timestamp
+            timestamp = str(timestamp.astimezone()).split('.')[0]
+            # Convert string to datetime object
+            timestamp_dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+            try:
+                # Assuming you have a connection pool or a single connection to your database
+                conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+                
+                # Insert data into the market_data table
+                await conn.execute('''
+                    INSERT INTO rsi_status(ticker, rsi, timespan, status, timestamp)
+                    VALUES($1, $2, $3, $4, $5)
+                    ''', ticker, rsi, timespan, status, timestamp_dt)
+                
+                # Close the connection if you're not using a connection pool
+                await conn.close()
+            except UniqueViolationError:
+                pass
+
+
+            # if message.content.endswith('.jpg'):
+        #     if message.author == bot.user:
+        #         return
+        #     url = message.content
+        #     analysis = gptsdk.analyze_stock(url)
+
+        #     embed = disnake.Embed(title=f"GPT Vision", description=f"> **{analysis}**", color=disnake.Colour.random())
+        #     embed.set_thumbnail(url)
+
+        #     await message.channel.send(embed=embed)
+
+
+        # elif message.content.endswith('.png'):
+        #     if message.author == bot.user:
+        #         return
+        #     url = message.content
+        #     analysis = gptsdk.analyze_stock(url)
+
+        #     embed = disnake.Embed(title=f"GPT Vision", description=f"> **{analysis}**", color=disnake.Colour.random())
+        #     embed.set_thumbnail(url)
+
+        #     await message.channel.send(embed=embed)
+
+
+
+
+        # if message.attachments:
+        #     print(message.content)
+        #     url = message.attachments[0].proxy_url
+        #     analysis = gptsdk.analyze_stock(url)
+
+        #     embed = disnake.Embed(title=f"GPT Vision", description=f"> **{analysis}**", color=disnake.Colour.random())
+        #     embed.set_thumbnail(url)
+
+        #     await message.channel.send(embed=embed)
+
+
+        if message.channel.id in REDDIT:
+            embeds = message.embeds[0]
+            title = embeds.title
+            description = embeds.description
+            channel = message.channel.name
+
+            # Assuming you have a connection pool or a single connection to your database
+            conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+            
+            # Insert data into the market_data table
+            await conn.execute('''
+                INSERT INTO reddit_posts(title, context, subreddit, insertion_timestamp)
+                VALUES($1, $2, $3, NOW())
+                ''', title, description, channel)
+            
+            # Close the connection if you're not using a connection pool
+            await conn.close()
+        if message.channel.id in TRADYTICS:
+            embeds = message.embeds[0]
+            title = embeds.title
+            desc = embeds.description
+            fields = embeds.fields
+            field_names = [i.name for i in fields]
+            field_values = [i.value for i in fields]
+
+            
+            print(f"FIELD NAMES: {field_names}")
+            print(f"FIELD VALUES: {field_values}")
+
+        if message.channel.id in td9_ids:
+            footer = message.embeds[0].footer.text
+
+            footer = footer.split('|')
+
+            symbol = footer[0].replace(' ', '')
+            timespan = td9_timespan_dict.get(footer[1].replace(' ', ''))
+            status = footer[2].replace(' ', '')
+
+            # Assuming you have a connection pool or a single connection to your database
+            conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+            
+            # Insert data into the market_data table
+            await conn.execute('''
+                INSERT INTO market_data(ticker, timespan, td9_state, insertion_timestamp)
+                VALUES($1, $2, $3, NOW())
+                ''', symbol, timespan, status)
+            
+            # Close the connection if you're not using a connection pool
+            await conn.close()
+        
+        elif message.channel.id in SEC_FILINGS:
+
+            footer = message.embeds[0].footer.text
+            footer = footer.split('|')
+            ticker = footer[0].replace(' ','')
+            title = footer[1]
+            link = footer[2].replace(' ', '')
+
+            
+            try:
+                # Assuming you have a connection pool or a single connection to your database
+                conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+                
+                # Insert data into the market_data table
+                await conn.execute('''
+                    INSERT INTO sec_filings(ticker, title, link, insertion_timestamp)
+                    VALUES($1, $2, $3, NOW())
+                    ''', ticker, title, link)
+                
+                # Close the connection if you're not using a connection pool
+                await conn.close()
+            except UniqueViolationError:
+                print(f'Skipping')
+
+        # if message.channel.id in RSS_FEEDS:
+        #     print(message.content)
+
+        if message.channel.id in CRYPTO:
+            footer = message.embeds[0].footer.text
+            footer = footer.split("|")
+
+            ticker = footer[0].replace(' ','')
+            side = footer[1].replace(' ','')
+            dollar_cost = float(footer[2].replace(' ',''))
+            timestamp = embeds[0].timestamp
+            timestamp = str(timestamp.astimezone()).split('.')[0]
+            # Convert string to datetime object
+            timestamp_dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+            try:
+                # Assuming you have a connection pool or a single connection to your database
+                conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+                
+                # Insert data into the market_data table
+                await conn.execute('''
+                    INSERT INTO crypto(ticker, side, dollar_cost, timestamp)
+                    VALUES($1, $2, $3, $4)
+                    ''', ticker, side, dollar_cost, timestamp_dt)
+                
+                # Close the connection if you're not using a connection pool
+                await conn.close()
+            except UniqueViolationError:
+                print(f'Skipping')
+
+        # if message.channel.id in RSI_FEEDS:
+        #     footer = message.embeds[0].footer.text
+        #     print(footer)
+
+        if message.channel.id in MOMENTUM_SCALPS:
+            footer = message.embeds[0].footer.text
+            footer = footer.split("|")
+
+            ticker = footer[0].replace(' ', '')
+            timeframe = footer[1].replace(' ', '')
+            move = footer[2].replace(' ', '')
+            # Assuming you have a connection pool or a single connection to your database
+            try:
+                conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+                
+                # Insert data into the market_data table
+                await conn.execute('''
+                    INSERT INTO momentum_scalps(ticker, timeframe, move, insertion_timestamp)
+                    VALUES($1, $2, $3, NOW())
+                    ''', ticker.replace(' ',''), timeframe.replace(' ', ''), move.replace(' ',''))
+                
+                # Close the connection if you're not using a connection pool
+                await conn.close()
+            except UniqueViolationError:
+                pass
+
+        if message.channel.id in opt_vol_ids:
+            footer = message.embeds[0].footer.text
+            timestamp = embeds[0].timestamp
+            timestamp = str(timestamp.astimezone()).split('.')[0]
+            timestamp_dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+            print(footer, timestamp_dt)
+
+        
+
+
+        if message.channel.id in SECTOR_DARKPOOLS:
+            embeds = message.embeds
+            title = embeds[0].title
+            desc = embeds[0].description
+
+            fields = embeds[0].fields
+
+            names = [i.name for i in fields]
+            values = [i.value for i in fields]
+            
+    
+
+            ticker = title.split(': ')
+            ticker = ticker[1]
+            timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
+            size_price = values[1].split(' @ ')
+            size = size_price[0].replace(',','')
+            price = size_price[1].replace('$','')
+            notional_value = values[2].split(' ')
+            notional_value=notional_value[0].replace('$', '').replace(',','')
+            channel = message.channel.name
+            # Regex pattern to match emojis
+            emoji_pattern = re.compile("["
+                                    u"\U0001F600-\U0001F64F"  # emoticons
+                                    u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+                                    u"\U0001F680-\U0001F6FF"  # transport & map symbols
+                                    u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+                                    u"\U00002702-\U000027B0"
+                                    u"\U000024C2-\U0001F251"
+                                    "]+", flags=re.UNICODE)
+
+            # Remove emojis from the string
+            cleaned_string = emoji_pattern.sub(r'', channel)
+
+            try:
+                conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+                
+                # Insert data into the market_data table
+                await conn.execute('''
+                    INSERT INTO dark_pools(sector, ticker, time, size, price, notional_value)
+                    VALUES($1, $2, $3, $4, $5, $6)
+                    ''', cleaned_string, ticker, timestamp, size, price, notional_value)
+                
+                # Close the connection if you're not using a connection pool
+                await conn.close()
+            except UniqueViolationError:
+                pass
+
+        if message.channel.id in STOCK_FEEDS:
+            footer = embeds[0].footer.text
+            footer = footer.split('|')
+            ticker = footer[0]
+            type = footer[1].replace('!','').replace(' ','').lower()
+            price = footer[2]
+            fifty_high = footer[3]
+            fifty_low = footer[4]
+
+            timestamp = embeds[0].timestamp
+            timestamp = str(timestamp.astimezone()).split('.')[0]
+            # Convert string to datetime object
+            timestamp_dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+
+            print(type, price, fifty_high, fifty_low)
+
+            if 'High' or 'Low' in title:
+                try:
+                    conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+                    
+                    # Insert data into the market_data table
+                    await conn.execute('''
+                        INSERT INTO new_prices(ticker, type, fifty_low, price, fifty_high, timestamp)
+                        VALUES($1, $2, $3, $4, $5, $6)
+                        ''', ticker, type, fifty_high, price, fifty_low, timestamp)
+                    
+                    # Close the connection if you're not using a connection pool
+                    await conn.close()
+                except UniqueViolationError:
+                    pass
+
+
+        if message.channel.id in OPTIONS_CONDITIONS:
+            footer = embeds[0].footer.text
+            print(footer)
     await bot.process_commands(message)
 # This dictionary will hold the conversation state for each user
 conversations = {}
@@ -164,12 +540,82 @@ async def option_data(inter: disnake.ApplicationCommandInteraction):
     await inter.response.send_modal(modal)
 
 
+async def handle_interaction(interaction):
+    # Call your async function here
+    await server(interaction)
+    # Edit the original message after handling the interaction
+    await interaction.edit_original_message(content="New content here")
+    
 
 @bot.slash_command()
-async def options_database(inter:disnake.AppCmdInter):
-    """Query options data"""
-    await inter.response.send_modal(OptionsDataModal())
+async def server(inter:disnake.AppCmdInter):
+    """Gets server feeds"""
+    await inter.response.defer()
+    db_pool = await asyncpg.create_pool(database='polygon', user='postgres', password='fud')
+    counter = 0
+    while True:
+        counter = counter + 1
+        td9_query = "SELECT distinct ticker, timespan, insertion_timestamp FROM market_data order by insertion_timestamp DESC LIMIT 10;"  # Replace 
+        sec_query = "SELECT distinct ticker, title, insertion_timestamp FROM sec_filings order by insertion_timestamp DESC limit 1;"
+        momentum_query = "SELECT distinct ticker, timeframe, move, insertion_timestamp FROM momentum_scalps order by insertion_timestamp DESC limit 4;"
+        reddit_query = "SELECT distinct subreddit, title, insertion_timestamp FROM reddit_posts order by insertion_timestamp DESC limit 4;"
+        flow_query = f"SELECT ticker, strike, call_put, expiry, sentiment FROM ( SELECT ticker, strike, call_put, expiry, sentiment, timestamp, ROW_NUMBER() OVER (PARTITION BY ticker, strike, call_put, expiry, sentiment ORDER BY timestamp) as rn FROM flow ) subquery WHERE rn = 1 ORDER BY timestamp DESC limit 3;"
+        rsi_query = f"SELECT ticker, timespan, status FROM ( SELECT ticker, timespan, status, timestamp, ROW_NUMBER() OVER (PARTITION BY ticker, timespan, status ORDER BY timestamp DESC) as rn FROM rsi_status ) subquery WHERE rn = 1 ORDER BY timestamp DESC LIMIT 10;"
+        dark_pool_query = f"SELECT ticker, price, sector FROM ( SELECT ticker, price, sector, time, ROW_NUMBER() OVER (PARTITION BY ticker, price, sector ORDER BY time DESC) as rn FROM dark_pools ) subquery WHERE rn = 1 ORDER BY time DESC LIMIT 5;"
+        new_prices_query = f"SELECT ticker, fifty_high, price, fifty_low FROM ( SELECT ticker, fifty_high, price, fifty_low, timestamp, ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY timestamp DESC) as rn FROM new_prices ) subquery WHERE rn = 1 ORDER BY timestamp DESC LIMIT 5;"
+        message_query = f"SELECT username, message FROM ( SELECT username, message, timestamp, ROW_NUMBER () OVER (PARTITION BY message ORDER BY timestamp DESC) as rn FROM messages ) subquery WHERE rn = 1 ORDER BY timestamp DESC LIMIT 5;"
+        async with db_pool.acquire() as conn:
+            td9_rows = await conn.fetch(td9_query)
+            sec_rows = await conn.fetch(sec_query)
+            momentum_rows = await conn.fetch(momentum_query)
+            reddit_rows = await conn.fetch(reddit_query)
+            flow_rows = await conn.fetch(flow_query)
+            rsi_rows = await conn.fetch(rsi_query)
+            dark_pool_rows = await conn.fetch(dark_pool_query)
 
+            new_prices_rows = await conn.fetch(new_prices_query)
+
+            messages_rows = await conn.fetch(message_query)
+
+            messages_data = [[row[0], row[1][:25]] for row in messages_rows]
+
+            td9_data = [[row[0], row[1], format_timestamp(row[2])] for row in td9_rows]
+            sec_data = [[row[0], row[1][:15], format_timestamp(row[2])] for row in sec_rows]
+            momentum_data = [[row[0], row[1], row[2], format_timestamp(row[3])] for row in momentum_rows]
+            reddit_data = [[row[0][:25], row[1][:25], format_timestamp(row[2])] for row in reddit_rows]
+            
+
+            # Create tables using tabulate
+            td9_table = tabulate(td9_data, headers=['Ticker', 'Date', 'Date'], tablefmt="fancy", showindex=False)
+            sec_table = tabulate(sec_data, headers=['Ticker', 'Title', 'Date'], tablefmt="fancy", showindex=False)
+            momentum_table = tabulate(momentum_data, headers=['Ticker', 'Frame', 'Move', 'Date'], tablefmt="fancy", showindex=False)
+            reddit_table = tabulate(reddit_data, headers=['Channel', 'Title', 'Timestamp'], tablefmt="fancy", showindex=False)
+            new_price_table = tabulate(new_prices_rows, headers='keys', tablefmt='fancy', showindex=False)
+
+            messages_table = tabulate(messages_data, headers='keys', tablefmt='fancy', showindex=False)
+            flow_table = tabulate(flow_rows, headers='keys', tablefmt='fancy', showindex=False)
+            rsi_table = tabulate(rsi_rows, headers='keys', tablefmt='fancy', showindex=False)
+            dark_pool_table = tabulate(dark_pool_rows, headers='keys', tablefmt='fancy', showindex=False)
+
+            embed = disnake.Embed(title=f"GPT4-Turbo", description=f"```Viewing Live FUDSTOP Feeds```", color=disnake.Colour.dark_orange())
+            embed.add_field(name=f"TD9s:", value=f"```py\n{td9_table}```", inline=False)
+            
+            embed.add_field(name=f"Scalps:", value=f"```py\n{momentum_table}```", inline=False)
+            embed.add_field(name=f"Opening Flow:", value=f"```py\n{flow_table}```", inline=False)
+            embed.add_field(name=f"RSI:", value=f"```py\n{rsi_table}```", inline=False)
+            embed.add_field(name=f"Dark Pools:", value=f"```py\n{dark_pool_table}```", inline=False)
+            embed.add_field(name=f"New Prices:", value=f"```py\n{new_price_table}```", inline=False)
+            embed.add_field(name=f"SEC Filings:", value=f"```py\n{sec_table}```", inline=False)
+            embed.add_field(name=f'Reddit:', value=f"```py\n{reddit_table}```", inline=False)
+            embed.add_field(name=f"Messages:", value=f"```py\n{messages_table}```", inline=False)
+            await inter.edit_original_message(embed=embed)
+            button = disnake.ui.Button(style=disnake.ButtonStyle.blurple, emoji="<a:_:1104142591110418585>")
+            button.callback = handle_interaction
+            view=disnake.ui.View()
+            if counter == 400:
+                view.add_item(button)
+                await inter.edit_original_message(view=view)
+                break
 
 # @bot.slash_command()
 # async def options_database(inter:disnake.ApplicationCommandInteraction):
@@ -579,22 +1025,10 @@ WHERE
     await conn.close()
     return rows
 
-@bot.command(name='cheapies')
-async def plays(ctx):
-    options = await fetch_options()
-    if options:
-        message = "Options:\n"
-        for option in options:
-            message += (f"{option['ticker']}, "
-                        f"{option['strike']}, "
-                        f"{option['call_put']}, "
-                        f"{option['expiry']}, "
-                        f"{option['current_price']}\n")
-        embed = disnake.Embed(title=f"Cheapies - All Time Lows", description=f"```py\n{message}```")
-        await ctx.send(embed=embed)
-    else:
-        message = "No options found."
-
+@commands.is_owner()
+@bot.command()
+async def clear(ctx: commands.Context, limit: int = 10):
+    await ctx.channel.purge(limit=limit)
 
 pytrends = TrendReq(hl='en-US', tz=360)
 @bot.command()
@@ -607,144 +1041,8 @@ async def trends(ctx):
     await ctx.send(embed=embed)
 
 
-@bot.command()
-async def mf(ctx, ticker: str):
-    """Gets mutual fund holdings for a ticker - top 10"""
-    try:
-        data = sdk.mutual_fund_holders(ticker)
-        
-        filename = f'data/yf_{ticker}_mf_holders.csv'
-        data.to_csv(filename)
-        
-        embed = disnake.Embed(
-            title=f"Mutual Fund Holders - {ticker}", 
-            description=f"Your Download is Ready!", 
-            color=disnake.Colour.dark_teal()
-        )
-        embed.set_footer(text=f'Implemented by FUDSTOP')
-        
-        await ctx.send(embed=embed)
-        await ctx.send(file=disnake.File(filename))
-    except Exception as e:
-        await ctx.send(f"An error occurred: {e}")
 
 
-@bot.command()
-async def balance(ctx, ticker: str):
-    """Gets balance sheet information for a ticker"""
-    try:
-        data = sdk.balance_sheet(ticker)
-        
-        filename = f'data/yf_balance_sheet.csv'
-        data.to_csv(filename)
-        
-        await ctx.send(f"Balance Sheet for {ticker}:")
-        await ctx.send(file=disnake.File(filename))
-    except Exception as e:
-        await ctx.send(f"An error occurred: {e}")
-
-@bot.command()
-async def cashflow(ctx, ticker: str):
-    """Gets cash flow information for a ticker"""
-    try:
-        data = sdk.get_cash_flow(ticker)
-        
-        filename = f'data/yf_cash_flow.csv'
-        data.to_csv(filename)
-        
-        await ctx.send(f"Cash Flow for {ticker}:")
-        await ctx.send(file=disnake.File(filename))
-    except Exception as e:
-        await ctx.send(f"An error occurred: {e}")
-
-@bot.command()
-async def financials(ctx, ticker: str):
-    """Gets all financials for a ticker"""
-    try:
-        data = sdk.financials(ticker)
-        
-        filename = f'data/yf_financials.csv'
-        data.to_csv(filename)
-        
-        await ctx.send(f"Financials for {ticker}:")
-        await ctx.send(file=disnake.File(filename))
-    except Exception as e:
-        await ctx.send(f"An error occurred: {e}")
-
-
-# Command for the income_statement method within yfSDK
-@bot.command()
-async def statement(ctx, ticker: str, frequency: str = 'quarterly', pretty: bool = False, as_dict: bool = False):
-    """Gets the income statement for a ticker"""
-    data = sdk.income_statement(ticker, frequency=frequency, pretty=pretty, as_dict=as_dict)
-    filename = f'data/yf_income_statement.csv'
-    data.to_csv(filename)
-    await ctx.send(file=disnake.File(filename))
-
-# Command for the get_info method within yfSDK
-@bot.command()
-async def info(ctx, ticker: str):
-    """Returns a large dictionary of information for a ticker"""
-    data = sdk.get_info(ticker)
-    filename = f'data/yf_info.csv'
-    data.to_csv(filename)
-    await ctx.send(file=disnake.File(filename))
-
-# Command for the institutional_holdings method within yfSDK
-@bot.command()
-async def whales(ctx, ticker: str):
-    """Gets institutional holdings for a ticker"""
-    data = sdk.institutional_holdings(ticker)
-    filename = f'data/yf_institutional_holdings.csv'
-    data.to_csv(filename)
-    await ctx.send(file=disnake.File(filename))
-
-
-@bot.command()
-async def div(ctx, ticker: str):
-    """Gets dividends for a ticker - if any."""
-    data = sdk.dividends(ticker)
-    filename = f'data/dividends.csv'
-    data.to_csv(filename)
-    await ctx.send(file=disnake.File(filename))
-
-
-@bot.command()
-async def allinfo(ctx, ticker: str):
-    """Gets all relevant company data for a ticker."""
-    data = sdk.fast_info(ticker)
-    filename = f'data/fast_info.csv'
-    data.to_csv(filename)
-    await ctx.send(file=disnake.File(filename))
-
-
-@bot.command()
-async def candles(ctx, *, ticker: str):
-    """Gets all candlestick data for a ticker"""
-    data = sdk.get_all_candles(ticker)
-    filename = f'data/all_candles.csv'
-    data.to_csv(filename)
-    await ctx.send(file=disnake.File(filename))
-
-
-# Command for the news method within yfSDK
-@bot.command()
-async def news(ctx, ticker: str):
-    """Gets ticker news"""
-    data = sdk.news(ticker)
-    filename = f'data/yf_{ticker}_news.csv'
-    data.to_csv(filename)
-    await ctx.send(file=disnake.File(filename))
-
-# Command for the atm_calls method within yfSDK
-@bot.command()
-async def calls(ctx, ticker: str):
-    """Gets at the money calls for a ticker"""
-    data = sdk.atm_calls(ticker)
-    data = pd.DataFrame(data)
-    filename = f'data/yf_atm_calls.csv'
-    data.to_csv(filename)
-    await ctx.send(file=disnake.File(filename))
 
 @bot.command()
 async def iv(ctx, ticker, strike, call_put, expiry):
@@ -780,14 +1078,14 @@ async def iv(ctx, ticker, strike, call_put, expiry):
         view.add_item(Select())
         await ctx.send(view=view)
 
-@bot.command()
-async def puts(ctx, ticker: str):
-    """Gets at the money puts for a ticker"""
-    data = sdk.atm_puts(ticker)
-    data = pd.DataFrame(data)
-    filename = f'data/yf_atm_puts.csv'
-    data.to_csv(filename)
-    await ctx.send(file=disnake.File(filename))
+# @bot.command()
+# async def puts(ctx, ticker: str):
+#     """Gets at the money puts for a ticker"""
+#     data = sdk.atm_puts(ticker)
+#     data = pd.DataFrame(data)
+#     filename = f'data/yf_atm_puts.csv'
+#     data.to_csv(filename)
+#     await ctx.send(file=disnake.File(filename))
 
 
 @bot.command()
@@ -806,11 +1104,40 @@ async def related(ctx, keyword):
     embed = disnake.Embed(title=f"Current Trends on Google:", description=f"```py\n{related_queries}```", color=disnake.Colour.dark_green())
     await ctx.send(embed=embed)
 
+
+
+
+
+# Specify the directory where your cogs are located
 cogs_dir = "C:/users/chuck/fudstop/fudstop/cogs"
+
 print("Path being used:", cogs_dir)
-for extension in disnake.utils.search_directory(cogs_dir):
-    bot.load_extension(extension)
 
+# Get a list of all cog files in the specified directory
+cog_files = [filename for filename in os.listdir(cogs_dir) if filename.endswith(".py")]
 
+# Load each cog extension
+for cog_file in cog_files:
+    # Construct the full module name for the cog
+    cog_name = f"cogs.{cog_file[:-3]}"  # Remove '.py' extension and prepend 'cogs.'
 
+    try:
+        # Load the cog extension
+        bot.load_extension(cog_name)
+        print(f"Loaded cog: {cog_name}")
+    except Exception as e:
+        print(f"Failed to load cog: {cog_name}\nError: {str(e)}")
+# Command to print webhook URLs for a specific channel
+@bot.command(name='webhooks')
+async def fetch_webhooks(ctx):
+    # Ensure the author has the necessary permissions
+    if ctx.author.guild_permissions.manage_webhooks:
+        webhooks = await ctx.channel.webhooks()
+        if webhooks:
+            response = "\n".join([webhook.url for webhook in webhooks])
+            await ctx.send(f"Webhook URLs for {ctx.channel.name}:\n{response}")
+        else:
+            await ctx.send("No webhooks found in this channel.")
+    else:
+        await ctx.send("You do not have permission to manage webhooks.")
 bot.run(os.environ.get('BOT'))

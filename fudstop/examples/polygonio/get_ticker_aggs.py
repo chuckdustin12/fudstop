@@ -13,8 +13,10 @@ import pandas as pd
 import asyncio
 
 from apis.polygonio.polygon_options import PolygonOptions
+from apis.polygonio.async_polygon_sdk import Polygon
 from apis.helpers import convert_datetime_list, get_human_readable_string
 opts = PolygonOptions()
+poly = Polygon(os.environ.get('POLYGON_STRING'))
 
 
 

@@ -8,7 +8,7 @@ load_dotenv()
 import asyncio
 
 
-from fudstop.apis.polygonio.polygon_options import PolygonOptions
+from apis.polygonio.polygon_options import PolygonOptions
 
 
 opts = PolygonOptions()

@@ -74,15 +74,18 @@ class AlertMenus(disnake.ui.View):
             await interaction.response.edit_message(embed=embed, view=self)
 
 
-
 class PageSelect(disnake.ui.Select):
-    def __init__(self, embeds):
+    def __init__(self, embeds: List[disnake.Embed]):
+        # Create options using the title of each embed
         options = [
             disnake.SelectOption(
-                label=f"Page {i+1}",
-                value=f"{i}"
-            ) for i in range(len(embeds))
+                label=embed.title,  # Use the title of the embed as the label
+                value=str(i)  # Keep the value as a string representation of the index
+            ) for i, embed in enumerate(embeds)
         ]
+
+        # Initialize the Select menu with the options
+        super().__init__(placeholder="Choose a page...", min_values=1, max_values=1, options=options)
 
         super().__init__(
             custom_id="page_selector1",

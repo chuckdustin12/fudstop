@@ -7,6 +7,7 @@ if project_dir not in sys.path:
     sys.path.append(project_dir)
 from dotenv import load_dotenv
 load_dotenv()
+from typing import Optional
 import os
 import sys
 import pandas as pd
@@ -16,6 +17,7 @@ from asyncio import Lock
 from datetime import datetime, timedelta
 from ..webull.webull_trading import WebullTrading
 import numpy as np
+from urllib.parse import unquote
 lock = Lock()
 trading = WebullTrading()
 # Function to map Pandas dtypes to PostgreSQL types
@@ -32,15 +34,8 @@ def dtype_to_postgres(dtype):
         return 'TEXT'
     else:
         return 'TEXT'  # Default type
-class PolygonOptions:
-    def __init__(self, host, port, user, password, database):
-        self.conn = None
-        self.pool = None
-        self.host = host
-        self.port = port
-        self.user = user
-        self.password = password
-        self.database = database
+class PolygonSync:
+    def __init__(self):
         self.connection_string = os.environ.get('POLYGON_STRING')
 
         self.database = os.environ.get('DB_NAME')
@@ -60,5 +55,39 @@ class PolygonOptions:
 
 
 
-    def get_price(self, ticker):
-        r = requests.get("https://api.polygon.io/v2/last/nbbo/AAPL?apiKey={self.api_key}").json()
+    def get_polygon_logo(self, symbol: str) -> Optional[str]:
+            """
+            Fetches the URL of the logo for the given stock symbol from Polygon.io.
+
+            Args:
+                symbol: A string representing the stock symbol to fetch the logo for.
+
+            Returns:
+                A string representing the URL of the logo for the given stock symbol, or None if no logo is found.
+
+            Usage:
+                To fetch the URL of the logo for a given stock symbol, you can call:
+                ```
+                symbol = "AAPL"
+                logo_url = await sdk.get_polygon_logo(symbol)
+                if logo_url is not None:
+                    print(f"Logo URL: {logo_url}")
+                else:
+                    print(f"No logo found for symbol {symbol}")
+                ```
+            """
+            url = f"https://api.polygon.io/v3/reference/tickers/{symbol}?apiKey={self.api_key}"
+            data = requests.get(url).json()
+                    
+            if 'results' not in data:
+                # No results found
+                return None
+            
+            results = data['results']
+            branding = results.get('branding')
+
+            if branding and 'icon_url' in branding:
+                encoded_url = branding['icon_url']
+                decoded_url = unquote(encoded_url)
+                url_with_api_key = f"{decoded_url}?apiKey={self.api_key}"
+                return url_with_api_key

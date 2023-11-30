@@ -10,65 +10,77 @@ class UniversalSnapshot:
         self.today = datetime.now().strftime('%Y-%m-%d')
         self.yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
         self.tomorrow = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d')
-        session = [i['session'] if i is not None and 'session' in i else None for i in results]
-        self.break_even_price = [i['break_even_price'] if i is not None and 'break_even_price' in i else None for i in results]
-        self.change = [i['change'] if i is not None and 'change' in i else None for i in session]
-        self.change_percent = [i['change_percent'] if i is not None and 'change_percent' in i else None for i in session]
-        self.early_trading_change = [i['early_trading_change'] if i is not None and 'early_trading_change' in i else None for i in session]
-        self.early_trading_change_percent = [i['early_trading_change_percent'] if i is not None and 'early_trading_change_percent' in i else None for i in session]
-        self.close = [i['close'] if i is not None and 'close' in i else None for i in session]
-        self.high = [i['high'] if i is not None and 'high' in i else None for i in session]
-        self.low = [i['low'] if i is not None and 'low' in i else None for i in session]
-        self.open = [i['open'] if i is not None and 'open' in i else None for i in session]
-        self.volume =[i['volume'] if i is not None and 'volume' in i else None for i in session]
-        self.prev_close = [i['previous_close'] if i is not None and 'previous_close' in i else None for i in session]
 
-        details = [i['details'] if i is not None and 'details' in i else None for i in results]
-        self.strike = [i['strike_price'] if i is not None and 'strike_price' in i else None for i in details]
-        self.expiry = [i['expiration_date'] if i is not None and 'expiration_date' in i else None for i in details]
-        self.contract_type = [i['contract_type'] if i is not None and 'contract_type' in i else None for i in details]
-        self.exercise_style = [i['exercise_style'] if i is not None and 'exercise_style' in i else None for i in details]
-        self.ticker = [i['ticker'] if i is not None and 'ticker' in i else None for i in details]
+        self.break_even_price = [i.get('session.break_even_price') for i in results]
+        self.change = [i.get('session.change', None) for i in results]
+        self.change_percent = [i.get('session.change_percent') for i in results]
+        self.early_trading_change = [i.get('session.early_trading_change') for i in results]
+        self.early_trading_change_percent = [i.get('session.early_trading_change_percent') for i in results]
+        self.close = [i.get('session.close') for i in results]
+        self.high = [i.get('session.high') for i in results]
+        self.low = [i.get('session.low') for i in results]
+        self.open = [i.get('session.open') for i in results]
+        self.volume =[i.get('session.volume') for i in results]
+        print(self.volume)
+        self.prev_close = [i.get('session.previous_close') for i in results]
 
-        greeks = [i['greeks'] if i is not None and 'greeks' in i else None for i in results]
-        self.theta = [i['theta'] if i is not None and 'theta' in i else None for i in greeks]
-        self.delta = [i['delta'] if i is not None and 'delta' in i else None for i in greeks]
-        self.gamma = [i['gamma'] if i is not None and 'gamma' in i else None for i in greeks]
-        self.vega = [i['vega'] if i is not None and 'vega' in i else None for i in greeks]
+
+        self.strike = [i.get('details.strike_price') for i in results]
+        self.expiry = [i.get('details.expiration_date') for i in results]
+        self.contract_type = [i.get('details.contract_type') for i in results]
+        self.exercise_style = [i.get('details.exercise_style') for i in results]
+        self.ticker = [i.get('details.ticker') for i in results]
+
+  
+        self.theta_values = [i.get('greeks.theta') for i in results]
+        self.gamma_values = [i.get('greeks.gamma') for i in results]
+        self.vega_values = [i.get('greeks.vega') for i in results]
+        self.delta_values = [i.get('greeks.delta') for i in results]
 
         
-        self.implied_volatility = [i['implied_volatility'] if i is not None and 'implied_volatility' in i else None for i in results]
-        self.open_interest = [i['open_interest'] if i is not None and 'open_interest' in i else None for i in results]
+        self.implied_volatility = [i.get('implied_volatility') for i in results]
+        self.open_interest = [i.get('open_interest') for i in results]
 
-        last_trade = [i['last_trade'] if i is not None and 'last_trade' in i else None for i in results]
-        self.sip_timestamp = [i['sip_timestamp'] if i is not None and 'sip_timestamp' in i else None for i in last_trade]
-        self.conditions = [i['conditions'] if i is not None and 'conditions' in i else None for i in last_trade]
-        self.trade_price = [i['price'] if i is not None and 'price' in i else None for i in last_trade]
-        self.trade_size = [i['size'] if i is not None and 'size' in i else None for i in last_trade]
-        self.exchange = [i['exchange'] if i is not None and 'exchange' in i else None for i in last_trade]
+        #last_trade = [i.get('last_trade') for i in results]
+        self.sip_timestamp = [i.get('last_trade.timestamp') for i in results]
+        self.conditions = [i.get('last_trade.conditions') for i in results]
+        self.trade_price = [i.get('last_trade.price') for i in results]
+        self.trade_size = [i.get('last_trade.size') for i in results]
+        self.exchange = [i.get('last_trade.exchange') for i in results]
 
-        last_quote = [i['last_quote'] if i is not None and 'last_quote' in i else None for i in results]
-        self.ask = [i['ask'] if i is not None and 'ask' in i else None for i in last_quote]
-        self.bid = [i['bid'] if i is not None and 'bid' in i else None for i in last_quote]
-        self.bid_size = [i['bid_size'] if i is not None and 'bid_size' in i else None for i in last_quote]
-        self.ask_size = [i['ask_size'] if i is not None and 'ask_size' in i else None for i in last_quote]
-        self.midpoint = [i['midpoint'] if i is not None and 'midpoint' in i else None for i in last_quote]
+    
+        self.ask_prices = [i.get('last_quote.ask') for i in results]
+        self.bid_prices = [i.get('last_qute.bid') for i in results]
+        self.bid_sizes = [i.get('last_quote.bid_size') for i in results]
+        self.ask_sizes = [i.get('last_quote.ask_size') for i in results]
+        self.midpoints = [i.get('last_quote.midpoint') for i in results]
 
-        self.name = [i.get('name') if i is not None else None for i in results]
-        self.market_status = [i.get('market_status') if i is not None else None for i in results]
-        self.ticker = [i.get('ticker') if i is not None else None for i in results]
-        self.type = [i.get('type') if i is not None else None for i in results]
+        self.name = [i.get('name') for i in results]
+        self.market_status = [i.get('market_status') for i in results]
+        self.ticker = [i.get('ticker') for i in results]
+        self.type = [i.get('type') for i in results]
 
-        underlying_asset = [i['underlying_asset'] if i is not None and 'underlying_asset' in i else None for i in results]
-        self.change_to_breakeven = [i['change_to_break_even'] if i is not None and 'change_to_break_even' in i else None for i in underlying_asset]
-        self.underlying_ticker = [i['ticker'] if i is not None and 'ticker' in i else None for i in underlying_asset]
+
+        self.change_to_breakeven = [i.get('underlying_asset.change_to_break_even') for i in results]
+        self.underlying_ticker = [i.get('underlying_asset.ticker') for i in results]
         if self.underlying_ticker in indices_list:
-            self.underlying_price = [i['value'] if i is not None and 'value' in i else None for i in underlying_asset]
+            self.underlying_price = [i.get('underlying_asset.value') for i in results]
         else:
-            self.underlying_price = [i['price'] if i is not None and 'price' in i else None for i in underlying_asset]
+            self.underlying_price = [i.get('underlying_asset.price') for i in results]
 
 
-
+        # expiry_series = pd.Series(self.expiry)
+        # expiry_series = pd.to_datetime(expiry_series)
+        # today = pd.Timestamp(datetime.today())
+        # self.days_to_expiry = (expiry_series - today).dt.days
+        # self.time_value = [p - s + k if p and s and k else None for p, s, k in zip(self.trade_price, self.underlying_price, self.strike)]
+        # self.moneyness = [
+        #     'Unknown' if u is None else (
+        #         'ITM' if (ct == 'call' and s < u) or (ct == 'put' and s > u) else (
+        #             'OTM' if (ct == 'call' and s > u) or (ct == 'put' and s < u) else 'ATM'
+        #         )
+        #     ) for ct, s, u in zip(self.contract_type, self.strike, self.underlying_price)
+        # ]
 
 
         self.data_dict = {
@@ -108,6 +120,9 @@ class UniversalSnapshot:
             'Types': self.type,
         }
         self.database_data_dict = {
+            'days_to_expiry': self.days_to_expiry,
+            'moneyness': self.moneyness,
+            'time_value': self.time_value,
             'break_even_price': self.break_even_price,
             'change_percent': self.change_percent,
             'early_trading_change': self.early_trading_change,
@@ -231,13 +246,13 @@ class UniversalOptionSnapshot:
 
         underlying_asset = [i['underlying_asset'] if i['underlying_asset'] is not None else None for i in results]
         self.change_to_breakeven = [i['change_to_break_even'] if 'change_to_break_even' in i else None for i in underlying_asset]
-        self.underlying_price = [i['price'] if 'price' in i else None for i in underlying_asset]
+        self.underlying_price = [i.get('price')  for i in underlying_asset]
         self.underlying_ticker = [i['ticker'] if 'ticker' in i else None for i in underlying_asset]
         today = pd.Timestamp(datetime.today())
         
         
         self.days_to_expiry = (expiry_series - today).dt.days
-        self.time_value = [p - s + k if p and s and k else None for p, s, k in zip(self.trade_price, self.underlying_price, self.strike)]
+        self.time_value = [float(p) - float(s) + k if p and s and k else None for p, s, k in zip(self.trade_price, self.underlying_price, self.strike)]
         self.moneyness = [
             'Unknown' if u is None else (
                 'ITM' if (ct == 'call' and s < u) or (ct == 'put' and s > u) else (

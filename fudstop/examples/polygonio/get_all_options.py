@@ -34,7 +34,7 @@ db_config = {
 }
 
 
-opts = PolygonOptions(**db_config)
+opts = PolygonOptions()
 from asyncio import Semaphore
 from asyncpg.exceptions import UniqueViolationError
 sema = Semaphore(15)

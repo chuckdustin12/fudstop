@@ -11,7 +11,7 @@ db_config = {
     "password": os.environ.get('DB_PASSWORD'), # Use the password from environment variable or default
     "database": os.environ.get('DB_NAME') # Database name for the new jawless database
 }
-opts = PolygonOptions(**db_config)
+opts = PolygonOptions()
 import time
 load_dotenv()
 

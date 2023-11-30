@@ -39,7 +39,7 @@ class GEXBot:
                     if as_dataframe == False:
                         return Gex(data)
                     data = Gex(data).as_dataframe
-                    print(data)
+                   
                     return data
   
     async def major_levels(self, ticker, as_dataframe:bool=True):
@@ -57,14 +57,14 @@ class GEXBot:
         
         """
         url = f"https://api.gexbot.com/{ticker}/gex/all/majors?key={self.key}"
-        print(ticker)
+       
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as resp:
                 data = await resp.json()
                 if data is not None:
                     if as_dataframe == False:
                         return GexMajorLevels(data)
-                    print(data)
+                    
                     try:
                         # Attempt to use the as_dataframe attribute
                         dataframe = GexMajorLevels(data).as_dataframe

@@ -1,6 +1,6 @@
-import aiohttp
-import asyncio
 import os
+from dotenv import load_dotenv
+load_dotenv()
 import pandas as pd
 import requests
 from typing import List

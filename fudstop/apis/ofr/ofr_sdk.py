@@ -1,6 +1,4 @@
 import aiohttp
-import asyncio
-import asyncpg
 from asyncpg import create_pool
 from asyncpg.exceptions import UndefinedTableError
 from .ofr_list_sets import NYPD_OFR,FNYR_OFR,MMF_OFR,REPO_OFR,TYLD_OFR
