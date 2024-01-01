@@ -1,8 +1,11 @@
 import os
 import requests
+import json
 import datetime
 import random
 from .models.search import Messages, Attachments
+from .models.application_commands import Applications, ApplicationCommands
+from .models.webhooks import Webhooks
 from dotenv import load_dotenv
 load_dotenv()
 import time
@@ -27,17 +30,42 @@ class DiscordSDK:
         
         Look for "authorization" and copy the token beside it, and paste it into an .env file as YOUR_DISCORD_HTTP_TOKEN=.
         """
+        self.channel_types = { 
 
+            'category': '4',
+            
+        }
 
+        self.member_permissions = '71453223935041'
+
+        self.role_dict = {
+            'LIFETIME MEMBER': 1002249878283493456,
+            'youtube support': 1086118401660964914,
+            'youtube level1': 1086118401660964916,
+            'youtube level2': 1086118401660964917,
+            'patreon level1': 896207245853999145,
+            'patreon level2': 941029523699400705,
+            'patreon level3': 938824920589283348,
+            'patreon last': 1145204112481321040
+
+        }
+       
+        self.guild_id = 888488311927242753 # replace with your guild ID
         self.token = os.environ.get('YOUR_DISCORD_HTTP_TOKEN')
         self.headers = {
             'Authorization': f'{self.token}',
             'Accept': "*/*",
+            "Content-Type": "application/json",
             'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 
         }
 
+    def get_roles(self, guild_id, role_id):
+        """Gets role information for a guild. Use role_counts to get the role IDs."""
+        url=f"https://discord.com/api/v9/guilds/{guild_id}/roles/{role_id}"
+        r = requests.patch(url, headers=self.headers).json()
 
+        return r
     def search(self, author_id:str='375862240601047070', has:str='file'):
         """Searches discord message history
         
@@ -75,6 +103,8 @@ class DiscordSDK:
                     url = row['proxy_url']
 
                     yield url
+
+            
 
 
     def sanitize_filename(self, filename):
@@ -119,3 +149,92 @@ class DiscordSDK:
                 print(f"Error downloading from {url}: {e}")
             except Exception as e:
                 print(f"Error: {e}")
+
+    def role_counts(self, guild_id):
+        url=f"https://discord.com/api/v9/guilds/{guild_id}/roles/member-counts"
+        r = requests.get(url, headers=self.headers).json()
+        for i in r:
+            print(i)
+
+    def create_channel(self, guild_id, name, type='4', channel_description:str=None, with_webhook:bool=False, webhook_name:str=None):
+        """
+        Create a channel in a Discord guild.
+        
+        Args:
+            guild_id (str): The ID of the guild where the channel will be created.
+            name (str): The name of the channel.
+            type (str): The type of channel ('0' for text, '4' for category). Defaults to '4'.
+        
+        Returns:
+            Response from the Discord API.
+        """
+
+        # Generate permission_overwrites from self.role_dict
+        permission_overwrites = [{
+            "id": role_id,
+            "type": 0,
+            "deny": "0",
+            "allow": "71453223935041"
+        } for role_id in self.role_dict.values()]
+
+        # Prepare the payload
+        payload = {
+            "type": type,
+            "name": name,
+            "description": channel_description,
+            "permission_overwrites": permission_overwrites
+        }
+
+        # Make the API request to create the channel
+        r = requests.post(f"https://discord.com/api/v9/guilds/{guild_id}/channels", headers=self.headers, data=json.dumps(payload))
+
+        id = r.json()['id']
+
+
+        if with_webhook != False and name is not None:
+            self.create_webhook(channel_id=id, name=webhook_name)
+
+        
+
+
+    def application_commands(self, guild):
+        """
+        >>> Returns: applications_df and commands_df
+
+        >>> usage: applications, commands = application_commands(guild)
+        
+        """
+        url=f"https://discord.com/api/v9/guilds/{guild}/application-command-index"
+        r = requests.get(url, headers=self.headers).json()
+        applications = Applications(r['applications'])
+        application_commands = r['application_commands']
+        commands = ApplicationCommands(application_commands)
+
+        applications_df = applications.applications_as_dataframe
+        commands_df = commands.as_dataframe
+
+
+
+        return applications_df, commands_df
+
+
+    def get_webhooks(self, guild_id):
+        url=f"https://discord.com/api/v9/guilds/{guild_id}/webhooks"
+        r = requests.get(url, headers=self.headers).json()
+
+
+        webhooks = Webhooks(r)
+
+
+        return webhooks.as_dataframe
+    
+
+
+    def create_webhook(self, channel_id, name):
+        url=f"https://discord.com/api/v9/channels/{channel_id}/webhooks"
+        payload = {'name': name}
+        r = requests.post(url, headers=self.headers, data=json.dumps(payload))
+
+
+        return r.json()
+
