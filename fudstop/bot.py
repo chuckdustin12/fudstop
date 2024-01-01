@@ -37,6 +37,7 @@ import pandas as pd
 from cogs.database import MyModal
 from apis.polygonio.polygon_options import PolygonOptions
 from apis.webull.opt_modal import OptionModal, SQLQueryModal
+from apis.y_finance.yf_sdk import yfSDK
 from apis.gexbot.gexbot import GEXBot
 SEC_FILINGS=[1153827348454584443, 1153827546706747455, 1153828102389104771, 1153828288372949062, 1153828427342807110, 1153828752183283752, 1153828753756135424, 1153829229943865344, 1153829615874355240, 1153833634097278976, 1156987190400786452, 1157034088310509568, 1157038070156234843, 1157038883184320624, 1157107615994761236, 1157107859688013866, 1174774750741020752, 1175108609751916606, 1175109001390866473, 1175109208987947108, 1175109603126693958, 1175110342884462604, 1175111342861058099, 1175112249061421207, 1175112431228424262, 1175112609222119467, 1175113168993923082, 1175113782083727504, 1175115817722073168, 1178053558239756288]
 
@@ -98,6 +99,7 @@ opts = PolygonOptions()
 gexbot = GEXBot()
 bot = commands.Bot(command_prefix="!", intents=disnake.Intents.all())
 gptsdk=OpenAISDK()
+yf = yfSDK()
 from cogs.database import QueryView
 from list_sets.ticker_lists import gex_tickers
 from typing import List
@@ -122,6 +124,10 @@ def format_timestamp(ts):
 # Apply formatting to td9_data
 # Initialize the OpenAI client with your API key
 openai.api_key = os.getenv("YOUR_OPENAI_KEY")
+
+import openai
+
+
 
 td9_timespan_dict = {
     'm1': '1 minute',
@@ -163,8 +169,7 @@ async def on_message(message: disnake.Message):
 
     if message.author.id == 800519694754644029:
         message = message.content.split('>')
-        
-        
+
 
     if message.channel.id == 896207280117264434:
         content = message.content
@@ -1140,4 +1145,188 @@ async def fetch_webhooks(ctx):
             await ctx.send("No webhooks found in this channel.")
     else:
         await ctx.send("You do not have permission to manage webhooks.")
+
+
+@bot.slash_command()
+async def study_greeks(inter:disnake.AppCmdInter, ticker:str):
+    """Study greeks and their effects on price action."""
+
+    await inter.response.defer()
+    while True:
+        price = yf.fast_info('AAPL')
+
+        current_price = price[price[0] == 'lastPrice'][1].values[0]
+
+        moenyness = await opts.get_option_strikes_by_moneyness(ticker=ticker, current_price=current_price, expiration_date='2023-12-01')
+
+        embed = disnake.Embed(title=f"Greek Study", description=f"Studying Greeks for {ticker}")
+
+        for term, categories in moenyness.items():
+            embed.add_field(name=f"Term: {term}", value="-" * 10, inline=False)  # Separator for terms
+            for moneyness_category, options in categories.items():
+                # Assume each 'option' object has attributes like 'delta', 'gamma', etc.
+                for option, category in options:
+                    delta = getattr(option, 'delta', 'N/A')
+                    gamma = getattr(option, 'gamma', 'N/A')
+                    vega = getattr(option, 'vega', 'N/A')
+                    theta = getattr(option, 'theta', 'N/A')
+                    ask = getattr(option, 'ask', 'N/A')
+                    bid = getattr(option, 'ask', 'N/A')
+                    strike = getattr(option, 'strike', 'N/A')
+                    expiry = getattr(option, 'expiry', 'N/A') 
+
+                    option_info = f"> Delta: {round(float(delta),4)}\n> Gamma: {round(float(gamma),4)}\n> Vega: {round(float(vega),4)}\n> Theta: {round(float(theta),2)}\n> Bid: **${bid}**\n> Ask: **${ask}**"
+                    embed.add_field(name=f"${ticker} | {strike} | {expiry}", value=option_info, inline=True)
+
+        await inter.edit_original_message(embed=embed)
+
+
+@bot.command()
+async def pricecheck(ctx, ticker:str):
+
+
+    result = await opts.get_theoretical_price(ticker)
+    
+    df = pd.DataFrame(result)
+    df = df.sort_values('theoretical_price', ascending=False)
+    df.to_csv('theo_check.csv')
+
+    await ctx.send(file=disnake.File('theo_check.csv'))
+
+opts = PolygonOptions()
+
+async def find_extreme_tickers(pool):
+    # SQL query to find tickers that are overbought or oversold on both day and week timespans
+    query_sql = """
+    SELECT day_rsi.ticker, day_rsi.status
+    FROM rsi as day_rsi
+    JOIN rsi as week_rsi ON day_rsi.ticker = week_rsi.ticker
+    WHERE day_rsi.timespan = 'day' 
+    AND week_rsi.timespan = 'week'
+    AND day_rsi.status IN ('overbought', 'oversold')
+    AND week_rsi.status IN ('overbought', 'oversold')
+    AND day_rsi.status = week_rsi.status;
+    """
+
+        # Execute the query using the provided connection pool
+    async with pool.acquire() as conn:
+        records = await conn.fetch(query_sql)
+        return [(record['ticker'], record['status']) for record in records]
+
+async def find_plays():
+    db_config = {
+        'user': 'postgres',
+        'password': 'fud',
+        'database': 'opts',
+        'host': '127.0.0.1',
+        'port': 5432
+    }
+
+    async with asyncpg.create_pool(**db_config) as pool:
+        extreme_tickers_with_status = await find_extreme_tickers(pool)
+
+        # To separate the tickers and statuses, you can use list comprehension
+        extreme_tickers = [ticker for ticker, status in extreme_tickers_with_status]
+        statuses = [status for ticker, status in extreme_tickers_with_status]
+        all_options_df_calls =[]
+        all_options_df_puts = []
+        for ticker, status in extreme_tickers_with_status:
+            if status == 'overbought':
+                print(f"Ticker {ticker} is overbought.")
+                all_options = await opts.get_option_chain_all(ticker, expiration_date_gte='2024-03-01', expiration_date_lite='2024-06-30', contract_type='put')
+                
+                for i in range(len(all_options.theta)):  # Assuming all lists are of the same length
+                    theta_value = all_options.theta[i]
+                    volume = all_options.volume[i]
+                    open_interest = all_options.open_interest[i]
+                    ask = all_options.ask[i]
+                    bid = all_options.bid[i]
+
+                    # Conditions
+                    theta_condition = theta_value is not None and theta_value >= -0.03
+                    volume_condition = volume is not None and open_interest is not None and volume > open_interest
+                    price_condition = ask is not None and bid is not None and 0.25 <= bid <= 1.75 and 0.25 <= ask <= 1.75
+
+                    if theta_condition and volume_condition and price_condition:
+                        df = pd.DataFrame([all_options.ticker, all_options.underlying_ticker, all_options.strike, all_options.contract_type, all_options.expiry])
+                        all_options_df_puts.append(df)  #
+
+            if status == 'oversold':
+                print(f"Ticker {ticker} is oversold.")
+                all_options = await opts.get_option_chain_all(ticker, expiration_date_gte='2024-03-01', expiration_date_lite='2024-11-30', contract_type='call')
+                
+                for i in range(len(all_options.theta)):  # Assuming all lists are of the same length
+                    theta_value = all_options.theta[i]
+                    volume = all_options.volume[i]
+                    open_interest = all_options.open_interest[i]
+                    ask = all_options.ask[i]
+                    bid = all_options.bid[i]
+
+                    # Conditions
+                    theta_condition = theta_value is not None and theta_value >= -0.03
+                    volume_condition = volume is not None and open_interest is not None and volume > open_interest
+                    price_condition = ask is not None and bid is not None and 0.25 <= bid <= 1.75 and 0.25 <= ask <= 1.75
+
+                    if theta_condition and volume_condition and price_condition:
+                        # Assuming all_options.df is a DataFrame containing the current option data
+                        df = pd.DataFrame([all_options.ticker, all_options.strike, all_options.contract_type, all_options.expiry])
+                        all_options_df_calls.append(df)  #
+        # Concatenate all the dataframes
+        final_df_calls = pd.concat(all_options_df_calls, ignore_index=True)
+        final_df_puts = pd.concat(all_options_df_puts, ignore_index=True)
+        print(final_df_calls, final_df_puts)
+        return final_df_calls, final_df_puts, extreme_tickers, statuses
+
+
+class CallResults(disnake.ui.Select):
+    def __init__(self, options: List[disnake.SelectOption], all_options:pd.DataFrame=None):
+        self.all_options=all_options
+        self.options = options
+        super().__init__( 
+            custom_id='callresults',
+            min_values=1,
+            max_values=1,
+            placeholder='Results -->',
+            options=options
+        )
+
+
+    async def callback(self, inter:disnake.AppCmdInter):
+
+        if self.values[0] == self.values[0]:
+
+            data = self.all_options.head(10)
+
+
+            await inter.response.edit_message(data)
+
+    
+@bot.slash_command()
+async def play(inter:disnake.AppCmdInter, type:str=commands.Param(choices=['calls','puts'])):
+    await inter.response.defer()
+    await inter.edit_original_message(f'Finding plays for {type}..')
+
+
+    calls, puts, extreme_tickers, statuses = await find_plays()
+
+
+    view = disnake.ui.View()
+    if type == 'calls':
+        options = []
+        
+        for ticker, status in zip(extreme_tickers, statuses):
+            if status == 'oversold':
+                
+                options.append(disnake.SelectOption(label=ticker, description=status))
+        await inter.edit_original_message(file=disnake.File('calls.csv'), view=view.add_item(CallResults(options,calls)))
+    elif type == 'puts':
+        options = []
+        
+        for ticker, status in zip(extreme_tickers, statuses):
+            if status == 'overbought':
+                options.append(disnake.SelectOption(label=ticker, description=status))
+        await inter.edit_original_message(file=disnake.File('puts.csv'), view=view.add_item(CallResults(options,puts)))
+
+    
+
 bot.run(os.environ.get('BOT'))

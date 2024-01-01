@@ -3,6 +3,7 @@ data/
 whisper.py
 __pycache__
 __pycache__/*
+
 tmp/
 web/
 data/

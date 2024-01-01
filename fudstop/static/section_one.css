@@ -1,0 +1,66 @@
+.market-options {
+    background-color: #1b2838;
+    padding: 50px 0;
+  }
+  
+  .options-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 0 20px;
+  }
+  
+  .option-card {
+    background-color: #2c3e50;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .option-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .option-icon {
+    font-size: 3rem; /* Adjust size based on the actual icons used */
+    color: #56d8f4;
+    margin-bottom: 20px;
+  }
+  
+  .option-card h3 {
+    color: #ffffff;
+    margin-bottom: 15px;
+  }
+  
+  .option-card p {
+    color: #d1d8e0;
+    margin-bottom: 25px;
+  }
+  
+  .option-button {
+    display: inline-block;
+    background: #56d8f4;
+    color: #333;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+  
+  .option-button:hover {
+    background-color: #3a99d8;
+  }
+  
+  @media screen and (max-width: 960px) {
+    .options-container {
+      grid-template-columns: 1fr;
+    }
+  
+    .option-card {
+      margin-bottom: 20px; /* Ensure spacing between cards in mobile view */
+    }
+  }

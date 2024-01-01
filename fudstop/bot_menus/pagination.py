@@ -8,8 +8,11 @@ from typing import List
 import disnake
 
 class AlertMenus(disnake.ui.View):
-    def __init__(self, embeds: List[disnake.Embed] = None):
+    def __init__(self, embeds: List[disnake.Embed] = None, assistant_id=None, thread_id=None):
+        
         super().__init__(timeout=None)
+        self.assistant_id = assistant_id
+        self.thread_id = thread_id
         self.embeds = embeds if embeds is not None else []
         self.embed_count = 0
         self.prev_page.disabled = True
@@ -19,10 +22,13 @@ class AlertMenus(disnake.ui.View):
             for i, embed in enumerate(self.embeds):
                 embed.set_footer(text=f"Page {i + 1} of {len(self.embeds)}")
 
+        if self.embeds and assistant_id is not None and thread_id is not None:
+            for i, embed in enumerate(self.embeds):
+                embed.set_footer(text=f"Page {i + 1} of {len(self.embeds)} | thread: {thread_id} | assistant | {assistant_id}")  
+
 
 
     @disnake.ui.button(
-        emoji="<a:_:1042677512284680321>",
         style=disnake.ButtonStyle.red,
         custom_id=f"persistent_view:prevqwfpage_{str(disnake.Member)}aq2wfwa",
         row=4,
@@ -47,7 +53,6 @@ class AlertMenus(disnake.ui.View):
 
 
     @disnake.ui.button(
-        emoji="<a:_:1042677591196319765>",
         style=disnake.ButtonStyle.red,
         custom_id=f"persistent_view:nextpage_{str(disnake.Member)}awfawwa",
         label=f"🇳 🇪 🇽 🇹",

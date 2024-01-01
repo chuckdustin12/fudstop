@@ -31,7 +31,7 @@ def convert_to_date(date_str):
 print(GEX_KEY)
 
 
-from webull.webull_trading import WebullTrading
+from .webull_trading import WebullTrading
 from datetime import datetime, timedelta
 
 trading = WebullTrading()
@@ -109,10 +109,6 @@ class WebullOptions:
             'string': 'TEXT'
         }
 
-        # Update dtype_mapping based on the data in the DataFrame
-        dtype_mapping = await self.update_dtype_mapping(df, dtype_mapping)
-
-        print(f"Updated DataFrame dtypes: {dtype_mapping}")
 
         # Check for large integers and update dtype_mapping accordingly
         for col, dtype in zip(df.columns, df.dtypes):
@@ -640,7 +636,7 @@ class WebullOptions:
     
         async with lock:
             if not await self.table_exists(table_name):
-                await self.create_table(df, table_name, unique_columns)
+                await self.create_table(df, table_name)
             
             # Debug: Print DataFrame columns before modifications
             #print("Initial DataFrame columns:", df.columns.tolist())

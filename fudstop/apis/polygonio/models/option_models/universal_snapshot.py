@@ -194,23 +194,23 @@ class UniversalSnapshot:
             raise StopIteration
 class UniversalOptionSnapshot:
     def __init__(self, results):
-        self.break_even = [i['break_even_price'] if 'break_even_price' is not None and 'break_even_price' in i else None for i in results]
-        self.implied_volatility = [i['implied_volatility'] if 'implied_volatility' in i else None for i in results] 
-        self.open_interest = [i['open_interest'] if 'open_interest' in i else None for i in results]
+        self.break_even = [float(i['break_even_price']) if 'break_even_price' is not None and 'break_even_price' in i else None for i in results]
+        self.implied_volatility = [float(i['implied_volatility']) if 'implied_volatility' in i else None for i in results] 
+        self.open_interest = [float(i['open_interest']) if 'open_interest' in i else None for i in results]
 
         day = [i['day'] if 'day' in i else None for i in results]
-        self.volume = [i['volume'] if 'volume' in i  else None for i in day]
-        self.high = [i['high'] if 'high' in i else None for i in day]
-        self.low = [i['low'] if 'low' in i else None for i in day]
-        self.vwap = [i['vwap'] if 'vwap' in i else None for i in day]
-        self.open = [i['open'] if 'open' in i else None for i in day]
-        self.close = [i['close'] if 'close' in i else None for i in day]
+        self.volume = [float(i['volume']) if 'volume' in i  else None for i in day]
+        self.high = [float(i['high']) if 'high' in i else None for i in day]
+        self.low = [float(i['low']) if 'low' in i else None for i in day]
+        self.vwap = [float(i['vwap']) if 'vwap' in i else None for i in day]
+        self.open = [float(i['open']) if 'open' in i else None for i in day]
+        self.close = [float(i['close']) if 'close' in i else None for i in day]
 
 
 
 
         details = [i['details'] for i in results]
-        self.strike = [i['strike_price'] if 'strike_price' in i else None for i in details]
+        self.strike = [float(i['strike_price']) if 'strike_price' in i else None for i in details]
         self.expiry = [i['expiration_date'] if 'expiration_date' in i else None for i in details]
         # Convert the expiration dates into a pandas Series
         expiry_series = pd.Series(self.expiry)
@@ -221,38 +221,42 @@ class UniversalOptionSnapshot:
         self.ticker = [i['ticker'] if 'ticker' in i else None for i in details]
 
         greeks = [i['greeks'] if i['greeks'] is not None else None for i in results]
-        self.theta = [i['theta'] if 'theta' in i else None for i in greeks]
-        self.delta = [i['delta'] if 'delta' in i else None for i in greeks]
-        self.gamma = [i['gamma'] if 'gamma' in i else None for i in greeks]
-        self.vega = [i['vega'] if 'vega' in i else None for i in greeks]
+        self.theta = [round(float(i['theta']),4) if 'theta' in i else None for i in greeks]
+        self.delta = [round(float(i['delta']),4) if 'delta' in i else None for i in greeks]
+        self.gamma = [round(float(i['gamma']),4) if 'gamma' in i else None for i in greeks]
+        self.vega = [round(float(i['vega']),4) if 'vega' in i else None for i in greeks]
 
 
         last_trade = [i['last_trade'] if i['last_trade'] is not None else None for i in results]
         self.sip_timestamp = [i['sip_timestamp'] if 'sip_timestamp' in i else None for i in last_trade]
         self.conditions = [i['conditions'] if 'conditions' in i else None for i in last_trade]
         self.conditions = [condition for sublist in self.conditions for condition in (sublist if isinstance(sublist, list) else [sublist])]
-        self.trade_price = [i['price'] if 'price' in i else None for i in last_trade]
-        self.trade_size = [i['size'] if 'size' in i else None for i in last_trade]
+        self.trade_price = [float(i['price']) if 'price' in i else None for i in last_trade]
+        self.trade_size = [float(i['size']) if 'size' in i else None for i in last_trade]
         self.exchange = [i['exchange'] if 'exchange' in i else None for i in last_trade]
         self.exchange = [OPTIONS_EXCHANGES.get(i) for i in self.exchange]
 
         last_quote = [i['last_quote'] if i['last_quote'] is not None else None for i in results]
-        self.ask = [i['ask'] if 'ask' in i else None for i in last_quote]
-        self.bid = [i['bid'] if 'bid' in i else None for i in last_quote]
-        self.bid_size = [i['bid_size'] if 'bid_size' in i else None for i in last_quote]
-        self.ask_size = [i['ask_size'] if 'ask_size' in i else None for i in last_quote]
-        self.midpoint = [i['midpoint'] if 'midpoint' in i else None for i in last_quote]
+        self.ask = [float(i['ask']) if 'ask' in i and i['ask'] is not None else None for i in last_quote]
+        self.bid = [float(i['bid']) if 'bid' in i and i['bid'] is not None else None for i in last_quote]
+        self.bid_size = [float(i['bid_size']) if 'bid_size' in i and i['bid_size'] is not None else None for i in last_quote]
+        self.ask_size = [float(i['ask_size']) if 'ask_size' in i and i['ask_size'] is not None else None for i in last_quote]
+        self.midpoint = [float(i['midpoint']) if 'midpoint' in i and i['midpoint'] is not None else None for i in last_quote]
+
 
 
         underlying_asset = [i['underlying_asset'] if i['underlying_asset'] is not None else None for i in results]
-        self.change_to_breakeven = [i['change_to_break_even'] if 'change_to_break_even' in i else None for i in underlying_asset]
-        self.underlying_price = [i.get('price')  for i in underlying_asset]
+        self.change_to_breakeven = [float(i['change_to_break_even']) if 'change_to_break_even' in i else None for i in underlying_asset]
+        self.underlying_price = [float(i.get('price')) if i.get('price') is not None else None for i in underlying_asset]
+
         self.underlying_ticker = [i['ticker'] if 'ticker' in i else None for i in underlying_asset]
         today = pd.Timestamp(datetime.today())
         
         
         self.days_to_expiry = (expiry_series - today).dt.days
-        self.time_value = [float(p) - float(s) + k if p and s and k else None for p, s, k in zip(self.trade_price, self.underlying_price, self.strike)]
+        self.time_value = [float(p) - float(s) + float(k) if p and s and k else None for p, s, k in zip(self.trade_price, self.underlying_price, self.strike)]
+        self.time_value = [round(item, 3) if item is not None else None for item in self.time_value]
+
         self.moneyness = [
             'Unknown' if u is None else (
                 'ITM' if (ct == 'call' and s < u) or (ct == 'put' and s > u) else (
@@ -261,28 +265,48 @@ class UniversalOptionSnapshot:
             ) for ct, s, u in zip(self.contract_type, self.strike, self.underlying_price)
         ]
 
-        self.liquidity_indicator = [a_size + b_size if a_size and b_size else None for a_size, b_size in zip(self.ask_size, self.bid_size)]
-        self.spread = [a - b if a and b else None for a, b in zip(self.ask, self.bid)]
-        self.intrinsic_value = [u - s if ct == 'call' and u and s and u > s else s - u if ct == 'put' and u and s and s > u else 0 for ct, u, s in zip(self.contract_type, self.underlying_price, self.strike)]
-        self.extrinsic_value = [p - iv if p and iv else None for p, iv in zip(self.trade_price, self.intrinsic_value)]
-        self.leverage_ratio = [d / (s / u) if d and s and u else None for d, s, u in zip(self.delta, self.strike, self.underlying_price)]
-        self.spread_pct = [(a - b) / m * 100 if a and b and m else None for a, b, m in zip(self.ask, self.bid, self.midpoint)]
-        self.return_on_risk = [p / (s - u) if ct == 'call' and p and s and u and s > u else p / (u - s) if ct == 'put' and p and s and u and s < u else 0 for ct, p, s, u in zip(self.contract_type, self.trade_price, self.strike, self.underlying_price)]
-        self.option_velocity = [delta / p if delta and p else 0 for delta, p in zip(self.delta, self.trade_price)]
-        self.gamma_risk = [g * u if g and u else None for g, u in zip(self.gamma, self.underlying_price)]
-        self.theta_decay_rate = [t / p if t and p else None for t, p in zip(self.theta, self.trade_price)]
-        self.vega_impact = [v / p if v and p else None for v, p in zip(self.vega, self.trade_price)]
-        self.delta_to_theta_ratio = [d / t if d and t else None for d, t in zip(self.delta, self.theta)]
+        self.liquidity_indicator = [float(a_size) + float(b_size) if a_size is not None and b_size is not None else None for a_size, b_size in zip(self.ask_size, self.bid_size)]
+        self.liquidity_indicator = [round(item, 3) if item is not None else None for item in self.liquidity_indicator]
+
+        self.spread = [float(a) - float(b) if a is not None and b is not None else None for a, b in zip(self.ask, self.bid)]
+        self.intrinsic_value = [float(u) - float(s) if ct == 'call' and u is not None and s is not None and u > s else float(s) - float(u) if ct == 'put' and u is not None and s is not None and s > u else 0.0 for ct, u, s in zip(self.contract_type, self.underlying_price, self.strike)]
+        self.intrinsic_value =[round(item, 3) if item is not None else None for item in self.intrinsic_value]
+        self.extrinsic_value = [float(p) - float(iv) if p is not None and iv is not None else None for p, iv in zip(self.trade_price, self.intrinsic_value)]
+        self.extrinsic_value =[round(item, 3) if item is not None else None for item in self.extrinsic_value]
+        self.leverage_ratio = [float(d) / (float(s) / float(u)) if d is not None and s is not None and u is not None else None for d, s, u in zip(self.delta, self.strike, self.underlying_price)]
+        self.leverage_ratio = [round(item, 3) if item is not None else None for item in self.leverage_ratio]
+        self.spread_pct = [(float(a) - float(b)) / float(m) * 100.0 if a is not None and b is not None and m is not None and m != 0 else None for a, b, m in zip(self.ask, self.bid, self.midpoint)]
+
+        self.spread_pct = [round(item, 3) if item is not None else None for item in self.spread_pct]
+        self.return_on_risk = [float(p) / (float(s) - float(u)) if ct == 'call' and p is not None and s is not None and u is not None and s > u else float(p) / (float(u) - float(s)) if ct == 'put' and p is not None and s is not None and u is not None and s < u else 0.0 for ct, p, s, u in zip(self.contract_type, self.trade_price, self.strike, self.underlying_price)]
+        self.return_on_risk = [round(item, 3) if item is not None else None for item in self.return_on_risk]
+        self.option_velocity = [float(delta) / float(p) if delta is not None and p is not None else 0.0 for delta, p in zip(self.delta, self.trade_price)]
+        self.option_velocity =[round(item, 3) if item is not None else None for item in self.option_velocity]
+        self.gamma_risk = [float(g) * float(u) if g is not None and u is not None else None for g, u in zip(self.gamma, self.underlying_price)]
+        self.gamma_risk =[round(item, 3) if item is not None else None for item in self.gamma_risk]
+        self.theta_decay_rate = [float(t) / float(p) if t is not None and p is not None else None for t, p in zip(self.theta, self.trade_price)]
+        self.theta_decay_rate = [round(item, 3) if item is not None else None for item in self.theta_decay_rate]
+        self.vega_impact = [float(v) / float(p) if v is not None and p is not None else None for v, p in zip(self.vega, self.trade_price)]
+        self.vega_impact =[round(item, 3) if item is not None else None for item in self.vega_impact]
+        self.delta_to_theta_ratio = [float(d) / float(t) if d is not None and t is not None and t != 0 else None for d, t in zip(self.delta, self.theta)]
+        self.delta_to_theta_ratio = [round(item, 3) if item is not None else None for item in self.delta_to_theta_ratio]
         #option_sensitivity score - curated - finished
-        self.oss = [(delta if delta else 0) + (0.5*gamma if gamma else 0) + (0.1*vega if vega else 0) - (0.5*theta if theta else 0) for delta, gamma, vega, theta in zip(self.delta, self.gamma, self.vega, self.theta)]
+        self.oss = [(float(delta) if delta is not None else 0) + (0.5 * float(gamma) if gamma is not None else 0) + (0.1 * float(vega) if vega is not None else 0) - (0.5 * float(theta) if theta is not None else 0) for delta, gamma, vega, theta in zip(self.delta, self.gamma, self.vega, self.theta)]
+        self.oss = [round(item, 3) for item in self.oss]
         #liquidity-theta ratio - curated - finished
         self.ltr = [liquidity / abs(theta) if liquidity and theta else None for liquidity, theta in zip(self.liquidity_indicator, self.theta)]
         #risk-reward score - curated - finished
         self.rrs = [(intrinsic + extrinsic) / (iv + 1e-4) if intrinsic and extrinsic and iv else None for intrinsic, extrinsic, iv in zip(self.intrinsic_value, self.extrinsic_value, self.implied_volatility)]
         #greeks-balance score - curated - finished
         self.gbs = [(abs(delta) if delta else 0) + (abs(gamma) if gamma else 0) - (abs(vega) if vega else 0) - (abs(theta) if theta else 0) for delta, gamma, vega, theta in zip(self.delta, self.gamma, self.vega, self.theta)]
+        self.gbs = [round(item, 3) if item is not None else None for item in self.gbs]
         #options profit potential: FINAL - finished
         self.opp = [moneyness_score*oss*ltr*rrs if moneyness_score and oss and ltr and rrs else None for moneyness_score, oss, ltr, rrs in zip([1 if m == 'ITM' else 0.5 if m == 'ATM' else 0.2 for m in self.moneyness], self.oss, self.ltr, self.rrs)]
+        self.opp = [round(item, 3) if item is not None else None for item in self.opp]
+
+
+
+                
 
 
 
@@ -349,6 +373,7 @@ class UniversalOptionSnapshot:
             'velocity': self.option_velocity,
             'sensitivity': self.oss,
             'greeks_balance': self.gbs,
+            'opp': self.opp
             
         }
 

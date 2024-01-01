@@ -1,0 +1,160 @@
+.hero {
+    background: linear-gradient(135deg, rgba(23, 32, 42, 0.98) 30%, rgba(44, 62, 80, 0.98) 100%);
+    color: #fff;
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.1) 0,
+      rgba(255, 255, 255, 0.1) 1px,
+      transparent 1px,
+      transparent 50px
+    );
+    z-index: 1;
+  }
+  
+  .hero-container {
+    z-index: 2;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 50px;
+  }
+  
+  .hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+  }
+  
+  .hero p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .cta-button {
+    padding: 1rem 2rem;
+    font-size: 1.25rem;
+    color: #333;
+    background: #56d8f4;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.3s ease-out, background-color 0.3s ease;
+    text-decoration: none;
+    box-shadow: 3px 3px 10px 0 rgba(0, 0, 0, 0.2);
+  }
+  
+  .cta-button:hover {
+    background: #3a99d8;
+    transform: translateY(-3px);
+  }
+  
+  @media screen and (max-width: 960px) {
+    .hero h1 {
+      font-size: 2.5rem;
+    }
+  
+    .hero p {
+      font-size: 1.2rem;
+    }
+  }
+  
+  /* Add some subtle animations for the backgrounds */
+  @keyframes move {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50px);
+    }
+  }
+  
+  .hero::before {
+    animation: move 50s linear infinite alternate;
+  }
+
+
+  .market-options {
+    background-color: #1b2838;
+    padding: 50px 0;
+  }
+  
+  .options-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 0 20px;
+  }
+  
+  .option-card {
+    background-color: #2c3e50;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .option-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .option-icon {
+    font-size: 3rem; /* Adjust size based on the actual icons used */
+    color: #56d8f4;
+    margin-bottom: 20px;
+  }
+  
+  .option-card h3 {
+    color: #ffffff;
+    margin-bottom: 15px;
+  }
+  
+  .option-card p {
+    color: #d1d8e0;
+    margin-bottom: 25px;
+  }
+  
+  .option-button {
+    display: inline-block;
+    background: #56d8f4;
+    color: #333;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+  
+  .option-button:hover {
+    background-color: #3a99d8;
+  }
+  
+  @media screen and (max-width: 960px) {
+    .options-container {
+      grid-template-columns: 1fr;
+    }
+  
+    .option-card {
+      margin-bottom: 20px; /* Ensure spacing between cards in mobile view */
+    }
+  }
