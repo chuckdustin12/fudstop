@@ -69,7 +69,7 @@ class Embeddings:
         await self.send_webhook(webhook_url, embed)
 
         
-    async def send_td9_embed(self, timespan, hook, ticker, td9_state, conn):
+    async def send_td9_embed(self, timespan, hook, ticker, td9_state):
 
         webhook = AsyncDiscordWebhook(hook, content=f"<@375862240601047070>")
 
@@ -87,9 +87,6 @@ class Embeddings:
         # embed.set_image(url="attachment://screenshot.jpg")
         embed.set_footer(text=f"{ticker} | {timespan} | {td9_state} | data by polygon.io | Implemented by FUDSTOP", icon_url=self.fudstop)
         webhook.add_embed(embed)
-        await conn.execute('''
-            INSERT INTO market_data(ticker, timespan, td9_state, insertion_timestamp)
-            VALUES($1, $2, $3, NOW())
-            ''', ticker, timespan, td9_state)
+
 
         asyncio.create_task(webhook.execute())

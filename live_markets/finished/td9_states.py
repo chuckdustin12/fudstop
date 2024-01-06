@@ -21,7 +21,7 @@ from aiohttp.client_exceptions import ClientConnectorError, ClientOSError
 import aiohttp
 from asyncio import Semaphore
 from webull_options.webull_options import WebullOptions
-from database_.database_manager import DatabaseManager
+from db_manager import DbManager as DatabaseManager
 sema = Semaphore(10)
 db = DatabaseManager(host='localhost', port=5432, user='chuck', password='fud', database='markets')
 wb_opts = WebullOptions(user='chuck', database='markets')
@@ -45,7 +45,7 @@ embeds = Embeddings()
 
 
 
-async def get_bars(ticker, conn, interval:str='m1', timeStamp=None):
+async def get_bars(ticker, interval:str='m1', timeStamp=None):
     if ticker == 'I:SPX':
         ticker = 'SPXW'
     elif ticker =='I:NDX':
@@ -130,7 +130,8 @@ async def get_bars(ticker, conn, interval:str='m1', timeStamp=None):
                             countdown_phase = calculate_countdown(td9_df)
 
                             df = df.head(13)
-                            await wb_opts.db_manager.create_table(df, table_name='td9', unique_column='ticker, td9_state, timespan')
+                            print(df)
+    
     
                             td9_state = "Setup Complete" if setup_phase else "Countdown Complete" if countdown_phase else "Not in TD9 State"
 
@@ -139,14 +140,14 @@ async def get_bars(ticker, conn, interval:str='m1', timeStamp=None):
                                 #await plot_td9_chart(df, interval) if df is not None else ...
                     
                                 hook = AsyncDiscordWebhook(min1_td9, content=f'{ticker} {td9_state}')
-                                await embeds.send_td9_embed(interval, min1_td9, ticker, td9_state, conn)
+                                await embeds.send_td9_embed(interval, min1_td9, ticker, td9_state)
                                 # Assuming you have a connection pool or a single connection to your database
                                 
           
 
 
                             if td9_state in ('Setup Complete', 'Countdown Complete') and interval == 'm5':
-                                asyncio.create_task(embeds.send_td9_embed(interval, min5_td9, ticker, td9_state, conn))
+                                asyncio.create_task(embeds.send_td9_embed(interval, min5_td9, ticker, td9_state))
       
                                 # Insert data into the market_data table
                
@@ -155,7 +156,7 @@ async def get_bars(ticker, conn, interval:str='m1', timeStamp=None):
                             if td9_state in ('Setup Complete', 'Countdown Complete') and interval == 'm15':
 
 
-                                asyncio.create_task(embeds.send_td9_embed(interval, min15_td9, ticker, td9_state, conn))
+                                asyncio.create_task(embeds.send_td9_embed(interval, min15_td9, ticker, td9_state))
 
                    
                                 
@@ -165,7 +166,7 @@ async def get_bars(ticker, conn, interval:str='m1', timeStamp=None):
 
                             if td9_state in ('Setup Complete', 'Countdown Complete') and interval == 'm30':
 
-                                asyncio.create_task(embeds.send_td9_embed(interval, min30_td9, ticker, td9_state, conn))
+                                asyncio.create_task(embeds.send_td9_embed(interval, min30_td9, ticker, td9_state))
     
                                 
       
@@ -174,13 +175,13 @@ async def get_bars(ticker, conn, interval:str='m1', timeStamp=None):
 
                             if td9_state in ('Setup Complete', 'Countdown Complete') and interval == 'm60':
   
-                                asyncio.create_task(embeds.send_td9_embed(interval, min60_td9, ticker, td9_state, conn))
+                                asyncio.create_task(embeds.send_td9_embed(interval, min60_td9, ticker, td9_state))
 
                           
                             if td9_state in ('Setup Complete', 'Countdown Complete') and interval == 'm120':
 
                                
-                                asyncio.create_task(embeds.send_td9_embed(interval, min120_td9, ticker, td9_state, conn))
+                                asyncio.create_task(embeds.send_td9_embed(interval, min120_td9, ticker, td9_state))
 
 
 
@@ -188,7 +189,7 @@ async def get_bars(ticker, conn, interval:str='m1', timeStamp=None):
                             if td9_state in ('Setup Complete', 'Countdown Complete') and interval == 'm240':
 
                        
-                                asyncio.create_task(embeds.send_td9_embed(interval, min240_td9, ticker, td9_state, conn))
+                                asyncio.create_task(embeds.send_td9_embed(interval, min240_td9, ticker, td9_state))
 
                                 
           
@@ -197,20 +198,20 @@ async def get_bars(ticker, conn, interval:str='m1', timeStamp=None):
                             if td9_state in ('Setup Complete', 'Countdown Complete') and interval == 'd1':
 
                         
-                                asyncio.create_task(embeds.send_td9_embed(interval, day_td9, ticker, td9_state, conn))
+                                asyncio.create_task(embeds.send_td9_embed(interval, day_td9, ticker, td9_state))
   
             
                     
                             if td9_state in ('Setup Complete', 'Countdown Complete') and interval == 'w':
 
-                                asyncio.create_task(embeds.send_td9_embed(interval, week_td9, ticker, td9_state, conn))
+                                asyncio.create_task(embeds.send_td9_embed(interval, week_td9, ticker, td9_state))
                                 # Assuming you have a connection pool or a single connection to your database
              
          
                  
                             if td9_state in ('Setup Complete', 'Countdown Complete') and interval == 'm':
 
-                                asyncio.create_task(embeds.send_td9_embed(interval, month_td9, ticker, td9_state, conn))
+                                asyncio.create_task(embeds.send_td9_embed(interval, month_td9, ticker, td9_state))
                                 # Assuming you have a connection pool or a single connection to your database
  
                     
@@ -224,13 +225,13 @@ async def get_bars(ticker, conn, interval:str='m1', timeStamp=None):
 
 async def run_td9():
 
-    conn = await db.connect()
+    await db.connect()
     while True:
         
         try:
             while True:
                 intervals = ['m1', 'm5','m15', 'm30', 'd1', 'm60', 'm120', 'm240', 'w', 'm']
-                tasks = [get_bars(ticker, interval=interval, timeStamp=None, conn=conn) for ticker in wb_opts.most_active_tickers for interval in intervals]
+                tasks = [get_bars(ticker, interval=interval, timeStamp=None) for ticker in wb_opts.most_active_tickers for interval in intervals]
                 await asyncio.gather(*tasks)
         except Exception as e:
             print(e)
