@@ -16,7 +16,7 @@ from apis.helpers import get_human_readable_string, map_conditions, OPTIONS_EXCH
 db_config = {
     "host": os.environ.get('DB_HOST', 'localhost'),
     "port": int(os.environ.get('DB_PORT', 5432)),
-    "user": os.environ.get('DB_USER', 'postgres'),
+    "user": os.environ.get('DB_USER'),
     "password": os.environ.get('DB_PASSWORD', 'fud'),
     "database": os.environ.get('DB_NAME', 'polygon')
 }

@@ -22,7 +22,7 @@ os.environ['DB_HOST'] = 'localhost'
 os.environ['DB_PASSWORD'] = 'fud'
 os.environ['DB_NAME'] = 'polygon'
 os.environ['DB_PORT'] = '5432'  # Environment variables are stored as strings
-os.environ['DB_USER'] = 'postgres'
+os.environ['DB_USER'] = 'chuck'
 
 # Database configuration using environment variables
 db_config = {

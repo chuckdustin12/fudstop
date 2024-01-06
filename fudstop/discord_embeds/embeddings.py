@@ -1,20 +1,14 @@
 import os
-
 from dotenv import load_dotenv
-
+import asyncio
 load_dotenv()
-
 from discord_webhook import DiscordEmbed, AsyncDiscordWebhook
-
-
-
 from datetime import datetime, timedelta
 
 class Embeddings:
-    def __init__(self, ticker):
+    def __init__(self):
 
-        self.ticker=ticker
-
+        self.fudstop = os.environ.get('fudstop')
 
 
         
@@ -75,3 +69,27 @@ class Embeddings:
         await self.send_webhook(webhook_url, embed)
 
         
+    async def send_td9_embed(self, timespan, hook, ticker, td9_state, conn):
+
+        webhook = AsyncDiscordWebhook(hook, content=f"<@375862240601047070>")
+
+        embed = DiscordEmbed(title=f"TD9 Signal - {ticker}", description=f"```py\nComponents: The TD9 indicator consists of two main parts: the TD" "Setup and the TD Countdown. Both parts are designed to help traders identify exhaustion points in a trend.```" 
+
+        "```py\nTD Setup: This phase consists of nine consecutive price bars, each closing higher (for a buy setup) or lower (for a sell setup) than" "the close four bars earlier. A buy setup occurs after a downtrend, signaling potential bullish reversal, while a sell setup occurs after an" "uptrend, signaling potential bearish reversal.```"
+
+        "```py\nTD Countdown: Following the completion of the setup, the countdown phase begins, consisting of thirteen price bars. The countdown helps to refine the timing of a potential reversal.```")
+        embed.add_embed_field(name=f"Current TD9:", value=f"> **{td9_state}**\n> **{timespan}**")
+        embed.set_timestamp()
+        # if image_path is not None:
+        #     with open(image_path, "rb") as f:
+        #         file_content = f.read()
+            # webhook.add_file(file=file_content, filename="screenshot.jpg")
+        # embed.set_image(url="attachment://screenshot.jpg")
+        embed.set_footer(text=f"{ticker} | {timespan} | {td9_state} | data by polygon.io | Implemented by FUDSTOP", icon_url=self.fudstop)
+        webhook.add_embed(embed)
+        await conn.execute('''
+            INSERT INTO market_data(ticker, timespan, td9_state, insertion_timestamp)
+            VALUES($1, $2, $3, NOW())
+            ''', ticker, timespan, td9_state)
+
+        asyncio.create_task(webhook.execute())

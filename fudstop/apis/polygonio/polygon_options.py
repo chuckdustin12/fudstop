@@ -72,7 +72,7 @@ class PolygonOptions:
         self.db_config = {
             "host": os.environ.get('DB_HOST', 'localhost'), # Default to this IP if 'DB_HOST' not found in environment variables
             "port": int(os.environ.get('DB_PORT')), # Default to 5432 if 'DB_PORT' not found
-            "user": os.environ.get(f'DB_USER', f'{user}'), # Default to 'postgres' if 'DB_USER' not found
+            "user": os.environ.get(user), # Default to 'postgres' if 'DB_USER' not found
             "password": os.environ.get('DB_PASSWORD', 'fud'), # Use the password from environment variable or default
             "database": os.environ.get('DB_NAME', f'{database}') # Database name for the new jawless database
         }

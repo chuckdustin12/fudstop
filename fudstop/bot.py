@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 import re
 import disnake
-from cogs.main_view import MainView
 from disnake.ext.commands.errors import CommandInvokeError
 from pytrends.request import TrendReq
 from disnake.ext import commands
@@ -34,7 +33,7 @@ import matplotlib.pyplot as plt
 import io
 import asyncpg
 import pandas as pd
-from cogs.database import MyModal
+
 from apis.polygonio.polygon_options import PolygonOptions
 from apis.webull.opt_modal import OptionModal, SQLQueryModal
 from apis.y_finance.yf_sdk import yfSDK
@@ -91,7 +90,7 @@ opt_vol_ids = [
 db_config = {
     "host": os.environ.get('DB_HOST', 'localhost'), # Default to this IP if 'DB_HOST' not found in environment variables
     "port": int(os.environ.get('DB_PORT')), # Default to 5432 if 'DB_PORT' not found
-    "user": os.environ.get('DB_USER', 'postgres'), # Default to 'postgres' if 'DB_USER' not found
+    "user": os.environ.get('DB_USER'), # Default to 'postgres' if 'DB_USER' not found
     "password": os.environ.get('DB_PASSWORD', 'fud'), # Use the password from environment variable or default
     "database": os.environ.get('DB_NAME', 'polygon') # Database name for the new jawless database
 }
@@ -100,7 +99,7 @@ gexbot = GEXBot()
 bot = commands.Bot(command_prefix="!", intents=disnake.Intents.all())
 gptsdk=OpenAISDK()
 yf = yfSDK()
-from cogs.database import QueryView
+
 from list_sets.ticker_lists import gex_tickers
 from typing import List
 import disnake
@@ -960,14 +959,6 @@ timeframe_choices = [
 
 
 
-@bot.command()
-async def query(inter:disnake.AppCmdInter, ticker:str):
-    await inter.send(view=QueryView(ticker))
-
-
-@bot.command()
-async def test(ctx, ticker):
-    await ctx.send(view=QueryView(ticker))
 
 
 async def fetch_options():
