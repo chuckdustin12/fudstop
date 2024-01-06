@@ -4,7 +4,13 @@ def add(a, b):
     Returns the sum of two numbers.
     """
     return a + b
-
+def determine_emoji(row):
+    if row['price'] > row['strike']:
+        return "🔥"  # Flame emoji for put skew
+    elif row['price'] < row['strike']:
+        return "🟢"  # Green circle emoji for call skew
+    else:
+        return "N/A"  # If neither condition is met
 # Function 2
 def subtract(a, b):
     """

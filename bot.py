@@ -21,12 +21,12 @@ import base64
 from disnake.ext import commands
 from list_sets.ticker_lists import most_active_tickers
 most_active_tickers = set(most_active_tickers)
-from bot_menus.modals.options_modal import OptionsDataModal
+from discord_.bot_menus.modals.options_modal import OptionsDataModal
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import asyncio
-from bot_menus.pagination import AlertMenus
+from discord_.bot_menus.pagination import AlertMenus
 import aiohttp
 from openai import OpenAI
 import matplotlib.pyplot as plt
@@ -141,138 +141,137 @@ td9_timespan_dict = {
     'm': 'monthly'
 }
 
-@bot.event
-async def on_ready():
-    guild_id = 888488311927242753  # Replace with your guild's ID
-    guild = bot.get_guild(guild_id)
+# @bot.event
+# async def on_ready():
+#     guild_id = 888488311927242753  # Replace with your guild's ID
+#     guild = bot.get_guild(guild_id)
 
-    if guild is None:
-        print("Guild not found")
-        return
+#     if guild is None:
+#         print("Guild not found")
+#         return
 
-    channels = await guild.fetch_channels()
+#     channels = await guild.fetch_channels()
 
-    for channel in channels:
-        try:
-            # Attempt to process each channel
-            print(f"Channel: {channel.name} - ID: {channel.id}")
-        except disnake.errors.InvalidData as e:
-            print(f"Encountered an error with channel {channel.id}: {e}")
-            # Continue with the next channel
-            continue
+#     for channel in channels:
+#         try:
+#             # Attempt to process each channel
+#             print(f"Channel: {channel.name} - ID: {channel.id}")
+#         except disnake.errors.InvalidData as e:
+#             print(f"Encountered an error with channel {channel.id}: {e}")
+#             # Continue with the next channel
+#             continue
 
-now = datetime.now()
-@bot.event
-async def on_message(message: disnake.Message):
-    """Use  GPT4 Vision to listen for image URLs"""
+# now = datetime.now()
+# @bot.event
+# async def on_message(message: disnake.Message):
+#     """Use  GPT4 Vision to listen for image URLs"""
 
-    if message.author.id == 800519694754644029:
-        message = message.content.split('>')
+#     if message.author.id == 800519694754644029:
+#         message = message.content.split('>')
 
 
-    if message.channel.id == 896207280117264434:
-        content = message.content
-        username = message.author.name
-        timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
-        # Assuming you have a connection pool or a single connection to your database
-        conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+#     if message.channel.id == 896207280117264434:
+#         content = message.content
+#         username = message.author.name
+#         timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
+#         # Assuming you have a connection pool or a single connection to your database
+#         conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
         
-        # Insert data into the market_data table
-        await conn.execute('''
-            INSERT INTO messages(message, username, timestamp)
-            VALUES($1, $2, $3)
-            ''', content, username, timestamp)
+#         # Insert data into the market_data table
+#         await conn.execute('''
+#             INSERT INTO messages(message, username, timestamp)
+#             VALUES($1, $2, $3)
+#             ''', content, username, timestamp)
         
-        # Close the connection if you're not using a connection pool
-        await conn.close()
+#         # Close the connection if you're not using a connection pool
+#         await conn.close()
 
-    embeds = message.embeds
-    if embeds is not None and len(embeds) > 0:
-        title = embeds[0].title
-        description = embeds[0].description
+#     embeds = message.embeds
+#     if embeds is not None and len(embeds) > 0:
+#         title = embeds[0].title
+#         description = embeds[0].description
 
 
-        if title is not None and 'Flow' in title:
+#         if title is not None and 'Flow' in title:
     
-            ticker = title.split(": ")[1]
+#             ticker = title.split(": ")[1]
     
 
-            fields = embeds[0].fields
+#             fields = embeds[0].fields
 
-            names = [i.name for i in fields]
-            values = [i.value for i in fields]
+#             names = [i.name for i in fields]
+#             values = [i.value for i in fields]
 
         
-            sentiment = values[1].split(' :')[0].lower()
+#             sentiment = values[1].split(' :')[0].lower()
 
-            data = values[3]
+#             data = values[3]
 
-            data  = data.split('\n')
+#             data  = data.split('\n')
 
-            data = [i.replace(",","").replace('$','').replace('>','').replace('%','').lower().split(': ')[1] for i in data]
+#             data = [i.replace(",","").replace('$','').replace('>','').replace('%','').lower().split(': ')[1] for i in data]
   
-            if len(data) == 9:
+#             if len(data) == 9:
             
-                flow_type = title
-                strike = data[0]
-                call_put = data[1]
-                expiry = data[2]
-                side = data[3].split(' :')[0]
-                volume = data[4]
-                oi = data[5]
-                multiplier=data[6]
-                iv = data[7]
-                dte = data[8]
+#                 flow_type = title
+#                 strike = data[0]
+#                 call_put = data[1]
+#                 expiry = data[2]
+#                 side = data[3].split(' :')[0]
+#                 volume = data[4]
+#                 oi = data[5]
+#                 multiplier=data[6]
+#                 iv = data[7]
+#                 dte = data[8]
             
-                timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
-                try:
-                    # Assuming you have a connection pool or a single connection to your database
-                    conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+#                 timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
+#                 try:
+#                     # Assuming you have a connection pool or a single connection to your database
+#                     conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
                     
-                    # Insert data into the market_data table
-                    await conn.execute('''
-                        INSERT INTO flow(flow_type, ticker, strike, call_put, expiry, side, volume, oi, multiplier, iv, dte, timestamp, sentiment)
-                        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-                        ''', flow_type, ticker, strike, call_put, expiry, side, volume, oi, multiplier, iv, dte, timestamp, sentiment)
+#                     # Insert data into the market_data table
+#                     await conn.execute('''
+#                         INSERT INTO flow(flow_type, ticker, strike, call_put, expiry, side, volume, oi, multiplier, iv, dte, timestamp, sentiment)
+#                         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+#                         ''', flow_type, ticker, strike, call_put, expiry, side, volume, oi, multiplier, iv, dte, timestamp, sentiment)
                     
-                    # Close the connection if you're not using a connection pool
-                    await conn.close()
-                except UniqueViolationError:
-                    pass
+
+#                 except UniqueViolationError:
+#                     pass
 
 
-        if title is not None and 'Bullseye' in title:
-            print(f"BULLSEYE: {title}")
+#         if title is not None and 'Bullseye' in title:
+#             print(f"BULLSEYE: {title}")
 
-        if title is not None and 'RSI |' in title:
-            footer = embeds[0].footer.text
+#         if title is not None and 'RSI |' in title:
+#             footer = embeds[0].footer.text
             
 
 
-            footer = footer.split(' | ')
+#             footer = footer.split(' | ')
 
-            ticker = footer[0]
-            rsi = footer[1].replace(']', '').replace('[', '')
-            timespan = footer[2]
-            status = footer[3]
-            timestamp = embeds[0].timestamp
-            timestamp = str(timestamp.astimezone()).split('.')[0]
-            # Convert string to datetime object
-            timestamp_dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
-            try:
-                # Assuming you have a connection pool or a single connection to your database
-                conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+#             ticker = footer[0]
+#             rsi = footer[1].replace(']', '').replace('[', '')
+#             timespan = footer[2]
+#             status = footer[3]
+#             timestamp = embeds[0].timestamp
+#             timestamp = str(timestamp.astimezone()).split('.')[0]
+#             # Convert string to datetime object
+#             timestamp_dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+#             try:
+#                 # Assuming you have a connection pool or a single connection to your database
+#                 conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
                 
-                # Insert data into the market_data table
-                await conn.execute('''
-                    INSERT INTO rsi_status(ticker, rsi, timespan, status, timestamp)
-                    VALUES($1, $2, $3, $4, $5)
-                    ''', ticker, rsi, timespan, status, timestamp_dt)
+#                 # Insert data into the market_data table
+#                 await conn.execute('''
+#                     INSERT INTO rsi_status(ticker, rsi, timespan, status, timestamp)
+#                     VALUES($1, $2, $3, $4, $5)
+#                     ''', ticker, rsi, timespan, status, timestamp_dt)
                 
-                # Close the connection if you're not using a connection pool
-                await conn.close()
-            except UniqueViolationError:
-                pass
+#                 # Close the connection if you're not using a connection pool
+#                 await conn.close()
+#             except UniqueViolationError:
+#                 pass
 
 
             # if message.content.endswith('.jpg'):
@@ -312,229 +311,224 @@ async def on_message(message: disnake.Message):
         #     await message.channel.send(embed=embed)
 
 
-        if message.channel.id in REDDIT:
-            embeds = message.embeds[0]
-            title = embeds.title
-            description = embeds.description
-            channel = message.channel.name
+    #     if message.channel.id in REDDIT:
+    #         embeds = message.embeds[0]
+    #         title = embeds.title
+    #         description = embeds.description
+    #         channel = message.channel.name
 
-            # Assuming you have a connection pool or a single connection to your database
-            conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+    #         # Assuming you have a connection pool or a single connection to your database
+    #         conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
             
-            # Insert data into the market_data table
-            await conn.execute('''
-                INSERT INTO reddit_posts(title, context, subreddit, insertion_timestamp)
-                VALUES($1, $2, $3, NOW())
-                ''', title, description, channel)
+    #         # Insert data into the market_data table
+    #         await conn.execute('''
+    #             INSERT INTO reddit_posts(title, context, subreddit, insertion_timestamp)
+    #             VALUES($1, $2, $3, NOW())
+    #             ''', title, description, channel)
             
-            # Close the connection if you're not using a connection pool
-            await conn.close()
-        if message.channel.id in TRADYTICS:
-            embeds = message.embeds[0]
-            title = embeds.title
-            desc = embeds.description
-            fields = embeds.fields
-            field_names = [i.name for i in fields]
-            field_values = [i.value for i in fields]
+
+    #     if message.channel.id in TRADYTICS:
+    #         embeds = message.embeds[0]
+    #         title = embeds.title
+    #         desc = embeds.description
+    #         fields = embeds.fields
+    #         field_names = [i.name for i in fields]
+    #         field_values = [i.value for i in fields]
 
             
-            print(f"FIELD NAMES: {field_names}")
-            print(f"FIELD VALUES: {field_values}")
+    #         print(f"FIELD NAMES: {field_names}")
+    #         print(f"FIELD VALUES: {field_values}")
 
-        if message.channel.id in td9_ids:
-            footer = message.embeds[0].footer.text
+    #     if message.channel.id in td9_ids:
+    #         footer = message.embeds[0].footer.text
 
-            footer = footer.split('|')
+    #         footer = footer.split('|')
 
-            symbol = footer[0].replace(' ', '')
-            timespan = td9_timespan_dict.get(footer[1].replace(' ', ''))
-            status = footer[2].replace(' ', '')
+    #         symbol = footer[0].replace(' ', '')
+    #         timespan = td9_timespan_dict.get(footer[1].replace(' ', ''))
+    #         status = footer[2].replace(' ', '')
 
-            # Assuming you have a connection pool or a single connection to your database
-            conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+    #         # Assuming you have a connection pool or a single connection to your database
+    #         conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
             
-            # Insert data into the market_data table
-            await conn.execute('''
-                INSERT INTO market_data(ticker, timespan, td9_state, insertion_timestamp)
-                VALUES($1, $2, $3, NOW())
-                ''', symbol, timespan, status)
-            
-            # Close the connection if you're not using a connection pool
-            await conn.close()
+    #         # Insert data into the market_data table
+    #         await conn.execute('''
+    #             INSERT INTO market_data(ticker, timespan, td9_state, insertion_timestamp)
+    #             VALUES($1, $2, $3, NOW())
+    #             ''', symbol, timespan, status)
+
         
-        elif message.channel.id in SEC_FILINGS:
+    #     elif message.channel.id in SEC_FILINGS:
 
-            footer = message.embeds[0].footer.text
-            footer = footer.split('|')
-            ticker = footer[0].replace(' ','')
-            title = footer[1]
-            link = footer[2].replace(' ', '')
+    #         footer = message.embeds[0].footer.text
+    #         footer = footer.split('|')
+    #         ticker = footer[0].replace(' ','')
+    #         title = footer[1]
+    #         link = footer[2].replace(' ', '')
 
             
-            try:
-                # Assuming you have a connection pool or a single connection to your database
-                conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+    #         try:
+    #             # Assuming you have a connection pool or a single connection to your database
+    #             conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
                 
-                # Insert data into the market_data table
-                await conn.execute('''
-                    INSERT INTO sec_filings(ticker, title, link, insertion_timestamp)
-                    VALUES($1, $2, $3, NOW())
-                    ''', ticker, title, link)
+    #             # Insert data into the market_data table
+    #             await conn.execute('''
+    #                 INSERT INTO sec_filings(ticker, title, link, insertion_timestamp)
+    #                 VALUES($1, $2, $3, NOW())
+    #                 ''', ticker, title, link)
+
+    #         except UniqueViolationError:
+    #             print(f'Skipping')
+
+    #     # if message.channel.id in RSS_FEEDS:
+    #     #     print(message.content)
+
+    #     if message.channel.id in CRYPTO:
+    #         footer = message.embeds[0].footer.text
+    #         footer = footer.split("|")
+
+    #         ticker = footer[0].replace(' ','')
+    #         side = footer[1].replace(' ','')
+    #         dollar_cost = float(footer[2].replace(' ',''))
+    #         timestamp = embeds[0].timestamp
+    #         timestamp = str(timestamp.astimezone()).split('.')[0]
+    #         # Convert string to datetime object
+    #         timestamp_dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+    #         try:
+    #             # Assuming you have a connection pool or a single connection to your database
+    #             conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
                 
-                # Close the connection if you're not using a connection pool
-                await conn.close()
-            except UniqueViolationError:
-                print(f'Skipping')
-
-        # if message.channel.id in RSS_FEEDS:
-        #     print(message.content)
-
-        if message.channel.id in CRYPTO:
-            footer = message.embeds[0].footer.text
-            footer = footer.split("|")
-
-            ticker = footer[0].replace(' ','')
-            side = footer[1].replace(' ','')
-            dollar_cost = float(footer[2].replace(' ',''))
-            timestamp = embeds[0].timestamp
-            timestamp = str(timestamp.astimezone()).split('.')[0]
-            # Convert string to datetime object
-            timestamp_dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
-            try:
-                # Assuming you have a connection pool or a single connection to your database
-                conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+    #             # Insert data into the market_data table
+    #             await conn.execute('''
+    #                 INSERT INTO crypto(ticker, side, dollar_cost, timestamp)
+    #                 VALUES($1, $2, $3, $4)
+    #                 ''', ticker, side, dollar_cost, timestamp_dt)
                 
-                # Insert data into the market_data table
-                await conn.execute('''
-                    INSERT INTO crypto(ticker, side, dollar_cost, timestamp)
-                    VALUES($1, $2, $3, $4)
-                    ''', ticker, side, dollar_cost, timestamp_dt)
+    #             # Close the connection if you're not using a connection pool
+    #             await conn.close()
+    #         except UniqueViolationError:
+    #             print(f'Skipping')
+
+    #     # if message.channel.id in RSI_FEEDS:
+    #     #     footer = message.embeds[0].footer.text
+    #     #     print(footer)
+
+    #     if message.channel.id in MOMENTUM_SCALPS:
+    #         footer = message.embeds[0].footer.text
+    #         footer = footer.split("|")
+
+    #         ticker = footer[0].replace(' ', '')
+    #         timeframe = footer[1].replace(' ', '')
+    #         move = footer[2].replace(' ', '')
+    #         # Assuming you have a connection pool or a single connection to your database
+    #         try:
+    #             conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
                 
-                # Close the connection if you're not using a connection pool
-                await conn.close()
-            except UniqueViolationError:
-                print(f'Skipping')
-
-        # if message.channel.id in RSI_FEEDS:
-        #     footer = message.embeds[0].footer.text
-        #     print(footer)
-
-        if message.channel.id in MOMENTUM_SCALPS:
-            footer = message.embeds[0].footer.text
-            footer = footer.split("|")
-
-            ticker = footer[0].replace(' ', '')
-            timeframe = footer[1].replace(' ', '')
-            move = footer[2].replace(' ', '')
-            # Assuming you have a connection pool or a single connection to your database
-            try:
-                conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+    #             # Insert data into the market_data table
+    #             await conn.execute('''
+    #                 INSERT INTO momentum_scalps(ticker, timeframe, move, insertion_timestamp)
+    #                 VALUES($1, $2, $3, NOW())
+    #                 ''', ticker.replace(' ',''), timeframe.replace(' ', ''), move.replace(' ',''))
                 
-                # Insert data into the market_data table
-                await conn.execute('''
-                    INSERT INTO momentum_scalps(ticker, timeframe, move, insertion_timestamp)
-                    VALUES($1, $2, $3, NOW())
-                    ''', ticker.replace(' ',''), timeframe.replace(' ', ''), move.replace(' ',''))
-                
-                # Close the connection if you're not using a connection pool
-                await conn.close()
-            except UniqueViolationError:
-                pass
+    #             # Close the connection if you're not using a connection pool
+    #             await conn.close()
+    #         except UniqueViolationError:
+    #             pass
 
-        if message.channel.id in opt_vol_ids:
-            footer = message.embeds[0].footer.text
-            timestamp = embeds[0].timestamp
-            timestamp = str(timestamp.astimezone()).split('.')[0]
-            timestamp_dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
-            print(footer, timestamp_dt)
+    #     if message.channel.id in opt_vol_ids:
+    #         footer = message.embeds[0].footer.text
+    #         timestamp = embeds[0].timestamp
+    #         timestamp = str(timestamp.astimezone()).split('.')[0]
+    #         timestamp_dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+    #         print(footer, timestamp_dt)
 
         
 
 
-        if message.channel.id in SECTOR_DARKPOOLS:
-            embeds = message.embeds
-            title = embeds[0].title
-            desc = embeds[0].description
+    #     if message.channel.id in SECTOR_DARKPOOLS:
+    #         embeds = message.embeds
+    #         title = embeds[0].title
+    #         desc = embeds[0].description
 
-            fields = embeds[0].fields
+    #         fields = embeds[0].fields
 
-            names = [i.name for i in fields]
-            values = [i.value for i in fields]
+    #         names = [i.name for i in fields]
+    #         values = [i.value for i in fields]
             
     
 
-            ticker = title.split(': ')
-            ticker = ticker[1]
-            timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
-            size_price = values[1].split(' @ ')
-            size = size_price[0].replace(',','')
-            price = size_price[1].replace('$','')
-            notional_value = values[2].split(' ')
-            notional_value=notional_value[0].replace('$', '').replace(',','')
-            channel = message.channel.name
-            # Regex pattern to match emojis
-            emoji_pattern = re.compile("["
-                                    u"\U0001F600-\U0001F64F"  # emoticons
-                                    u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-                                    u"\U0001F680-\U0001F6FF"  # transport & map symbols
-                                    u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-                                    u"\U00002702-\U000027B0"
-                                    u"\U000024C2-\U0001F251"
-                                    "]+", flags=re.UNICODE)
+    #         ticker = title.split(': ')
+    #         ticker = ticker[1]
+    #         timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
+    #         size_price = values[1].split(' @ ')
+    #         size = size_price[0].replace(',','')
+    #         price = size_price[1].replace('$','')
+    #         notional_value = values[2].split(' ')
+    #         notional_value=notional_value[0].replace('$', '').replace(',','')
+    #         channel = message.channel.name
+    #         # Regex pattern to match emojis
+    #         emoji_pattern = re.compile("["
+    #                                 u"\U0001F600-\U0001F64F"  # emoticons
+    #                                 u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+    #                                 u"\U0001F680-\U0001F6FF"  # transport & map symbols
+    #                                 u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+    #                                 u"\U00002702-\U000027B0"
+    #                                 u"\U000024C2-\U0001F251"
+    #                                 "]+", flags=re.UNICODE)
 
-            # Remove emojis from the string
-            cleaned_string = emoji_pattern.sub(r'', channel)
+    #         # Remove emojis from the string
+    #         cleaned_string = emoji_pattern.sub(r'', channel)
 
-            try:
-                conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+    #         try:
+    #             conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
                 
-                # Insert data into the market_data table
-                await conn.execute('''
-                    INSERT INTO dark_pools(sector, ticker, time, size, price, notional_value)
-                    VALUES($1, $2, $3, $4, $5, $6)
-                    ''', cleaned_string, ticker, timestamp, size, price, notional_value)
+    #             # Insert data into the market_data table
+    #             await conn.execute('''
+    #                 INSERT INTO dark_pools(sector, ticker, time, size, price, notional_value)
+    #                 VALUES($1, $2, $3, $4, $5, $6)
+    #                 ''', cleaned_string, ticker, timestamp, size, price, notional_value)
                 
-                # Close the connection if you're not using a connection pool
-                await conn.close()
-            except UniqueViolationError:
-                pass
+    #             # Close the connection if you're not using a connection pool
+    #             await conn.close()
+    #         except UniqueViolationError:
+    #             pass
 
-        if message.channel.id in STOCK_FEEDS:
-            footer = embeds[0].footer.text
-            footer = footer.split('|')
-            ticker = footer[0]
-            type = footer[1].replace('!','').replace(' ','').lower()
-            price = footer[2]
-            fifty_high = footer[3]
-            fifty_low = footer[4]
+    #     if message.channel.id in STOCK_FEEDS:
+    #         footer = embeds[0].footer.text
+    #         footer = footer.split('|')
+    #         ticker = footer[0]
+    #         type = footer[1].replace('!','').replace(' ','').lower()
+    #         price = footer[2]
+    #         fifty_high = footer[3]
+    #         fifty_low = footer[4]
 
-            timestamp = embeds[0].timestamp
-            timestamp = str(timestamp.astimezone()).split('.')[0]
-            # Convert string to datetime object
-            timestamp_dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+    #         timestamp = embeds[0].timestamp
+    #         timestamp = str(timestamp.astimezone()).split('.')[0]
+    #         # Convert string to datetime object
+    #         timestamp_dt = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
 
-            print(type, price, fifty_high, fifty_low)
+    #         print(type, price, fifty_high, fifty_low)
 
-            if 'High' or 'Low' in title:
-                try:
-                    conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
+    #         if 'High' or 'Low' in title:
+    #             try:
+    #                 conn = await asyncpg.connect('postgresql://postgres:fud@localhost/polygon')
                     
-                    # Insert data into the market_data table
-                    await conn.execute('''
-                        INSERT INTO new_prices(ticker, type, fifty_low, price, fifty_high, timestamp)
-                        VALUES($1, $2, $3, $4, $5, $6)
-                        ''', ticker, type, fifty_high, price, fifty_low, timestamp)
+    #                 # Insert data into the market_data table
+    #                 await conn.execute('''
+    #                     INSERT INTO new_prices(ticker, type, fifty_low, price, fifty_high, timestamp)
+    #                     VALUES($1, $2, $3, $4, $5, $6)
+    #                     ''', ticker, type, fifty_high, price, fifty_low, timestamp)
                     
-                    # Close the connection if you're not using a connection pool
-                    await conn.close()
-                except UniqueViolationError:
-                    pass
+    #                 # Close the connection if you're not using a connection pool
+    #                 await conn.close()
+    #             except UniqueViolationError:
+    #                 pass
 
 
-        if message.channel.id in OPTIONS_CONDITIONS:
-            footer = embeds[0].footer.text
-            print(footer)
-    await bot.process_commands(message)
+    #     if message.channel.id in OPTIONS_CONDITIONS:
+    #         footer = embeds[0].footer.text
+    #         print(footer)
+    # await bot.process_commands(message)
 # This dictionary will hold the conversation state for each user
 conversations = {}
 client = OpenAI(api_key=os.environ.get('YOUR_OPENAI_KEY'))
@@ -861,7 +855,7 @@ async def active(ctx):
         # results = await scan_bars(valid_tickers, timeframe)
         # await interaction.followup.send(results)
 
-from live_markets.stock_market import StockMarketLive
+from _markets.stock_market import StockMarketLive
 
 
 
@@ -1104,25 +1098,7 @@ async def related(ctx, keyword):
 
 
 
-# Specify the directory where your cogs are located
-cogs_dir = "C:/users/chuck/fudstop/fudstop/cogs"
 
-print("Path being used:", cogs_dir)
-
-# Get a list of all cog files in the specified directory
-cog_files = [filename for filename in os.listdir(cogs_dir) if filename.endswith(".py")]
-
-# Load each cog extension
-for cog_file in cog_files:
-    # Construct the full module name for the cog
-    cog_name = f"cogs.{cog_file[:-3]}"  # Remove '.py' extension and prepend 'cogs.'
-
-    try:
-        # Load the cog extension
-        bot.load_extension(cog_name)
-        print(f"Loaded cog: {cog_name}")
-    except Exception as e:
-        print(f"Failed to load cog: {cog_name}\nError: {str(e)}")
 # Command to print webhook URLs for a specific channel
 @bot.command(name='webhooks')
 async def fetch_webhooks(ctx):
@@ -1319,5 +1295,23 @@ async def play(inter:disnake.AppCmdInter, type:str=commands.Param(choices=['call
         await inter.edit_original_message(file=disnake.File('puts.csv'), view=view.add_item(CallResults(options,puts)))
 
     
+# Specify the directory where your cogs are located
+cogs_dir = "C:/users/chuck/fudstop/cogs"
 
-bot.run(os.environ.get('BOT'))
+print("Path being used:", cogs_dir)
+
+# Get a list of all cog files in the specified directory
+cog_files = [filename for filename in os.listdir(cogs_dir) if filename.endswith(".py")]
+
+# Load each cog extension
+for cog_file in cog_files:
+    # Construct the full module name for the cog
+    cog_name = f"cogs.{cog_file[:-3]}"  # Remove '.py' extension and prepend 'cogs.'
+
+    try:
+        # Load the cog extension
+        bot.load_extension(cog_name)
+        print(f"Loaded cog: {cog_name}")
+    except Exception as e:
+        print(f"Failed to load cog: {cog_name}\nError: {str(e)}")
+bot.run(os.environ.get('RESEARCH_BOT'))

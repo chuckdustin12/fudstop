@@ -86,14 +86,6 @@ class WebullOptions:
             dsn=self.connection_string, min_size=1, max_size=10
         )
 
-    async def table_exists(self, table_name):
-        query = f"SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = '{table_name}');"
-        async with self.pool.acquire() as conn:
-            async with conn.transaction():
-                exists = await conn.fetchval(query)
-        return exists
-
-
     async def create_table(self, df, table_name):
         print("Connected to the database.")
         dtype_mapping = {
