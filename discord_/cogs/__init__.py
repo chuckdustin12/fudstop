@@ -6,6 +6,7 @@ from .earnings import EarningsSelect
 
 
 import disnake
+from disnake import TextInputStyle
 from disnake.ext import commands
 
 
@@ -115,3 +116,9 @@ class YFView(disnake.ui.View):
     @disnake.ui.button(style=disnake.ButtonStyle.blurple, emoji='♻️', custom_id='toMainView', row=3)
     async def recycler(self, button: disnake.ui.Button, inter:disnake.AppCmdInter):
         await inter.response.edit_message(view=MainView(self.ticker))
+
+
+
+
+
+

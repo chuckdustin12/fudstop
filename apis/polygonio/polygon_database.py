@@ -1,7 +1,7 @@
 from .polygon_options import PolygonOptions
 from .async_polygon_sdk import Polygon
 from .models.option_models.universal_snapshot import UniversalSnapshot
-from list_sets.ticker_lists import most_active_tickers
+from _markets.list_sets.ticker_lists import most_active_tickers
 import pandas as pd
 from tabulate import tabulate
 import asyncio

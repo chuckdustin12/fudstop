@@ -6,7 +6,7 @@ import random
 from apis.helpers import map_stock_conditions, STOCK_EXCHANGES, stock_condition_dict, TAPES
 from apis.helpers import format_large_number, convert_to_ns_datetime
 from apis.polygonio.async_polygon_sdk import Polygon
-from list_sets.ticker_lists import most_active_tickers
+from .list_sets.ticker_lists import most_active_tickers
 from polygon.websocket import WebSocketClient, EquityTrade  
 from polygon.websocket.models import WebSocketMessage
 from typing import List
@@ -14,7 +14,7 @@ from discord_webhook import DiscordEmbed, DiscordWebhook
 # type: ignore
 import orjson
 from discord_webhook import AsyncDiscordWebhook, DiscordEmbed
-from list_sets.dicts import hex_color_dict
+from .list_sets.dicts import hex_color_dict
 import asyncio
 import asyncpg
 

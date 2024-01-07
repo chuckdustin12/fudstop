@@ -111,9 +111,9 @@ class Polygon:
                             break
         if as_dataframe:
             import pandas as pd
-            return pd.DataFrame(all_results)
+            yield pd.DataFrame(all_results)
         else:
-            return all_results
+            yield all_results
         
 
 
@@ -303,7 +303,7 @@ class Polygon:
         else:
             print(f'Couldnt get info for {ticker}')
 
-    async def get_all_tickers(self, include_otc=False, save_all_tickers:bool=False) -> List[StockSnapshot]:
+    async def get_all_tickers(self, include_otc=False, save_all_tickers:bool=False):
         """
         Fetches a list of all stock tickers available on Polygon.io.
 
@@ -322,7 +322,7 @@ class Polygon:
             print(f"Number of tickers found: {len(tickers)}")
             ```
         """
-        url = f"https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?include_otc={include_otc}&apiKey={self.api_key}"
+        url = f"https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?apiKey={self.api_key}"
         params = {
             "apiKey": self.api_key,
         }
@@ -335,16 +335,17 @@ class Polygon:
 
                 tickers = response_data['tickers']
              
-                ticker_data = [StockSnapshot(ticker) for ticker in response_data['tickers'] if ticker is not None]
+                data = StockSnapshot(tickers)
 
-                if save_all_tickers:
-                    # Extract tickers to a list
-                    ticker_list = [ticker['ticker'] for ticker in tickers]
+                return data
+                # if save_all_tickers:
+                #     # Extract tickers to a list
+                #     ticker_list = [ticker['ticker'] for ticker in tickers]
                     
-                    # Write the tickers to a file
-                    with open('list_sets/saved_tickers.py', 'w') as f:
-                        f.write(str(ticker_list))
-                return ticker_data
+                #     # Write the tickers to a file
+                #     with open('list_sets/saved_tickers.py', 'w') as f:
+                #         f.write(str(ticker_list))
+                # return ticker_data
 
 
     async def rsi(self, ticker:str, timespan:str, limit:str='1000', window:int=14, date_from:str=None, date_to:str=None, session=None):

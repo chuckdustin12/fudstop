@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+import pytz
 # Add the project directory to the sys.path
 project_dir = str(Path(__file__).resolve().parents[1])
 if project_dir not in sys.path:
@@ -12,159 +13,74 @@ from polygonio.mapping import stock_condition_dict,STOCK_EXCHANGES
 from typing import Dict
 from datetime import datetime
 
-@dataclass
-class Ticker:
+class StockSnapshot:
+    def __init__(self, data):
+        self.ticker = [i.get('ticker') for i in data]
+        self.todaysChangePerc = [float(i.get('todaysChangePerc')) for i in data]
+        self.todaysChange = [float(i.get('todaysChange')) for i in data]
+        self.updated = [i.get('updated') for i in data]
 
 
-    ticker: Optional[str] = None
-    today_change: Optional[float] = None
-    today_change_perc: Optional[float] = None
+
+        day = [i.get('day') for i in data]
+
+        # Your existing code with handling for None values
+        self.day_o = [float(i.get('o', 0)) for i in day]
+        self.day_h = [float(i.get('h', 0)) for i in day]
+        self.day_l = [float(i.get('l', 0)) for i in day]
+        self.day_c = [float(i.get('c', 0)) for i in day]
+        self.day_v = [float(i.get('v', 0)) for i in day]
+        self.day_vw = [float(i.get('vw', 0)) for i in day]
+
+        lastQuote = [i.get('lastQuote') or {} for i in data]
+        self.ask = [float(i.get('P', 0)) for i in lastQuote]
+        self.ask_size = [float(i.get('S', 0)) for i in lastQuote]
+        self.bid = [float(i.get('p', 0)) for i in lastQuote]
+        self.bid_size = [float(i.get('s', 0)) for i in lastQuote]
+        self.quote_timestamp = [self.convert_timestamp(i.get('t')) for i in lastQuote]
 
 
-@dataclass
-class Day:
-
-
-    open: Optional[float] = None
-    high: Optional[float] = None
-    low: Optional[float] = None
-    close: Optional[float] = None
-    volume: Optional[int] = None
-    vwap: Optional[float] = None
-
-
-@dataclass
-class LastQuote:
-
-
-    ask_price: Optional[float] = None
-    ask_size: Optional[float] = None
-    bid_price: Optional[float] = None
-    bid_size: Optional[float] = None
-    quote_timestamp: Optional[float] = None
-
-
-@dataclass
-class LastTrade:
-
-
-    conditions: Optional[List[int]] = None
-    trade_id: Optional[str] = None
-    trade_price: Optional[float] = None
-    trade_size: Optional[int] = None
-    trade_timestamp: Optional[int] = None
-    trade_exchange: Optional[int] = None
-
-
-@dataclass
-class Min:
-
-
-    accumulated_volume: Optional[int] = None
-    minute_timestamp: Optional[float] = None
-    vwap: Optional[float] = None
-    volume: Optional[float] = None
-    open: Optional[float] = None
-    high: Optional[float] = None
-    low: Optional[float] = None
-    close: Optional[float] = None
-
-
-@dataclass
-class PrevDay:
-
-
-    open: Optional[float] = None
-    high: Optional[float] = None
-    low: Optional[float] = None
-    close: Optional[float] = None
-    volume: Optional[float] = None
-    vwap: Optional[float] = None
-
-
-@dataclass
-class StockSnapshot():  # Inheritance
-    def __init__(self):
-        super().__init__()
-
+        lastTrade = [i.get('lastTrade') for i in data]
+        self.trade_conditions = [i.get('c', 0) for i in lastTrade]
+        flattened_conditions = [item for sublist in self.trade_conditions for item in (sublist if isinstance(sublist, list) else [sublist])] if self.trade_conditions else []
+        self.trade_conditions = [stock_condition_dict.get(c) for c in flattened_conditions] if flattened_conditions is not None else []
+        self.trade_id = [i.get('i') for i in lastTrade]
+        self.trade_price = [float(i.get('p', 0)) for i in lastTrade]
+        self.trade_size = [float(i.get('s', 0)) for i in lastTrade]
+        self.trade_timestamp = [self.convert_timestamp(i.get('t')) for i in lastTrade]
+        self.trade_exchange = [i.get('x') for i in lastTrade]
         
-    ticker: Optional[str] = None
-    today_changep: Optional[float] = None
-    today_change: Optional[float] = 0.0
-    stock_day: Optional[Day] = None
-    stock_last_quote: Optional[LastQuote] = None
-    last_trade: Optional[LastTrade] = None
-    stock_minute_bar: Optional[Min] = None
-    prev_day: Optional[PrevDay] = None
-
-    
-    def __init__(self, ticker_data):
-        self.ticker = ticker_data.get('ticker', None)
-        self.today_changep = ticker_data.get('todaysChangePerc', None)
-        self.today_change = ticker_data.get('todaysChange', 0.0)
-
-        day_data = ticker_data.get('day', {})
-        if day_data:
-            self.stock_day = Day(
-                open=day_data.get('o'),
-                high=day_data.get('h'),
-                low=day_data.get('l'),
-                close=day_data.get('c'),
-                volume=day_data.get('v'),
-                vwap=day_data.get('vw'),
-            )
-
-        quote_data = ticker_data.get('lastQuote', None)
-        if quote_data:
-            self.stock_last_quote = LastQuote(
-                ask_price=quote_data.get('P'),
-                ask_size=quote_data.get('S'),
-                bid_price=quote_data.get('p'),
-                bid_size=quote_data.get('s'),
-                quote_timestamp=quote_data.get('t'),
-            )
-        else:
-            quote_data = None
-        trade_data = ticker_data.get('lastTrade', None)
-        if trade_data:
-            self.last_trade = LastTrade(
-                conditions = [stock_condition_dict.get(i) for i in trade_data.get('c')],
-
-                trade_id=trade_data.get('i'),
-                trade_price=trade_data.get('p'),
-                trade_size=trade_data.get('s'),
-                timestamp = convert_datetime_list(trade_data.get('t'), unit='ns'),
-                exchange = STOCK_EXCHANGES.get(trade_data.get('x'))
-
-        
-            )
-        else:
-            trade_data = None
-        min_data = ticker_data.get('min', {})
-        if min_data:
-            self.stock_minute_bar = Min(
-                accumulated_volume=min_data.get('av'),
-                minute_timestamp=min_data.get('t'),
-                vwap=min_data.get('vw'),
-                volume=min_data.get('v'),
-                open=min_data.get('o'),
-                high=min_data.get('h'),
-                low=min_data.get('l'),
-                close=min_data.get('c'),
-            )
-        else:
-            min_data = None
-        prev_data = ticker_data.get('prevDay', None)
-        if prev_data:
-            self.prev_day = PrevDay(
-                open=prev_data.get('o'),
-                high=prev_data.get('h'),
-                low=prev_data.get('l'),
-                close=prev_data.get('c'),
-                volume=prev_data.get('v'),
-                vwap=prev_data.get('vw'),
-            )
-        else:
-            prev_data = None
 
 
+        min = [i.get('min') for i in data]
+        self.min_av = [float(i.get('av')) for i in min]
+        self.min_timestamp = [self.convert_timestamp(i.get('t')) for i in min]
+        self.min_trades = [float(i.get('n', 0)) for i in min]
+        self.min_o = [float(i.get('o', 0)) for i in min]
+        self.min_h = [float(i.get('h', 0)) for i in min]
+        self.min_l = [float(i.get('l', 0)) for i in min]
+        self.min_c = [float(i.get('c', 0)) for i in min]
+        self.min_v = [float(i.get('v', 0)) for i in min]
+        self.min_vw = [float(i.get('vw', 0)) for i in min]
+
+
+
+        prevDay = [i.get('prevDay') for i in data]
+        self.o = [float(i.get('o', 0)) for i in prevDay]
+        self.h = [float(i.get('h', 0)) for i in prevDay]
+        self.l = [float(i.get('l', 0)) for i in prevDay]
+        self.c = [float(i.get('c', 0)) for i in prevDay]
+        self.v = [float(i.get('v', 0)) for i in prevDay]
+        self.vw = [float(i.get('vw', 0)) for i in prevDay]
+
+
+
+
+    def convert_timestamp(self, timestamp):
+        if timestamp is None:
+            return None
+        # Convert nanoseconds to seconds
+        timestamp_in_seconds = timestamp / 1_000_000_000
+        # Convert to datetime and then to desired string format
+        dt = datetime.fromtimestamp(timestamp_in_seconds, pytz.timezone('America/Chicago'))
+        return dt.strftime('%Y-%m-%d %H:%M:%S')

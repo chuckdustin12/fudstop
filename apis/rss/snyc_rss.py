@@ -6,7 +6,7 @@ project_dir = str(Path(__file__).resolve().parents[2])
 if project_dir not in sys.path:
     sys.path.append(project_dir)
 import re
-from list_sets.ticker_lists import most_active_tickers
+from _markets.list_sets.ticker_lists import most_active_tickers
 from .rss_models import Feed,Entries
 import feedparser
 import requests

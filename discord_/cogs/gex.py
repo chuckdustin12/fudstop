@@ -2,7 +2,7 @@ import disnake
 
 from disnake.ext import commands
 from apis.gexbot.gexbot import GexMajorLevels,GEXBot,Gex,MaxGex
-from list_sets.ticker_lists import gex_tickers
+from _markets.list_sets.ticker_lists import gex_tickers
 import asyncio
 
 

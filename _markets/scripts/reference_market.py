@@ -1,4 +1,4 @@
-from list_sets.ticker_lists import most_active_tickers
+
 
 from apis.webull.webull_trading import WebullTrading
 

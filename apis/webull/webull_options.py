@@ -56,7 +56,7 @@ class WebullOptions:
         self.eight_days_from_now = (datetime.now() + timedelta(days=8)).strftime('%Y-%m-%d')
         self.eight_days_ago = (datetime.now() - timedelta(days=8)).strftime('%Y-%m-%d')
         self.headers = {
-        "Access_token": os.environ.get('webull_access_token'),
+        "Access_token": os.environ.get('ACCESS_TOKEN'),
         "Accept": "*/*",
         "App": "global",
         "App-Group": "broker",
@@ -71,7 +71,6 @@ class WebullOptions:
         "Ph": "Windows Chrome",
         "Platform": "web",
         "Referer": "https://app.webull.com/",
-        'Reqid': os.environ.get('REQ_ID'),
         "Sec-Ch-Ua": "\"Chromium\";v=\"118\", \"Google Chrome\";v=\"118\", \"Not=A?Brand\";v=\"99\"",
         "Sec-Ch-Ua-Mobile": "?0",
         "Sec-Ch-Ua-Platform": "\"Windows\"",
@@ -83,7 +82,7 @@ class WebullOptions:
 
     async def connect(self):
         self.pool = await asyncpg.create_pool(
-            dsn=self.connection_string, min_size=1, max_size=10
+            dsn=self.connection_string, min_size=1, max_size=100
         )
 
     async def create_table(self, df, table_name):
@@ -314,8 +313,8 @@ class WebullOptions:
                 # This assumes 'symbol' column exists in 'options_data' table and 
                 # is used to store the ticker symbol
                 query = f'''
-                    SELECT ticker_id FROM webull_options
-                    WHERE ticker = '{ticker_symbol}';
+                    SELECT ticker_id FROM wb_opts
+                    WHERE underlying_symbol = '{ticker_symbol}';
                 '''
                 # Fetch the result
                 result = await conn.fetch(query)
@@ -528,27 +527,28 @@ class WebullOptions:
         if datas is not None and dates is not None:
         # This function remains for your specific data handling if needed
             return [{**data, 'date': date} for date, data in zip(dates, datas)]
-    async def fetch_volume_analysis(self, session, option_symbol, id, underlying_ticker):
+    async def fetch_volume_analysis(self, option_symbol, id, underlying_ticker):
         url = f"https://quotes-gw.webullfintech.com/api/statistic/option/queryVolumeAnalysis?count=200&tickerId={id}"
-        async with session.get(url) as resp:
-            if resp.status == 200:
-                vol_anal = await resp.json()
-                dates = vol_anal.get('dates')
-                datas = vol_anal.get('datas')
-                associated_data = await self.associate_dates_with_data(dates, datas)
+        async with aiohttp.ClientSession(headers=self.headers) as session:
+            async with session.get(url) as resp:
+                if resp.status == 200:
+                    vol_anal = await resp.json()
+                    dates = vol_anal.get('dates')
+                    datas = vol_anal.get('datas')
+                    associated_data = await self.associate_dates_with_data(dates, datas)
 
-                df = pd.DataFrame(associated_data)
-                df['option_symbol'] = option_symbol
-                components = get_human_readable_string(option_symbol)
-                df['underlying_ticker'] = underlying_ticker
-                df['strike'] = components.get('strike_price')
-                df['call_put'] = components.get('call_put')
-                df['expiry'] = components.get('expiry_date')
-                return df
-            else:
-                print(f"Failed to fetch data for ID {id}: HTTP Status {resp.status}")
-                return pd.DataFrame()
-                
+                    df = pd.DataFrame(associated_data)
+                    df['option_symbol'] = option_symbol
+                    components = get_human_readable_string(option_symbol)
+                    df['underlying_ticker'] = underlying_ticker
+                    df['strike'] = components.get('strike_price')
+                    df['call_put'] = components.get('call_put')
+                    df['expiry'] = components.get('expiry_date')
+                    return df
+                else:
+                    print(f"Failed to fetch data for ID {id}: HTTP Status {resp.status}")
+                    return pd.DataFrame()
+                    
     # Initialize an HTTP session
     async def test_vol_anal(self, ticker_id):
         volume_analysis_url = f"https://quotes-gw.webullfintech.com/api/statistic/option/queryVolumeAnalysis?count=500&tickerId={ticker_id}"

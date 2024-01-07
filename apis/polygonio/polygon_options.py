@@ -47,12 +47,12 @@ def dtype_to_postgres(dtype):
     else:
         return 'TEXT'  # Default type
 class PolygonOptions:
-    def __init__(self,user:str='chuck', database:str='poly'):
+    def __init__(self,user:str='chuck', database:str='markets'):
         self.conn = None
         self.pool = None
         self.connection_string = os.environ.get('POLYGON_STRING')
 
-        self.database = os.environ.get('DB_NAME')
+
 
         self.api_key = os.environ.get('YOUR_POLYGON_KEY')
         self.today = datetime.now().strftime('%Y-%m-%d')
@@ -70,11 +70,11 @@ class PolygonOptions:
 
 
         self.db_config = {
-            "host": os.environ.get('DB_HOST', 'localhost'), # Default to this IP if 'DB_HOST' not found in environment variables
+            "host": os.environ.get('localhost'), # Default to this IP if 'DB_HOST' not found in environment variables
             "port": int(os.environ.get('DB_PORT')), # Default to 5432 if 'DB_PORT' not found
             "user": os.environ.get(user), # Default to 'postgres' if 'DB_USER' not found
-            "password": os.environ.get('DB_PASSWORD', 'fud'), # Use the password from environment variable or default
-            "database": os.environ.get('DB_NAME', f'{database}') # Database name for the new jawless database
+            "password": os.environ.get('fud'), # Use the password from environment variable or default
+            "database": os.environ.get(f'{database}') # Database name for the new jawless database
         }
 
 
@@ -99,7 +99,7 @@ class PolygonOptions:
 
     async def connect(self):
        
-        self.pool = await asyncpg.create_pool(**self.db_config)
+        self.pool = await asyncpg.create_pool(host='localhost', user='chuck', database='markets', port=5432, password='fud')
 
         return self.pool
     async def update_options(self, ticker):

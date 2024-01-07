@@ -1,4 +1,9 @@
-
+import sys
+from pathlib import Path
+# Add the project directory to the sys.path
+project_dir = str(Path(__file__).resolve().parents[1])
+if project_dir not in sys.path:
+    sys.path.append(project_dir)
 import os
 import sys
 from pathlib import Path
@@ -19,7 +24,7 @@ import disnake
 from apis.y_finance.yf_sdk import yfSDK
 import base64
 from disnake.ext import commands
-from list_sets.ticker_lists import most_active_tickers
+from _markets.list_sets.ticker_lists import most_active_tickers
 most_active_tickers = set(most_active_tickers)
 from discord_.bot_menus.modals.options_modal import OptionsDataModal
 from selenium.webdriver.common.by import By
@@ -100,7 +105,7 @@ bot = commands.Bot(command_prefix="!", intents=disnake.Intents.all())
 gptsdk=OpenAISDK()
 yf = yfSDK()
 
-from list_sets.ticker_lists import gex_tickers
+from _markets.list_sets.ticker_lists import gex_tickers
 from typing import List
 import disnake
 from disnake.ext import commands

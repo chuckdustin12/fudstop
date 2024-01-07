@@ -390,8 +390,9 @@ async def plot_iv_surface(ticker):
     return screenshot_bytes
 
 
+
 # Function to plot consolidated gamma exposure across all strikes with custom styling and additional title information
-async def plot_gamma_exposure(ticker: str):
+async def plot_greek_exposure(ticker: str, greek:str):
     df = await poly.get_option_chain_all(ticker)
     df = df.df
     
@@ -404,33 +405,34 @@ async def plot_gamma_exposure(ticker: str):
         return
     
     # Group data by strike and sum up gamma
-    gamma_data = filtered_df.groupby(['strike'])['gamma'].sum().reset_index()
+    greek_data = filtered_df.groupby(['strike'])[greek].sum().reset_index()
     
     # Find the strike with the most gamma
-    max_gamma_strike = gamma_data.loc[gamma_data['gamma'].idxmax()]['strike']
+    max_greek_strike = greek_data.loc[greek_data[greek].idxmax()]['strike']
     
+
     # Create the plot with a color gradient based on gamma levels
     fig = px.bar(
-        gamma_data, 
+        greek_data, 
         x='strike', 
-        y='gamma', 
-        labels={'strike': 'Strike Price', 'gamma': 'Gamma Exposure'},
-        color='gamma',  # Color gradient based on gamma levels
+        y=greek, 
+        labels={'strike': 'Strike Price', greek: f'{greek} Exposure'},
+        color=f'{greek}',  # Color gradient based on gamma levels
         color_continuous_scale='Viridis'
     )
-    
+
     # Add a vertical line at the strike with maximum gamma
     fig.add_shape(
         go.layout.Shape(
             type="line",
-            x0=max_gamma_strike,
-            x1=max_gamma_strike,
+            x0=max_greek_strike,
+            x1=max_greek_strike,
             y0=0,
-            y1=gamma_data['gamma'].max(),
-            line=dict(color="Red", width=2)
+            y1=greek_data[greek].max(),
+            line=dict(color="Gold", width=3, dash="dot")
         )
     )
-    
+
     # Add annotations for gamma levels
     annotations = [
         dict(
@@ -442,16 +444,17 @@ async def plot_gamma_exposure(ticker: str):
             showarrow=True,
             arrowhead=1,
             ax=0,
-            ay=-40
+            ay=-40,
+            font=dict(size=12, color='yellow' if strike == max_greek_strike else 'white')
         )
-        for strike, gamma in zip(gamma_data['strike'], gamma_data['gamma'])
+        for strike, gamma in zip(greek_data['strike'], greek_data[greek])
     ]
-    
+
     # Update layout
     fig.update_layout(
         template='plotly_dark',
         title={
-            'text': f"Consolidated Gamma Exposure for {ticker} (Max @ {max_gamma_strike})",
+            'text': f"Consolidated {greek} Exposure for {ticker} (Max @ {max_greek_strike})",
             'y':0.95,
             'x':0.5,
             'xanchor': 'center',
@@ -464,15 +467,14 @@ async def plot_gamma_exposure(ticker: str):
         ),
         annotations=annotations  # Add annotations to layout
     )
-    
- 
 
 
 
 
-    fig.write_html('gex.html')
+
+    fig.write_html(f'files/{greek}.html')
     # Get the absolute path of the HTML file
-    file_path = os.path.abspath('gex.html')
+    file_path = os.path.abspath(f'files/{greek}.html')
     # Selenium to capture image
     options = webdriver.ChromeOptions()
 
@@ -494,7 +496,7 @@ async def plot_gamma_exposure(ticker: str):
     screenshot_bytes = browser.get_screenshot_as_png()
 
     # Save the screenshot to a file (optional)
-    with open('gex.jpg', 'wb') as f:
+    with open(f'files/{greek}.jpg', 'wb') as f:
         f.write(screenshot_bytes)
 
     # Close the browser

@@ -198,14 +198,14 @@ class UniversalOptionSnapshot:
         self.implied_volatility = [float(i['implied_volatility']) if 'implied_volatility' in i else None for i in results] 
         self.open_interest = [float(i['open_interest']) if 'open_interest' in i else None for i in results]
 
-        day = [i['day'] if 'day' in i else None for i in results]
-        self.volume = [float(i['volume']) if 'volume' in i  else None for i in day]
-        self.high = [float(i['high']) if 'high' in i else None for i in day]
-        self.low = [float(i['low']) if 'low' in i else None for i in day]
-        self.vwap = [float(i['vwap']) if 'vwap' in i else None for i in day]
-        self.open = [float(i['open']) if 'open' in i else None for i in day]
-        self.close = [float(i['close']) if 'close' in i else None for i in day]
-
+        day = [i['day'] if 'day' in i else 0 for i in results]
+        self.volume = [float(i.get('volume',0)) for i in day]
+        self.high = [float(i.get('high',0)) for i in day]
+        self.low = [float(i.get('low',0)) for i in day]
+        self.vwap = [float(i.get('vwap',0)) for i in day]
+        self.open = [float(i.get('open',0)) for i in day]
+        self.close = [float(i.get('close',0)) for i in day]
+        self.change_percent= [round(float(i.get('change_percent',0))*100,2) for i in day]
 
 
 
@@ -253,7 +253,13 @@ class UniversalOptionSnapshot:
         today = pd.Timestamp(datetime.today())
         
         
-        self.days_to_expiry = (expiry_series - today).dt.days
+        expiry_series = pd.to_datetime(self.expiry)
+
+        # Today's date
+        today = pd.to_datetime(datetime.now())
+
+        # Calculate days to expiry for each date in the series
+        self.days_to_expiry_series = (expiry_series - today).days
         self.time_value = [float(p) - float(s) + float(k) if p and s and k else None for p, s, k in zip(self.trade_price, self.underlying_price, self.strike)]
         self.time_value = [round(item, 3) if item is not None else None for item in self.time_value]
 
@@ -328,11 +334,12 @@ class UniversalOptionSnapshot:
         self.data_dict = {
             'strike': self.strike,
             'expiry': self.expiry,
-            'dte': self.days_to_expiry,
+            'dte': self.days_to_expiry_series,
             'time_value': self.time_value,
             'moneyness': self.moneyness,
             'liquidity_score': self.liquidity_indicator,
             "cp": self.contract_type,
+            "change_ratio": self.change_percent,
             'exercise_style': self.exercise_style,
             'option_symbol': self.ticker,
             'theta': self.theta,

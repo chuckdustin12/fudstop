@@ -2,7 +2,7 @@
 
 
 import yfinance as yf
-from list_sets.ticker_lists import all_tickers
+from _markets.list_sets.ticker_lists import all_tickers
 from datetime import datetime
 import pandas as pd
 from ..helpers import format_large_numbers_in_dataframe

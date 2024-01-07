@@ -7,7 +7,7 @@ from webull_options.webull_options import WebullOptions
 import os
 from tabulate import tabulate
 
-from bot_menus.pagination import AlertMenus
+from discord_.bot_menus.pagination import AlertMenus
 
 
 from dotenv import load_dotenv
@@ -89,7 +89,7 @@ class QueryMenu(disnake.ui.Select):
 
             text_inputs.append(components)
 
-        await inter.response.send_modal(ThetaModal(components=text_inputs))
+        await inter.response.send_modal(FilterModal(components=text_inputs))
 
 
 
@@ -106,7 +106,7 @@ class FilterView(disnake.ui.View):
 
 
 # Subclassing the modal.
-class ThetaModal(disnake.ui.Modal):
+class FilterModal(disnake.ui.Modal):
     def __init__(self, components):
         self.components = components
         super().__init__(title="Create Tag", components=self.components)

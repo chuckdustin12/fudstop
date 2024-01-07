@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from apis.polygonio.mapping import option_condition_dict, OPTIONS_EXCHANGES
-from list_sets.ticker_lists import most_active_tickers
+
 
 from apis.helpers import flatten_dict
 import aiohttp

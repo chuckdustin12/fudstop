@@ -36,7 +36,7 @@ most_active_tickers = set(most_active_tickers)
 
 
 #define all markets
-markets = [Market.Options, Market.Stocks, Market.Indices, Market.Crypto, Market.Forex]
+markets = [Market.Options, Market.Stocks, Market.Crypto, Market.Forex]
 
 
 
@@ -558,14 +558,14 @@ import asyncio
 #this program leverages all 5 real-time markets from polygon.io and several SDK kits to perform deep, real-time data analysis across all major markets
 
 #discord and postgres integrated
-
+from database_ import DatabaseManager
 async def main():
     num_workers = int(os.environ.get("NUM_WORKERS", 50))
     #max_connections = int(os.environ.get("MAX_CONNECTIONS", 10))
     #connection_semaphore = asyncio.Semaphore(max_connections)
-
+    db = DatabaseManager(host='localhost', port=5432, user='chuck', password='fud', database='markets')
     logging.info("Starting up...")
-    #await db.connect()
+    await db.connect()
     data_queue = asyncio.Queue()  # Set a reasonable size limit
 
     # Create consumer tasks

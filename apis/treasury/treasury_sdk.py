@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 from datetime import datetime
 
-from database_.database_manager import DatabaseManager
+from database_manager import DatabaseManager
 
 
 

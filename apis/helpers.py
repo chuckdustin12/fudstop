@@ -158,7 +158,8 @@ def human_readable(string):
     try:
         match = re.search(r'(\w{1,5})(\d{2})(\d{2})(\d{2})([CP])(\d+)', string) #looks for the options symbol in O: format
         underlying_symbol, year, month, day, call_put, strike_price = match.groups()
-    except TypeError:
+            
+    except Exception as e:
         underlying_symbol = f"AMC"
         year = "23"
         month = "02"

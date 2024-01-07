@@ -25,7 +25,7 @@ from db_manager import DbManager as DatabaseManager
 sema = Semaphore(10)
 db = DatabaseManager(host='localhost', port=5432, user='chuck', password='fud', database='markets')
 wb_opts = WebullOptions(user='chuck', database='markets')
-fudstop_logo = os.environ.get('fudstop')
+fudstop_logo = os.environ.get('fudstop_logo')
 min1_td9 = os.environ.get("min1_td9")
 min5_td9 = os.environ.get("min5_td9")
 min15_td9 = os.environ.get("min15_td9")

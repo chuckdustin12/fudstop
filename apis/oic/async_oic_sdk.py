@@ -5,7 +5,7 @@ from pathlib import Path
 project_dir = str(Path(__file__).resolve().parents[2])
 if project_dir not in sys.path:
     sys.path.append(project_dir)
-
+from _markets.list_sets.ticker_lists import most_active_tickers
 import os
 from dotenv import load_dotenv
 import asyncio
@@ -19,7 +19,7 @@ import requests
 lock = Lock()
 from datetime import datetime
 import numpy as np
-from list_sets.ticker_lists import most_active_tickers
+
 session = requests.session()
 class AsyncOICSDK:
     def __init__(self, host, port, user, password, database):

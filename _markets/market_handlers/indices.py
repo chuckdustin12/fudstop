@@ -10,7 +10,7 @@ from polygon.websocket import WebSocketMessage
 from apis.helpers import convert_to_ns_datetime
 import asyncio
 from typing import List
-from list_sets import indices_names_and_symbols_dict
+
 
 
 """

@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from async_polygon_sdk import Polygon
 
-from list_sets.ticker_lists import most_active_tickers
+
 
 import asyncio
 from datetime import datetime, timedelta

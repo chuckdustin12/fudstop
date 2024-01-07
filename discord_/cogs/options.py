@@ -7,10 +7,10 @@ import plotly.graph_objects as go
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import aiohttp
-from plots import plot_calls_and_puts,plot_gamma_exposure,plot_iv_surface
+from plots import plot_calls_and_puts,plot_greek_exposure,plot_iv_surface
 from disnake.ext import commands
 from discord_.bot_menus.pagination import AlertMenus, PageSelect
-from autocomp import ticker_autocomp,strike_autocomp,expiry_autocomp
+from discord_.autocomp import ticker_autocomp,strike_autocomp,expiry_autocomp
 from apis.polygonio.polygon_options import PolygonOptions
 from apis.webull.webull_options import WebullOptions
 from apis.webull.webull_trading import WebullTrading
@@ -214,7 +214,7 @@ class OptionsCOG(commands.Cog):
         await self.poly.batch_insert_dataframe(df, table_name='optionsall', unique_columns='symbol, strike, expiry, call_put')
         embed = disnake.Embed(title=f"All Options - {ticker}", description=f'```py\nYour downloadable CSV is ready!```', color=disnake.Colour.brand_green())
         embed.add_field(name=f"Info:", value=f"This file contains all options for {ticker} across ALL expiration dates and contains ALL accompanying data.")
-        embed.set_footer(text="Data Provided by Polygon.IO | Implemented by FUDSTOP", icon_url=os.environ.get('fudstop_logo'))
+        embed.set_footer(text="Data Provided by Polygon.IO | Implemented by FUDSTOP", icon_url=os.environ.get('fudstop'))
         await inter.edit_original_message(embed=embed,file=disnake.File('all_options.csv'), view=OptionsView(ticker).add_item(OptsSelect(ticker)))
 
 
@@ -438,30 +438,77 @@ class OptionsCOG(commands.Cog):
 
         embed = disnake.Embed().set_image(url="attachment://iv_surface.png")
         embed.add_field(name=f"Chart:", value=f"> **Viewing IV Surface 3D Plot for {ticker}. This is a visual representation of the volatility surface across all strikes and expirations - showing days until expiry vs strike + IV levels.")
-        embed.set_footer(text=f'IV Surface - {ticker} | Data by Polygon.Io | Implemented by FUDSTOP', icon_url=os.environ.get('fudstop_logo'))
+        embed.set_footer(text=f'IV Surface - {ticker} | Data by Polygon.Io | Implemented by FUDSTOP', icon_url=os.environ.get('fudstop'))
         await inter.edit_original_message(file=file, embed=embed, view = OptionsView(ticker))
 
 
-   
+
+
     @options.sub_command()
-    async def gamma_exposure(self, inter:disnake.AppCmdInter, ticker:str):
-        """Charts the gamma exposure across all strikes and expirations."""
+    async def greek_exposure(self, inter:disnake.AppCmdInter, ticker:str, greek:str=commands.Param(choices=['delta', 'gamma', 'theta', 'vega'])):
+        """Charts the delta/gamma/vega/theta exposure across all strikes and expirations."""
+
         await inter.response.defer()
         ticker = ticker.upper()
-        await plot_gamma_exposure(ticker)
+        await plot_greek_exposure(ticker, greek)
         
-        with open('gex.png', "rb") as f:
-            file = disnake.File(f, filename="gex.png")  # Use file pointer directly
+        with open(f'files/{greek}.jpg', "rb") as f:
+            file = disnake.File(f, filename=f"files/{greek}.jpg")  # Use file pointer directly
 
-        embed = disnake.Embed().set_image(url="attachment://gex.png")
-        embed.add_field(name=f"Chart:", value=f"> **Viewing consolidated gamma across all strikes for {ticker}. This is a visual representation of the current levels of GAMMA per strike on a consolidated basis across all expirations.")
-        embed.set_footer(text=f'Consolidated GAMMA - {ticker} | Data by Polygon.Io | Implemented by FUDSTOP', icon_url=os.environ.get('fudstop_logo'))
+        embed = disnake.Embed().set_image(url=f"attachment://files/{greek}.jpg")
+        embed.add_field(name=f"Chart:", value=f"> **Viewing consolidated vega across all strikes for {ticker}. This is a visual representation of the current levels of VEAG per strike on a consolidated basis across all expirations.")
+        embed.set_footer(text=f'Consolidated {greek.upper()} - {ticker} | Data by Polygon.Io | Implemented by FUDSTOP', icon_url=os.environ.get('fudstop'))
         await inter.edit_original_message(file=file, embed=embed, view = OptionsView(ticker).add_item(OptsSelect(ticker)))
 
-
+    
 
 
 opts = OptionsCOG(commands.Bot)
+
+class GreekModal(disnake.ui.Modal):
+    def __init__(self, greek):
+        self.greek=  greek
+        
+
+        components = [
+
+        disnake.ui.TextInput(
+            label=f"Choose a ticker..",
+            placeholder='e.g. AAPL',
+            custom_id=f"greekmodal",
+            style=TextInputStyle.short,
+            max_length=6,
+            required=True
+        ),
+        
+        ]
+            
+        # Make sure to pass the components to the super().__init__
+        super().__init__(title="Query Options Database", components=components)
+        
+    async def callback(self, inter: disnake.ModalInteraction):
+        await inter.response.defer()
+        user_input = inter.text_values
+        ticker = user_input.get('greekmodal')
+
+        await plot_greek_exposure(ticker, greek=self.greek)
+
+        with open(f'files/{self.greek}.jpg', "rb") as f:
+            file = disnake.File(f, filename=f"files/{self.greek}.jpg")  # Use file pointer directly
+
+        embed = disnake.Embed().set_image(url=f"attachment://files/{self.greek}.jpg")
+        embed.add_field(name=f"Chart:", value=f"> **Viewing consolidated vega across all strikes for {ticker}. This is a visual representation of the current levels of VEAG per strike on a consolidated basis across all expirations.")
+        embed.set_footer(text=f'Consolidated {self.greek.upper()} - {ticker} | Data by Polygon.Io | Implemented by FUDSTOP', icon_url=os.environ.get('fudstop'))
+        await inter.edit_original_message(file=file, embed=embed, view = OptionsView(ticker).add_item(OptsSelect(ticker)))
+
+    
+
+
+
+
+
+
+
 
 
 class OptsSelect(disnake.ui.Select):
@@ -477,8 +524,7 @@ class OptsSelect(disnake.ui.Select):
                 disnake.SelectOption(label='Analyze',value='9', description=f'Analyze the options market..'),
                 disnake.SelectOption(label='Full Skew',value='0', description=f'View the skew across all expirations.'),
                 disnake.SelectOption(label='Top Vol. Strikes',value='1', description=f'View top volume strikes across all expirations.'),
-                disnake.SelectOption(label='Lowest Theta', value='2',description=f'Find the options per expiry that have least theta decay.'),
-                disnake.SelectOption(label='Highest Velocity', value='3', description='View the strikes with higehst velocity.')
+                disnake.SelectOption(label='Greek Exposure', value='3', description='View the consolidated greek exposure of choice.')
             ]
         )
 
@@ -494,7 +540,7 @@ class OptsSelect(disnake.ui.Select):
             await opts.lowest_theta(inter, self.ticker)
 
         elif self.values[0] == '3':
-            await opts.highest_velocity(inter, self.ticker)
+            await opts.gamma_exposure(inter, self.ticker)
 
         elif self.values[0] == '9':
             await inter.response.edit_message(view=OptionsView().add_item(OptsSelect(self.ticker)))
@@ -549,10 +595,11 @@ class MyModal(disnake.ui.Modal):
 
 
 class OptionsView(disnake.ui.View):
-    def __init__(self, ticker=None, strike=None, call_put=None, expiry=None):
+    def __init__(self, greek:str='vega', ticker=None, strike=None, call_put=None, expiry=None):
         self.ticker=ticker
         self.strike=strike
         self.call_put=call_put
+        self.greek=greek
         self.expiry=expiry
         super().__init__(timeout=None)
         # Add the button only if all the option arguments are passed in
@@ -560,10 +607,37 @@ class OptionsView(disnake.ui.View):
             self.add_item(disnake.ui.Button(style=disnake.ButtonStyle.blurple, label='OPTION LOADED', row=4, custom_id='optview2'))
             self.remove_item(self.optview1)
 
-    @disnake.ui.button(style=disnake.ButtonStyle.blurple, label='Pick an Option', row=4, custom_id='optview1')
+    @disnake.ui.button(style=disnake.ButtonStyle.blurple, label='Pick an Option', row=0, custom_id='optview1')
     async def optview1(self, button:disnake.ui.Button, inter:disnake.AppCmdInter):
   
         await inter.response.send_modal(MyModal())
+
+
+
+    @disnake.ui.button(style=disnake.ButtonStyle.red, row=0, custom_id='theta', emoji='⏳', label='Theta')
+    async def theta(self, button: disnake.ui.Button, inter: disnake.AppCmdInter):
+
+        await inter.response.send_modal(GreekModal(greek=self.greek))
+
+
+    @disnake.ui.button(style=disnake.ButtonStyle.blurple, row=0, custom_id='gamma', emoji='🎯', label='Gamma')
+    async def gamma(self, button: disnake.ui.Button, inter: disnake.AppCmdInter):
+
+        await inter.response.send_modal(GreekModal(greek=self.greek))
+
+
+
+    @disnake.ui.button(style=disnake.ButtonStyle.grey, row=1, custom_id='delta', emoji='⚔️', label='Delta')
+    async def delta(self, button: disnake.ui.Button, inter: disnake.AppCmdInter):
+
+        await inter.response.send_modal(GreekModal(greek=self.greek))
+
+
+
+    @disnake.ui.button(style=disnake.ButtonStyle.green, row=1, custom_id='vega', emoji='✨', label='Vega')
+    async def vega(self, button: disnake.ui.Button, inter: disnake.AppCmdInter):
+
+        await inter.response.send_modal(GreekModal(greek=self.greek))
 
 
 
