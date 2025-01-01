@@ -1,0 +1,40 @@
+# Ignore environment files
+.env
+
+# Ignore log files and temporary files
+*.log
+*.tmp
+
+# Ignore binary files
+*.bin
+
+# Ignore large media files (if not necessary for the project)
+*.mp4
+
+# Ignore node_modules (if this is a Node.js project)
+node_modules/
+fudstop/apis/youtube/client_secret.json
+bin/
+.vscode/
+files/
+get_tables.py
+WTFMOM.py
+WTFDAD.py
+zblotuser.py
+zzhack.py
+zzzzzzsec.py
+zzzzsec.py
+xxx.py
+setup.py
+webull_learn.py
+blotter_sdk.py
+bin/
+files/
+*.csv
+*.json
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz.py
+market_data_dump.sql
+market_data_dump.sql
+xxxx.py
+*.log
+*.tmp
