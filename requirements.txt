@@ -169,7 +169,6 @@ typing-inspect==0.9.0
 typing_extensions==4.12.2
 tzdata==2023.3
 umf==0.9.1
-urllib3==1.26.18
 watchfiles==0.21.0
 webcolors==1.13
 webencodings==0.5.1
@@ -179,4 +178,3 @@ wrapt==1.14.1
 wsproto==1.2.0
 yarl==1.9.4
 yfinance==0.2.32
-zipp==3.17.0
