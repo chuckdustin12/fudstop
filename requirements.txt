@@ -37,15 +37,12 @@ dm-tree==0.1.8
 dnspython==2.7.0
 docutils==0.20.1
 email_validator==2.2.0
-fastapi==0.104.0
-feedparser==6.0.10
 filelock==3.13.0
 fire==0.7.0
 FLAML==2.1.1
 flatbuffers==23.5.26
 fluidsynth==0.2
 fonttools==4.43.1
-fpdf==1.7.2
 frozendict==2.3.8
 frozenlist==1.4.1
 fsspec==2023.10.0
@@ -65,7 +62,6 @@ html5lib==1.1
 httpcore==1.0.4
 httptools==0.6.1
 httpx==0.27.2
-idna==3.6
 importlib-metadata==6.11.0
 importlib-resources==6.1.0
 intel-cmplr-lib-ur==2025.0.2
@@ -79,7 +75,6 @@ jsonpointer==2.4
 keyring==24.2.0
 kiwisolver==1.4.5
 kubernetes==28.1.0
-langsmith==0.0.67
 libclang==16.0.6
 lxml==4.9.3
 lz4==4.3.3
