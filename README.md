@@ -6,8 +6,17 @@ The all-in-one market data, market research, trading, and data science hub.
 Populate the .env file with the API keys you have / wish to use.
 
 
-## STEP 2 
-Import the API you want from the following path:
+from fudstop4.apis.polygonio.polygon_options import PolygonOptions
+
+# Acts as both Polygon API handler and database manager
+db = PolygonOptions(
+    user='YOUR USER',
+    database='YOUR DATABASE',
+    host='localhost',
+    port=5432,
+    password='YOUR PASSWORD'
+)
+
 
 
 
