@@ -15,7 +15,8 @@ Populate the .env file with the API keys you have / wish to use.
 from fudstop4.apis.polygonio.polygon_options import PolygonOptions
 
 # Acts as both Polygon API handler and database manager
-```db = PolygonOptions(
+```py
+    db = PolygonOptions(
     user='YOUR USER',
     database='YOUR DATABASE',
     host='localhost',
