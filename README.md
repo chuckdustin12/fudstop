@@ -1,6 +1,12 @@
 # fudstop
 The all-in-one market data, market research, trading, and data science hub.
 
+## PIP install:
+
+```
+pip install fudstop4
+```
+
 
 #STEP 1
 Populate the .env file with the API keys you have / wish to use.
