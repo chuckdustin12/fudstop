@@ -21,13 +21,13 @@ from fudstop4.apis.polygonio.polygon_options import PolygonOptions
 
 
 
-#acts as a database manager and polygon.io SDK
+## PolygonOptions acts as a database manager and polygon.io SDK for options related data (API key required)
 ```from fudstop4.apis.polygonio.polygon_options import PolygonOptions
 db = PolygonOptions(user='YOUR USER', database = 'YOUR DATABASE', host = 'localhost', port = 5432, password = 'YOUR PASSWORD') # you can input your POSTGRES credentials here
 ```
 
 
-## STEP 3 - call functions (MOST ARE ASYNC)
+## call functions (MOST ARE ASYNC)
 
 ```
 async def example1():
