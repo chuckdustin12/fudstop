@@ -3,7 +3,7 @@ The all-in-one market data, market research, trading, and data science hub.
 
 ## PIP install:
 
-```
+```py
 pip install fudstop4
 ```
 
@@ -29,7 +29,8 @@ from fudstop4.apis.polygonio.polygon_options import PolygonOptions
 
 
 ## Polygon SDK imports and related helpers
-```from fudstop4.apis.polygonio.polygon_options import PolygonOptions #acts as a database and options SDK for polygon
+```py
+from fudstop4.apis.polygonio.polygon_options import PolygonOptions #acts as a database and options SDK for polygon
 from fudstop.apis.polygonio.async_polygon_sdk import Polygon #stock related functions
 
 poly = Polygon()
@@ -39,7 +40,7 @@ db = PolygonOptions(user='YOUR USER', database = 'YOUR DATABASE', host = 'localh
 
 
 ## Webull SDK imports and related helpers
-```
+```py
 from fudstop4.apis.webull.webull_trading import WebullTrading #trading related functions
 from fudstop4.apis.webull.webull_markets import WebullMarkets #market related functions
 from fudstop4.apis.webull.webull_ta import WebullTA #technical analysis related functions
@@ -82,7 +83,7 @@ async def news(ticker:str='AAPL'):
 
 ## Options Clearing Corporation API
 
-```
+```py
 from fudstop4.apis.occ.occ_sdk import occSDK
 occ = occSDK()
 
@@ -100,7 +101,7 @@ async def stock_info(ticker:str='SPY'):
 
 ## Yahoo Finance API
 
-```
+```py
 from fudstop4.apis.yf.yf_sdk import yfSDK
 
 yf = yfSDK()
@@ -116,7 +117,7 @@ async def major_holders(ticker:str='MSFT'):
 
 ## Newyork FED API (Sync SDK)
 
-```
+```py
 from fudstop4.apis.newyork_fed.newyork_fed_sdk import FedNewyork
 nyfed = FedNewYork()
 
@@ -129,7 +130,7 @@ soma = nyfed.soma_holdings()  # gets the latest soma holdings
 ## Useful helper imports
 
 
-```
+```py
 from fudstop.apis.helpers import is_etf #checks if a ticker is an etf or not
 from fudstop.apis.helpers import generate_webull_headers #can be passed in as headers for webull functions
 from fudstop.apis.helpers import format_large_numbers_in_dataframe2 #converts large numbers to readable formats
