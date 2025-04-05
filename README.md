@@ -27,39 +27,107 @@ from fudstop4.apis.polygonio.polygon_options import PolygonOptions
 
 
 
-## PolygonOptions acts as a database manager and polygon.io SDK for options related data (API key required)
-```from fudstop4.apis.polygonio.polygon_options import PolygonOptions
+## Polygon SDK imports and related helpers
+```from fudstop4.apis.polygonio.polygon_options import PolygonOptions #acts as a database and options SDK for polygon
+from fudstop.apis.polygonio.async_polygon_sdk import Polygon #stock related functions
+
+poly = Polygon()
 db = PolygonOptions(user='YOUR USER', database = 'YOUR DATABASE', host = 'localhost', port = 5432, password = 'YOUR PASSWORD') # you can input your POSTGRES credentials here
-```
-
-
-## call functions (MOST ARE ASYNC)
 
 ```
-async def example1():
-  
-  #connect to the database (optional)
-  await db.connect()
 
-  all_options_data = await opts.get_option_chain_all(underlying_asset='SPY') # gets all options for SPY
 
-  #most functions are dot-notated for ease of access
+## Webull SDK imports and related helpers
+```
+from fudstop4.apis.webull.webull_trading import WebullTrading #trading related functions
+from fudstop4.apis.webull.webull_markets import WebullMarkets #market related functions
+from fudstop4.apis.webull.webull_ta import WebullTA #technical analysis related functions
+from fudstop4.apis.webull.webull_options.webull_options import WebullOptions #options related functions
+from fudstop4.apis.helpers import generate_webull_headers # requires access_token from developer window (tutorial coming soon)
 
-  dataframe = all_options_data.df
-  volume = all_options_data.volume #list of volume values
-  oi = all_options_data.oi #list of oi values
-  strike = all_options_data.strike # list of strikes
-  expiry = all_options_data.expiry # list of expirations
-  call_put = all_options_data.call_put # list of call/put option types
+trading = WebullTrading()
+markets = WebullMarkets()
+wb_opts = WebullOptions()
+wb_ta = WebullTA()
 
-  #easily find unusual options with volume of > 500
-  for s, e, cp, v, o in zip(volume,oi, call_put, strike, expiry):
-      if v > o and v > 500:
-          print(f"Strike ${s} {cp} has unusual options volume of {v} versus {oi} open interest expiring {e}.")
+headers = generate_webull_headers()
+
+
+async def main(ticker:str='SPY'):
+
+    volume_analysis = await trading.volume_analysis(ticker)
+
+    #most functions are dot-notated for ease of attribute access. all dot-notated attributes are either single values or lists of values
+
+    buy_pct = volume_analysis.buy_pct
+
+    dataframe = volume_analysis.df #most functions have a dataframe options stored as 'df' or 'as_dataframe'
+
+    print(dataframe)
+
+#asyncio.run(main()) uncomment to run
+
+
+#example with headers
+async def news(ticker:str='AAPL'):
+    """Gets news for a ticker. (headers required)"""
+    news = await trading.ai_news(ticker, headers=headers)
+
+    print(news.as_dataframe)
+
+#asyncio.run(news()) uncomment to run
+
 ```
 
+## Options Clearing Corporation API
 
-## STEP 4 - Useful helper imports
+```
+from fudstop4.apis.occ.occ_sdk import occSDK
+occ = occSDK()
+
+async def stock_info(ticker:str='SPY'):
+    """Gets important stock information for a ticker"""
+    info = await occ.stock_info(ticker)
+
+    dataframe = info.as_dataframe
+
+    print(dataframe)
+
+#asyncio.run(stock_info()) uncomment to run
+
+```
+
+## Yahoo Finance API
+
+```
+from fudstop4.apis.yf.yf_sdk import yfSDK
+
+yf = yfSDK()
+
+async def major_holders(ticker:str='MSFT'):
+    """Gets major holders for a ticker"""
+
+   dataframe = await yf.major_holders(ticker)
+   print(dataframe)
+
+#asyncio.run(major_holders()) uncomment to run
+```
+
+## Newyork FED API (Sync SDK)
+
+```
+from fudstop4.apis.newyork_fed.newyork_fed_sdk import FedNewyork
+nyfed = FedNewYork()
+
+
+swaps = nyfed.liquidity_swaps_latest() #gets the latest liquidity swaps
+soma = nyfed.soma_holdings()  # gets the latest soma holdings
+
+```
+
+## Useful helper imports
+
+
 ```
 from fudstop.apis.helpers import is_etf #checks if a ticker is an etf or not
 from fudstop.apis.helpers import generate_webull_headers #can be passed in as headers for webull functions
