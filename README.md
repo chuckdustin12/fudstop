@@ -9,28 +9,27 @@ Populate the .env file with the API keys you have / wish to use.
 from fudstop4.apis.polygonio.polygon_options import PolygonOptions
 
 # Acts as both Polygon API handler and database manager
-db = PolygonOptions(
+```db = PolygonOptions(
     user='YOUR USER',
     database='YOUR DATABASE',
     host='localhost',
     port=5432,
     password='YOUR PASSWORD'
 )
+```
 
 
 
 
 #acts as a database manager and polygon.io SDK
-from fudstop4.apis.polygonio.polygon_options import PolygonOptions
-
-
+```from fudstop4.apis.polygonio.polygon_options import PolygonOptions
 db = PolygonOptions(user='YOUR USER', database = 'YOUR DATABASE', host = 'localhost', port = 5432, password = 'YOUR PASSWORD') # you can input your POSTGRES credentials here
-
+```
 
 
 ## STEP 3 - call functions (MOST ARE ASYNC)
 
-
+```
 async def example1():
   
   #connect to the database (optional)
@@ -51,18 +50,18 @@ async def example1():
   for s, e, cp, v, o in zip(volume,oi, call_put, strike, expiry):
       if v > o and v > 500:
           print(f"Strike ${s} {cp} has unusual options volume of {v} versus {oi} open interest expiring {e}.")
-
+```
 
 
 ## STEP 4 - Useful helper imports
-
+```
 from fudstop.apis.helpers import is_etf #checks if a ticker is an etf or not
 from fudstop.apis.helpers import generate_webull_headers #can be passed in as headers for webull functions
 from fudstop.apis.helpers import format_large_numbers_in_dataframe2 #converts large numbers to readable formats
 from fudstop.apis.helpers import chunk_string #chunks a string of data for pagination
 from fudstop._markets.list_sets.ticker_lists import most_active_tickers # top list of the most actively traded options tickers
 from fudstop._markets.list_sets.ticker_lists import all_tickers #imports a list of all traded equity tickers
-
+```
 
 
 ...... more to come ........
