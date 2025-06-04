@@ -2212,7 +2212,7 @@ class WebullTA:
 
 
     async def ta_kst(self, ticker: str, interval: str, headers):
-        """Gets a dataframe of the kst indicator. 
+        """Gets a dataframe of the kst indicator.
         INTERVALS:
         >>> m1 - 1 minute
         >>> m5 - 5 minute
@@ -2236,7 +2236,60 @@ class WebullTA:
 
             df['kst'] = kst
             df['kst_signal'] = kst_signal
-            
+
+            return df
+        except Exception as e:
+            print(e)
+
+    async def ta_sma(self, ticker: str, interval: str, headers, window: int = 20):
+        """Calculate the Simple Moving Average (SMA) for the given window."""
+        try:
+            df = await self.get_candle_data(ticker=ticker, interval=interval, headers=headers)
+            sma = ta.trend.sma_indicator(close=df['Close'].astype(float), window=window, fillna=True)
+            df[f'sma_{window}'] = sma
+            return df
+        except Exception as e:
+            print(e)
+
+    async def ta_ema(self, ticker: str, interval: str, headers, window: int = 20):
+        """Calculate the Exponential Moving Average (EMA) for the given window."""
+        try:
+            df = await self.get_candle_data(ticker=ticker, interval=interval, headers=headers)
+            ema = ta.trend.ema_indicator(close=df['Close'].astype(float), window=window, fillna=True)
+            df[f'ema_{window}'] = ema
+            return df
+        except Exception as e:
+            print(e)
+
+    async def ta_rsi(self, ticker: str, interval: str, headers, window: int = 14):
+        """Compute the Relative Strength Index (RSI)."""
+        try:
+            df = await self.get_candle_data(ticker=ticker, interval=interval, headers=headers)
+            rsi = ta.momentum.rsi(df['Close'].astype(float), window=window, fillna=True)
+            df['rsi'] = rsi
+            return df
+        except Exception as e:
+            print(e)
+
+    async def ta_atr(self, ticker: str, interval: str, headers, window: int = 14):
+        """Compute the Average True Range (ATR)."""
+        try:
+            df = await self.get_candle_data(ticker=ticker, interval=interval, headers=headers)
+            atr = ta.volatility.average_true_range(high=df['High'].astype(float),
+                                                  low=df['Low'].astype(float),
+                                                  close=df['Close'].astype(float),
+                                                  window=window, fillna=True)
+            df['atr'] = atr
+            return df
+        except Exception as e:
+            print(e)
+
+    async def ta_obv(self, ticker: str, interval: str, headers):
+        """Calculate the On-Balance Volume (OBV)."""
+        try:
+            df = await self.get_candle_data(ticker=ticker, interval=interval, headers=headers)
+            obv = ta.volume.on_balance_volume(close=df['Close'].astype(float), volume=df['Volume'].astype(float), fillna=True)
+            df['obv'] = obv
             return df
         except Exception as e:
             print(e)
