@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 import pytz
 from typing import List, Union, Dict
+import numpy as np
+import pandas as pd
 def convert_to_date(date_str):
     try:
         return datetime.strptime(date_str, '%Y-%m-%d').date()
@@ -339,8 +341,68 @@ def calculate_countdown(df):
         
         if countdown_count >= 9:
             return True
+
+def _calc_slope(series: pd.Series) -> float:
+    """Return the slope of a series using simple linear regression."""
+    y = series.values
+    x = np.arange(len(y))
+    if len(y) < 2:
+        return 0.0
+    slope, _ = np.polyfit(x, y, 1)
+    return slope
+
+def is_bull_flag(df: pd.DataFrame, lookback: int = 8) -> bool:
+    """Basic bull flag detection on the latest candles."""
+    data = df.tail(lookback).reset_index(drop=True)
+    if data.shape[0] < 5:
+        return False
+
+    pole_len = lookback // 2
+    pole = data.iloc[:pole_len]
+    flag = data.iloc[pole_len:]
+
+    if _calc_slope(pole['Close']) <= 0:
+        return False
+
+    if _calc_slope(flag['Close']) >= 0:
+        return False
+
+    pole_move = pole['Close'].iloc[-1] - pole['Close'].iloc[0]
+    if pole_move <= 0:
+        return False
+
+    retrace = pole['Close'].iloc[-1] - flag['Low'].min()
+    if retrace / pole_move > 0.5:
+        return False
+
+    return True
+
+def is_bear_flag(df: pd.DataFrame, lookback: int = 8) -> bool:
+    """Basic bear flag detection on the latest candles."""
+    data = df.tail(lookback).reset_index(drop=True)
+    if data.shape[0] < 5:
+        return False
+
+    pole_len = lookback // 2
+    pole = data.iloc[:pole_len]
+    flag = data.iloc[pole_len:]
+
+    if _calc_slope(pole['Close']) >= 0:
+        return False
+
+    if _calc_slope(flag['Close']) <= 0:
+        return False
+
+    pole_move = pole['Close'].iloc[0] - pole['Close'].iloc[-1]
+    if pole_move <= 0:
+        return False
+
+    retrace = flag['High'].max() - pole['Close'].iloc[-1]
+    if retrace / pole_move > 0.5:
+        return False
+
+    return True
         
-import pandas as pd
 from typing import Tuple
 def detect_candlestick_patterns(df: pd.DataFrame, lookback_range: Tuple[int, int] = (4, 7)) -> pd.DataFrame:
     """
@@ -392,12 +454,20 @@ def detect_candlestick_patterns(df: pd.DataFrame, lookback_range: Tuple[int, int
             recent_df.iloc[-1]['Close'] < recent_df.iloc[-1]['Open']:
             signal["pattern"] = "shooting star"
             signal["tag"] = "bearish"
-        
+
         # Detect Evening Star
         if recent_df.iloc[-3]['Close'] > recent_df.iloc[-3]['Open'] and \
             recent_df.iloc[-2]['Close'] > recent_df.iloc[-2]['Open'] and recent_df.iloc[-2]['Close'] < recent_df.iloc[-3]['Close'] and \
             recent_df.iloc[-1]['Close'] < recent_df.iloc[-1]['Open'] and recent_df.iloc[-1]['Close'] < recent_df.iloc[-2]['Open']:
             signal["pattern"] = "evening star"
+            signal["tag"] = "bearish"
+
+        # Detect Bull/Bear Flags
+        if is_bull_flag(recent_df):
+            signal["pattern"] = "bull flag"
+            signal["tag"] = "bullish"
+        elif is_bear_flag(recent_df):
+            signal["pattern"] = "bear flag"
             signal["tag"] = "bearish"
 
         if signal["pattern"]:
