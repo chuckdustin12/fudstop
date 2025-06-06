@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <title>Options Feed</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>Options Feed</h1>
+    <table>
+        <tr>
+            <th>Option Symbol</th>
+            <th>Underlying</th>
+            <th>Strike</th>
+            <th>Call/Put</th>
+            <th>Expire Date</th>
+        </tr>
+        {% for row in rows %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+            <td>{{ row[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

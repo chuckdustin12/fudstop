@@ -39,6 +39,18 @@ async def main():
 
 More examples can be found in the [examples](fudstop/examples) folder.
 
+## Web interface
+
+A small Flask app is provided in the `webapp/` directory for viewing
+records stored in your PostgreSQL database. Populate the `DB_HOST`,
+`DB_USER`, `DB_PW`, `DB_NAME` and `DB_PORT` variables in `.env` and run:
+
+```bash
+python -m webapp.app
+```
+
+The homepage shows a snapshot from the `wb_opts` table.
+
 ## License
 
 This project is released under the [MIT License](LICENSE).
