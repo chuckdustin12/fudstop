@@ -1,0 +1,15 @@
+setup.py
+.env
+__pycache__/
+data/
+files/
+fudstop/discord_/
+fudstop/apis/occ/
+fudstop/_gpts/
+test1.py
+test2.py
+test3.py
+test4.py
+test6.py
+test7.py
+test8.py

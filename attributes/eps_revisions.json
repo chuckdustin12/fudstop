@@ -1,0 +1,39 @@
+{
+    "period": {
+      "name": "period",
+      
+      
+      "description": "The reporting period for EPS revisions (e.g., Q1 2024, FY 2023)."
+    },
+    "up_last7days": {
+      "name": "up_last7days",
+      
+      
+      "description": "Number of analysts who have increased their EPS estimates in the last 7 days."
+    },
+    "up_last30days": {
+      "name": "up_last30days",
+      
+      
+      "description": "Number of analysts who have increased their EPS estimates in the last 30 days."
+    },
+    "down_last30days": {
+      "name": "down_last30days",
+      
+      
+      "description": "Number of analysts who have decreased their EPS estimates in the last 30 days."
+    },
+    "down_last7_days": {
+      "name": "down_last7_days",
+      
+      
+      "description": "Number of analysts who have decreased their EPS estimates in the last 7 days."
+    },
+    "ticker": {
+      "name": "ticker",
+      
+      
+      "description": "Stock ticker symbol associated with the EPS revision data."
+    }
+  }
+  

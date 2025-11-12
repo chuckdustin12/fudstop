@@ -1,0 +1,255 @@
+{
+    "quoteid": {
+      "name": "quoteid",
+      
+      
+      "description": "Unique identifier for the security quote."
+    },
+    "type": {
+      "name": "type",
+      
+      
+      "description": "Type of financial statement being reported."
+    },
+    "fiscalyear": {
+      "name": "fiscalyear",
+      
+      
+      "description": "Fiscal year for which the balance sheet is reported."
+    },
+    "fiscalperiod": {
+      "name": "fiscalperiod",
+      
+      
+      "description": "Fiscal period (quarterly or annually) for which the balance sheet is reported."
+    },
+    "enddate": {
+      "name": "enddate",
+      
+      
+      "description": "End date of the reporting period."
+    },
+    "currencyid": {
+      "name": "currencyid",
+      
+      
+      "description": "Identifier for the currency in which financial values are reported."
+    },
+    "publishdate": {
+      "name": "publishdate",
+      
+      
+      "description": "Date when the financial statement was published."
+    },
+    "totalassets": {
+      "name": "totalassets",
+      
+      
+      "description": "Total assets owned by the company, including both current and non-current assets."
+    },
+    "totalcurrentassets": {
+      "name": "totalcurrentassets",
+      
+      
+      "description": "Total value of current assets, which are expected to be converted into cash within one year."
+    },
+    "cashandshortterminvest": {
+      "name": "cashandshortterminvest",
+      
+      
+      "description": "Total cash and short-term investments held by the company."
+    },
+    "cashequivalents": {
+      "name": "cashequivalents",
+      
+      
+      "description": "Cash equivalents, including highly liquid short-term investments with a maturity of three months or less."
+    },
+    "shortterminvestments": {
+      "name": "shortterminvestments",
+      
+      
+      "description": "Short-term investments that are expected to be sold or converted to cash within one year."
+    },
+    "totalreceivablesnet": {
+      "name": "totalreceivablesnet",
+      
+      
+      "description": "Total receivables (net), including accounts receivable and other outstanding amounts due to the company."
+    },
+    "accountsrecetradenet": {
+      "name": "accountsrecetradenet",
+      
+      
+      "description": "Net value of accounts receivable from trade transactions."
+    },
+    "totalinventory": {
+      "name": "totalinventory",
+      
+      
+      "description": "Total value of inventory owned by the company."
+    },
+    "prepaidexpenses": {
+      "name": "prepaidexpenses",
+      
+      
+      "description": "Total prepaid expenses, including advance payments for goods or services."
+    },
+    "othercurrentassetstotal": {
+      "name": "othercurrentassetstotal",
+      
+      
+      "description": "Total value of other current assets not classified under standard categories."
+    },
+    "totalnoncurrentassets": {
+      "name": "totalnoncurrentassets",
+      
+      
+      "description": "Total value of non-current assets, including long-term investments and property, plant, and equipment."
+    },
+    "ppetotalnet": {
+      "name": "ppetotalnet",
+      
+      
+      "description": "Total net value of property, plant, and equipment (PP&E) after depreciation."
+    },
+    "ppetotalgross": {
+      "name": "ppetotalgross",
+      
+      
+      "description": "Total gross value of property, plant, and equipment before depreciation."
+    },
+    "accumulateddepreciationtotal": {
+      "name": "accumulateddepreciationtotal",
+      
+      
+      "description": "Total accumulated depreciation for property, plant, and equipment."
+    },
+    "otherlongtermassetstotal": {
+      "name": "otherlongtermassetstotal",
+      
+      
+      "description": "Total value of other long-term assets, including intangible assets and deferred tax assets."
+    },
+    "totalliabilities": {
+      "name": "totalliabilities",
+      
+      
+      "description": "Total liabilities owed by the company, including both current and non-current liabilities."
+    },
+    "totalcurrentliabilities": {
+      "name": "totalcurrentliabilities",
+      
+      
+      "description": "Total current liabilities that are due within one year."
+    },
+    "accountspayable": {
+      "name": "accountspayable",
+      
+      
+      "description": "Total accounts payable, representing short-term obligations to suppliers."
+    },
+    "accruedexpenses": {
+      "name": "accruedexpenses",
+      
+      
+      "description": "Total accrued expenses, including wages, taxes, and other outstanding obligations."
+    },
+    "notespayableshorttermdebt": {
+      "name": "notespayableshorttermdebt",
+      
+      
+      "description": "Total value of notes payable and short-term debt."
+    },
+    "currentportofltdebtcapitalleases": {
+      "name": "currentportofltdebtcapitalleases",
+      
+      
+      "description": "Current portion of long-term debt and capital lease obligations due within one year."
+    },
+    "totalnoncurrentliabilities": {
+      "name": "totalnoncurrentliabilities",
+      
+      
+      "description": "Total value of non-current liabilities, including long-term debt and deferred liabilities."
+    },
+    "totallongtermdebt": {
+      "name": "totallongtermdebt",
+      
+      
+      "description": "Total long-term debt obligations of the company."
+    },
+    "longtermdebt": {
+      "name": "longtermdebt",
+      
+      
+      "description": "Total outstanding long-term debt, excluding the current portion."
+    },
+    "totaldebt": {
+      "name": "totaldebt",
+      
+      
+      "description": "Total outstanding debt, including both short-term and long-term liabilities."
+    },
+    "otherliabilitiestotal": {
+      "name": "otherliabilitiestotal",
+      
+      
+      "description": "Total value of other liabilities not classified under standard categories."
+    },
+    "totalequity": {
+      "name": "totalequity",
+      
+      
+      "description": "Total shareholders' equity, representing the net value of the company."
+    },
+    "totalstockhodersequity": {
+      "name": "totalstockhodersequity",
+      
+      
+      "description": "Total value of stockholders' equity, including retained earnings and additional paid-in capital."
+    },
+    "commonstock": {
+      "name": "commonstock",
+      
+      
+      "description": "Total value of common stock issued by the company."
+    },
+    "additionalpaidincapital": {
+      "name": "additionalpaidincapital",
+      
+      
+      "description": "Additional paid-in capital, representing the excess amount received over the par value of stock."
+    },
+    "retainedearnings": {
+      "name": "retainedearnings",
+      
+      
+      "description": "Total retained earnings, representing accumulated net income that has been reinvested in the business."
+    },
+    "otherequitytotal": {
+      "name": "otherequitytotal",
+      
+      
+      "description": "Total value of other equity components, such as treasury stock or accumulated other comprehensive income."
+    },
+    "totalliabilitiesshareholdersequity": {
+      "name": "totalliabilitiesshareholdersequity",
+      
+      
+      "description": "Total liabilities and shareholders' equity, which should match the total assets in the balance sheet."
+    },
+    "totalcommonsharesoutstanding": {
+      "name": "totalcommonsharesoutstanding",
+      
+      
+      "description": "Total number of common shares outstanding in the market."
+    },
+    "ticker": {
+      "name": "ticker",
+      
+      
+      "description": "Stock ticker symbol representing the company."
+    }
+  }
+  

@@ -1,0 +1,45 @@
+{
+    "period": {
+      "name": "period",
+      
+      
+      "description": "The reporting period for EPS trends (e.g., Q1 2024, FY 2023)."
+    },
+    "current": {
+      "name": "current",
+      
+      
+      "description": "The most recent reported or estimated earnings per share (EPS)."
+    },
+    "7days_ago": {
+      "name": "7days_ago",
+      
+      
+      "description": "EPS estimate from 7 days ago."
+    },
+    "30days_ago": {
+      "name": "30days_ago",
+      
+      
+      "description": "EPS estimate from 30 days ago."
+    },
+    "60days_ago": {
+      "name": "60days_ago",
+      
+      
+      "description": "EPS estimate from 60 days ago."
+    },
+    "90days_ago": {
+      "name": "90days_ago",
+      
+      
+      "description": "EPS estimate from 90 days ago."
+    },
+    "ticker": {
+      "name": "ticker",
+      
+      
+      "description": "The stock ticker symbol associated with the EPS trend data."
+    }
+  }
+  

@@ -1,0 +1,333 @@
+{
+    "break_even": {
+      "name": "break_even",
+      
+      
+      "description": "Break-even point for the option trade."
+    },
+    "iv": {
+      "name": "iv",
+      
+      
+      "description": "Implied volatility of the option."
+    },
+    "oi": {
+      "name": "oi",
+      
+      
+      "description": "Open interest, representing the number of outstanding option contracts."
+    },
+    "risk_free_rate": {
+      "name": "risk_free_rate",
+      
+      
+      "description": "Risk-free interest rate used in option pricing."
+    },
+    "volume": {
+      "name": "volume",
+      
+      
+      "description": "Trading volume of the option."
+    },
+    "high": {
+      "name": "high",
+      
+      
+      "description": "Highest price reached by the option during the trading session."
+    },
+    "low": {
+      "name": "low",
+      
+      
+      "description": "Lowest price reached by the option during the trading session."
+    },
+    "vwap": {
+      "name": "vwap",
+      
+      
+      "description": "Volume-weighted average price of the option."
+    },
+    "open": {
+      "name": "open",
+      
+      
+      "description": "Opening price of the option."
+    },
+    "close": {
+      "name": "close",
+      
+      
+      "description": "Closing price of the option."
+    },
+    "change_percent": {
+      "name": "change_percent",
+      
+      
+      "description": "Percentage change in the option price."
+    },
+    "strike": {
+      "name": "strike",
+      
+      
+      "description": "Strike price of the option contract."
+    },
+    "expiry": {
+      "name": "expiry",
+      
+      
+      "description": "Expiration date of the option contract."
+    },
+    "call_put": {
+      "name": "call_put",
+      
+      
+      "description": "Indicates whether the option is a call or put."
+    },
+    "exercise_style": {
+      "name": "exercise_style",
+      
+      
+      "description": "Style of the option (e.g., American or European)."
+    },
+    "option_symbol": {
+      "name": "option_symbol",
+      
+      
+      "description": "Symbol representing the specific option contract."
+    },
+    "theta": {
+      "name": "theta",
+      
+      
+      "description": "Theta, measuring the time decay of the option's value."
+    },
+    "delta": {
+      "name": "delta",
+      
+      
+      "description": "Delta, measuring the sensitivity of the option's price to changes in the underlying asset."
+    },
+    "gamma": {
+      "name": "gamma",
+      
+      
+      "description": "Gamma, representing the rate of change of delta."
+    },
+    "vega": {
+      "name": "vega",
+      
+      
+      "description": "Vega, measuring sensitivity to changes in implied volatility."
+    },
+    "timestamp": {
+      "name": "timestamp",
+      
+      
+      "description": "Timestamp of the data record."
+    },
+    "conditions": {
+      "name": "conditions",
+      
+      
+      "description": "Conditions or trade indicators for the option contract."
+    },
+    "price": {
+      "name": "price",
+      
+      
+      "description": "Current market price of the option."
+    },
+    "trade_size": {
+      "name": "trade_size",
+      
+      
+      "description": "Size of the option trade executed."
+    },
+    "exchange": {
+      "name": "exchange",
+      
+      
+      "description": "Exchange where the option is traded."
+    },
+    "ask": {
+      "name": "ask",
+      
+      
+      "description": "Current ask price for the option."
+    },
+    "bid": {
+      "name": "bid",
+      
+      
+      "description": "Current bid price for the option."
+    },
+    "bid_size": {
+      "name": "bid_size",
+      
+      
+      "description": "Size of the bid order."
+    },
+    "ask_size": {
+      "name": "ask_size",
+      
+      
+      "description": "Size of the ask order."
+    },
+    "mid": {
+      "name": "mid",
+      
+      
+      "description": "Midpoint price between bid and ask."
+    },
+    "change_to_breakeven": {
+      "name": "change_to_breakeven",
+      
+      
+      "description": "Price movement required to reach the break-even point."
+    },
+    "underlying_price": {
+      "name": "underlying_price",
+      
+      
+      "description": "Current price of the underlying asset."
+    },
+    "ticker": {
+      "name": "ticker",
+      
+      
+      "description": "Ticker symbol of the underlying asset."
+    },
+    "dte": {
+      "name": "dte",
+      
+      
+      "description": "Days to expiration of the option contract."
+    },
+    "t_years": {
+      "name": "t_years",
+      
+      
+      "description": "Time to expiration in years."
+    },
+    "time_value": {
+      "name": "time_value",
+      
+      
+      "description": "Time value component of the option price."
+    },
+    "moneyness": {
+      "name": "moneyness",
+      
+      
+      "description": "Option's moneyness status (ITM, ATM, OTM)."
+    },
+    "liquidity_score": {
+      "name": "liquidity_score",
+      
+      
+      "description": "Liquidity score representing option tradeability."
+    },
+    "spread": {
+      "name": "spread",
+      
+      
+      "description": "Bid-ask spread of the option."
+    },
+    "intrinsic_value": {
+      "name": "intrinsic_value",
+      
+      
+      "description": "Intrinsic value of the option."
+    },
+    "extrinsic_value": {
+      "name": "extrinsic_value",
+      
+      
+      "description": "Extrinsic value of the option."
+    },
+    "leverage_ratio": {
+      "name": "leverage_ratio",
+      
+      
+      "description": "Leverage ratio of the option trade."
+    },
+    "spread_pct": {
+      "name": "spread_pct",
+      
+      
+      "description": "Percentage of bid-ask spread."
+    },
+    "return_on_risk": {
+      "name": "return_on_risk",
+      
+      
+      "description": "Expected return relative to the risk of the option trade."
+    },
+    "velocity": {
+      "name": "velocity",
+      
+      
+      "description": "Measure of option price movement speed."
+    },
+    "gamma_risk": {
+      "name": "gamma_risk",
+      
+      
+      "description": "Gamma risk associated with the option."
+    },
+    "theta_decay_rate": {
+      "name": "theta_decay_rate",
+      
+      
+      "description": "Rate at which the option loses value over time."
+    },
+    "vega_impact": {
+      "name": "vega_impact",
+      
+      
+      "description": "Impact of vega on the option price."
+    },
+    "delta_theta_ratio": {
+      "name": "delta_theta_ratio",
+      
+      
+      "description": "Ratio of delta to theta."
+    },
+    "sensitivity": {
+      "name": "sensitivity",
+      
+      
+      "description": "Sensitivity of the option price to external factors."
+    },
+    "ltr": {
+      "name": "ltr",
+      
+      
+      "description": "Long-term risk factor for the option."
+    },
+    "rrs": {
+      "name": "rrs",
+      
+      
+      "description": "Risk-reward score of the option trade."
+    },
+    "gbs": {
+      "name": "gbs",
+      
+      
+      "description": "Generalized Black-Scholes model metric."
+    },
+    "moneyness_score": {
+      "name": "moneyness_score",
+      
+      
+      "description": "Quantified score of moneyness."
+    },
+    "opp": {
+      "name": "opp",
+      
+      
+      "description": "Option pricing potential indicator."
+    }
+  }
+  

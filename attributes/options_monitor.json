@@ -1,0 +1,549 @@
+{
+    "quotetime": {
+      "name": "quotetime",
+
+      
+      "description": "Quote Time. Time of option quote"
+    },
+    "call_rho_eod": {
+      "name": "call_rho_eod",
+
+      
+      
+      
+      "description": "Call Previous Closing Rho. (Greek) Change of an option's price relative to a 1% (absolute) change in its interest rate"
+    },
+    "call_rho": {
+      "name": "call_rho",
+
+      
+      
+      
+      "description": "Call Rho. (Greek) Change of an option's price relative to a 1% (absolute) change in its interest rate"
+    },
+    "call_alpha_eod": {
+      "name": "call_alpha_eod",
+
+      
+      
+      
+      
+      "description": "Call Previous Closing Alpha. (Greek) Ratio of Gamma over Theta"
+    },
+    "call_alpha": {
+      "name": "call_alpha",
+
+      
+      
+      "description": "Call Alpha. (Greek) Ratio of Gamma over Theta"
+    },
+    "call_vega_eod": {
+      "name": "call_vega_eod",
+
+      
+      
+      
+      "description": "Call Previous Closing Vega. (Greek) Change of an option's price relative to a 1% (absolute) change in its implied volatility"
+    },
+    "call_vega": {
+      "name": "call_vega",
+
+      
+      
+      
+      "description": "Call Vega. (Greek) Change of an option's price relative to a 1% (absolute) change in its implied volatility"
+    },
+    "call_theta_eod": {
+      "name": "call_theta_eod",
+ 
+      
+      "description": "Call Previous Closing Theta. (Greek) Loss of an option's value relative to a one day decrease in time to expiration (time decay)"
+    },
+    "call_theta": {
+      "name": "call_theta",
+
+      
+      
+      
+      "description": "Call Theta. (Greek) Loss of an option's value relative to a one day decrease in time to expiration (time decay)"
+    },
+    "call_gamma_eod": {
+      "name": "call_gamma_eod",
+ 
+      
+      
+      
+      
+      
+      "description": "Call Previous Closing Gamma. (Greek) Change of Delta relative to a $1 change in the underlying's price"
+    },
+    "call_gamma": {
+      "name": "call_gamma",
+
+      
+      
+      
+      "description": "Call Gamma. (Greek) Change of Delta relative to a $1 change in the underlying's price"
+    },
+    "call_delta_eod": {
+      "name": "call_delta_eod",
+
+      
+      
+      
+      "description": "Call Previous Closing Delta. (Greek) Change of an option's price relative to a $1 change in the underlying's price"
+    },
+    "call_delta": {
+      "name": "call_delta",
+ 
+      
+      
+      
+      "description": "Call Delta. (Greek) Change of an option's price relative to a $1 change in the underlying's price"
+    },
+    "call_ivint": {
+      "name": "call_ivint",
+
+      
+      
+      
+      "description": "Call Interpolated IV. Interpolation done if no IV calculation was possible from activity"
+    },
+    "call_ivint_eod": {
+      "name": "call_ivint_eod",
+  
+      
+      
+      "description": "Call Previous Closing interpolated IV. Interpolation done if no IV calculation was possible from activity."
+    },
+    "call_ivbid": {
+      "name": "call_ivbid",
+
+      
+      
+      "description": "Call Bid price Implied Volatility"
+    },
+    "call_ivask": {
+      "name": "call_ivask",
+
+      
+      
+      
+      "description": "Call Ask price Implied Volatility"
+    },
+    "call_paramvolapercent_eod": {
+      "name": "call_paramvolapercent_eod",
+ 
+      
+      
+      
+      "description": "Call Parameterized Volatility %. IV value from a smooth parameterized strike skew generated after the previous trading day"
+    },
+    "call_openinterest_eod": {
+      "name": "call_openinterest_eod",
+   
+      
+      
+      
+      
+      "description": "Call Open Interest at previous close. Open Interest refers to the total number of open contracts i.e. contracts which have been traded but not yet liquidated (liquidity indicator)"
+    },
+    "call_theoprice": {
+      "name": "call_theoprice",
+
+      
+      
+      
+      "description": "Call Fair Price. Option's fair price is determined by a series of variables input into the option model. The variables consist of the following: the underlying security price, the strike price, the time until expiration, the dividends to be paid, the level of interest rates, and the volatility of the stock. Note: Our site uses an internal database to draw upon the correct interest rate and dividend schedule (if any) for calculating the option price"
+    },
+    "call_theoprice_eod": {
+      "name": "call_theoprice_eod",
+  
+      
+      
+      
+      "description": "Call Fair Price at Previous Close. Option's fair price is determined by a series of variables input into the option model. The variables consist of the following: the underlying security price, the strike price, the time until expiration, the dividends to be paid, the level of interest rates, and the volatility of the stock. Note: Our site uses an internal database to draw upon the correct interest rate and dividend schedule (if any) for calculating the option price"
+    },
+    "call_volume_eod": {
+      "name": "call_volume_eod",
+
+      
+      
+      "description": "Call Previous Day Options Volume is the total number of contracts bought and sold for the previous day, for a particular strike price"
+    },
+    "call_volume": {
+      "name": "call_volume",
+
+      
+      
+      "description": "Call Options Volume is the total number of contracts bought and sold for that day, for a particular strike price"
+    },
+    "call_mean_eod": {
+      "name": "call_mean_eod",
+
+      
+      "description": "Call Mean of previous day's closing Ask price and Bid price"
+    },
+    "call_bid_eod": {
+      "name": "call_bid_eod",
+
+      
+      
+      
+      "description": "Call Previous Closing Bid. Highest price the buyer will pay for an option at the time of previous market close"
+    },
+    "call_ask_eod": {
+      "name": "call_ask_eod",
+
+      
+      
+      
+      "description": "Call Previous Closing Ask. Lowest price at which the seller will sell an option at the time of previous market close"
+    },
+    "call_bidsize": {
+      "name": "call_bidsize",
+
+      
+      
+      "description": "Call Bid Size. Intraday bid size (liquidity indicator)"
+    },
+    "call_asksize": {
+      "name": "call_asksize",
+
+      
+      
+      
+      "description": "Call Ask Size. Intraday ask size (liquidity indicator)"
+    },
+    "call_mean": {
+      "name": "call_mean",
+
+      
+      "description": "Call Mean of Ask price and Bid price"
+    },
+    "call_change": {
+      "name": "call_change",
+
+      
+      
+      "description": "Call Change. Change between current option's bid/ask mid-price and previous close's value"
+    },
+    "call_changepercent": {
+      "name": "call_changepercent",
+
+      
+      
+      
+      
+      "description": "Call Change %. Percentage change between current option's bid/ask mid-price and previous closes value"
+    },
+    "call_change_eod": {
+      "name": "call_change_eod",
+
+      
+      
+      
+      "description": "Call Previous Day Change. Change between the day before last's closing option bid/ask mid-price and previous day's closing value"
+    },
+    "call_changepercent_eod": {
+      "name": "call_changepercent_eod",
+ 
+      
+      
+      
+      "description": "Call Percentage change between the day before last's closing option bid/ask mid-price and previous day's closing value"
+    },
+    "call_bidtime": {
+      "name": "call_bidtime",
+
+      "description": "Call Bid timestamp. Time and Date corresponding with most recent bid and size"
+    },
+    "call_asktime": {
+      "name": "call_asktime",
+
+      
+      
+      
+      "description": "Call Ask timestamp. Time and Date corresponding with most recent ask and size"
+    },
+    "call_bid": {
+      "name": "call_bid",
+ 
+      
+      
+      
+      
+      "description": "Call Highest price the buyer will currently pay for an option"
+    },
+    "call_ask": {
+      "name": "call_ask",
+ 
+      
+      
+      
+      "description": "Call Lowest price at which the seller will currently sell an option"
+    },
+    "call_optionsymbol": {
+      "name": "call_optionsymbol",
+
+      
+      
+      
+      "description": "Call 21-character identifier of an option"
+    },
+    "strike": {
+      "name": "strike",
+
+      
+      "description": "Strike. Strike price is the stated price per share for which the underlying stock may be purchased (in the case of a call) or sold (in the case of a put) by the option holder upon exercise of the option"
+    },
+    "style": {
+      "name": "style",
+
+      
+      "description": "An option's style can be American (Amer), European (Euro), or exotic. Euro options can only be exercised on the expiration, whereas Amer options can be exercised at any point before expiration"
+    },
+    "put_optionsymbol": {
+      "name": "put_optionsymbol",
+
+      
+      "description": "Put 21-character identifier of an option"
+    },
+    "put_bid": {
+      "name": "put_bid",
+
+      
+      
+      "description": "Put Highest price the buyer will currently pay for an option"
+    },
+    "put_ask": {
+      "name": "put_ask",
+
+      
+      "description": "Put Lowest price at which the seller will currently sell an option"
+    },
+    "put_bidtime": {
+      "name": "put_bidtime",
+
+      
+      
+      "description": "Put Bid timestamp. Time and Date corresponding with most recent bid and size"
+    },
+    "put_asktime": {
+      "name": "put_asktime",
+
+      
+      
+      "description": "Put Ask timestamp. Time and Date corresponding with most recent ask and size"
+    },
+    "put_change": {
+      "name": "put_change",
+
+      
+      
+      "description": "Put Change. Change between current option's bid/ask mid-price and previous close's value"
+    },
+    "put_changepercent": {
+      "name": "put_changepercent",
+ 
+      
+      "description": "Put Change %. Percentage change between current option's bid/ask mid-price and previous closes value"
+    },
+    "put_change_eod": {
+      "name": "put_change_eod",
+
+      
+      
+      "description": "Put Previous Day Change. Change between the day before last's closing option bid/ask mid-price and previous day's closing value"
+    },
+    "put_changepercent_eod": {
+      "name": "put_changepercent_eod",
+
+      
+      "description": "Put Percentage change between the day before last's closing option bid/ask mid-price and previous day's closing value"
+    },
+    "put_mean": {
+      "name": "put_mean",
+
+      
+      "description": "Put Mean of Ask price and Bid price"
+    },
+    "put_bidsize": {
+      "name": "put_bidsize",
+
+      
+      "description": "Put Bid Size. Intraday bid size (liquidity indicator)"
+    },
+    "put_asksize": {
+      "name": "put_asksize",
+
+      
+      
+      "description": "Put Ask Size. Intraday ask size (liquidity indicator)"
+    },
+    "put_bid_eod": {
+      "name": "put_bid_eod",
+
+      
+      
+      "description": "Put Previous Closing Bid. Highest price the buyer will pay for an option at the time of previous market close"
+    },
+    "put_ask_eod": {
+      "name": "put_ask_eod",
+
+      
+      "description": "Put Previous Closing Ask. Lowest price at which the seller will sell an option at the time of previous market close"
+    },
+    "put_mean_eod": {
+      "name": "put_mean_eod",
+
+      
+      "description": "Put Mean of previous day's closing Ask price and Bid price"
+    },
+    "put_volume_eod": {
+      "name": "put_volume_eod",
+
+      
+      
+      "description": "Put Previous Day Options Volume is the total number of contracts bought and sold for the previous day, for a particular strike price"
+    },
+    "put_volume": {
+      "name": "put_volume",
+
+      
+      "description": "Put Options Volume is the total number of contracts bought and sold for that day, for a particular strike price"
+    },
+    "put_openinterest_eod": {
+      "name": "put_openinterest_eod",
+
+      "description": "Put Open Interest at previous close. Open Interest refers to the total number of open contracts i.e. contracts which have been traded but not yet liquidated (liquidity indicator)"
+    },
+    "put_theoprice": {
+      "name": "put_theoprice",
+
+      
+      
+      "description": "Put Fair Price. Option's fair price is determined by a series of variables input into the option model. The variables consist of the following: the underlying security price, the strike price, the time until expiration, the dividends to be paid, the level of interest rates, and the volatility of the stock. Note: Our site uses an internal database to draw upon the correct interest rate and dividend schedule (if any) for calculating the option price"
+    },
+    "put_theoprice_eod": {
+      "name": "put_theoprice_eod",
+
+      
+      "description": "Put Fair Price at Previous Close. Option's fair price is determined by a series of variables input into the option model. The variables consist of the following: the underlying security price, the strike price, the time until expiration, the dividends to be paid, the level of interest rates, and the volatility of the stock. Note: Our site uses an internal database to draw upon the correct interest rate and dividend schedule (if any) for calculating the option price"
+    },
+    "put_paramvolapercent_eod": {
+      "name": "put_paramvolapercent_eod",
+
+      
+      
+      "description": "Put Parameterized Volatility %. IV value from a smooth parameterized strike skew generated after the previous trading day"
+    },
+    "put_ivbid": {
+      "name": "put_ivbid",
+
+      
+      "description": "Put Bid price Implied Volatility"
+    },
+    "put_ivask": {
+      "name": "put_ivask",
+
+      
+      "description": "Put Ask price Implied Volatility"
+    },
+    "put_ivint": {
+      "name": "put_ivint",
+ 
+      
+      
+      "description": "Put Interpolated IV. Interpolation done if no IV calculation was possible from activity"
+    },
+    "put_ivint_eod": {
+      "name": "put_ivint_eod",
+
+      
+      "description": "Put Previous Closing interpolated IV. Interpolation done if no IV calculation was possible from activity."
+    },
+    "put_delta_eod": {
+      "name": "put_delta_eod",
+
+      
+      
+      "description": "Put Previous Closing Delta. (Greek) Change of an option's price relative to a $1 change in the underlying's price"
+    },
+    "put_delta": {
+      "name": "put_delta",
+
+      
+      "description": "Put Delta. (Greek) Change of an option's price relative to a $1 change in the underlying's price"
+    },
+    "put_gamma_eod": {
+      "name": "put_gamma_eod",
+
+      
+      
+      "description": "Put Previous Closing Gamma. (Greek) Change of Delta relative to a $1 change in the underlying's price"
+    },
+    "put_gamma": {
+      "name": "put_gamma",
+
+      
+      
+      "description": "Put Gamma. (Greek) Change of Delta relative to a $1 change in the underlying's price"
+    },
+    "put_theta_eod": {
+      "name": "put_theta_eod",
+
+      
+      
+      "description": "Put Previous Closing Theta. (Greek) Loss of an option's value relative to a one day decrease in time to expiration (time decay)"
+    },
+    "put_theta": {
+      "name": "put_theta",
+
+      
+      
+      "description": "Put Theta. (Greek) Loss of an option's value relative to a one day decrease in time to expiration (time decay)"
+    },
+    "put_vega_eod": {
+      "name": "put_vega_eod",
+
+      
+      "description": "Put Previous Closing Vega. (Greek) Change of an option's price relative to a 1% (absolute) change in its implied volatility"
+    },
+    "put_vega": {
+      "name": "put_vega",
+
+      
+      
+      "description": "Put Vega. (Greek) Change of an option's price relative to a 1% (absolute) change in its implied volatility"
+    },
+    "put_alpha_eod": {
+      "name": "put_alpha_eod",
+
+      
+      
+      "description": "Put Previous Closing Alpha. (Greek) Ratio of Gamma over Theta"
+    },
+    "put_alpha": {
+      "name": "put_alpha",
+
+      
+      
+      "description": "Put Alpha. (Greek) Ratio of Gamma over Theta"
+    },
+    "put_rho_eod": {
+      "name": "put_rho_eod",
+
+      
+      
+      "description": "Put Previous Closing Rho. (Greek) Change of an option's price relative to a 1% (absolute) change in its interest rate"
+    },
+    "put_rho": {
+      "name": "put_rho",
+
+      
+      
+      "description": "Put Rho. (Greek) Change of an option's price relative to a 1% (absolute) change in its interest rate"
+    }
+  }
+

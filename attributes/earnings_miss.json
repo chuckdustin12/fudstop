@@ -1,0 +1,147 @@
+{
+    "ticker": {
+      "name": "ticker",
+      
+      
+      "description": "Stock ticker symbol representing the company."
+    },
+    "name": {
+      "name": "name",
+      
+      
+      "description": "Company name associated with the ticker."
+    },
+    "earnings_release_date": {
+      "name": "earnings_release_date",
+      
+      
+      "description": "The date on which the company released its earnings report."
+    },
+    "surprise_ratio": {
+      "name": "surprise_ratio",
+      
+      
+      "description": "Earnings surprise ratio, showing the percentage difference between expected and actual EPS."
+    },
+    "after_last": {
+      "name": "after_last",
+      
+      
+      "description": "Performance of the stock after the last earnings release."
+    },
+    "fiscal_year": {
+      "name": "fiscal_year",
+      
+      
+      "description": "Fiscal year in which the earnings report applies."
+    },
+    "quarter": {
+      "name": "quarter",
+      
+      
+      "description": "Fiscal quarter in which the earnings report applies."
+    },
+    "eps": {
+      "name": "eps",
+      
+      
+      "description": "Earnings Per Share (EPS). A measure of profitability calculated as net income divided by outstanding shares."
+    },
+    "pe_ttm": {
+      "name": "pe_ttm",
+      
+      
+      "description": "Price-to-Earnings (P/E) Ratio based on trailing twelve months (TTM) earnings."
+    },
+    "close_price": {
+      "name": "close_price",
+      
+      
+      "description": "Closing stock price on the earnings release date."
+    },
+    "price_change": {
+      "name": "price_change",
+      
+      
+      "description": "Absolute change in stock price compared to the previous close."
+    },
+    "change_ratio": {
+      "name": "change_ratio",
+      
+      
+      "description": "Percentage change in stock price compared to the previous close."
+    },
+    "market_value": {
+      "name": "market_value",
+      
+      
+      "description": "Market capitalization of the company, calculated as Share Price * Total Shares Outstanding."
+    },
+    "volume": {
+      "name": "volume",
+      
+      
+      "description": "Total number of shares traded on the earnings release date."
+    },
+    "turnover_rate": {
+      "name": "turnover_rate",
+      
+      
+      "description": "Turnover rate, showing the percentage of shares traded relative to total outstanding shares."
+    },
+    "dividend": {
+      "name": "dividend",
+      
+      
+      "description": "Dividend amount per share for the latest reporting period."
+    },
+    "pre_close": {
+      "name": "pre_close",
+      
+      
+      "description": "Stock price at the close of the previous trading day."
+    },
+    "fifty_high": {
+      "name": "fifty_high",
+      
+      
+      "description": "Highest stock price reached in the last 52 weeks."
+    },
+    "fifty_low": {
+      "name": "fifty_low",
+      
+      
+      "description": "Lowest stock price reached in the last 52 weeks."
+    },
+    "open_price": {
+      "name": "open_price",
+      
+      
+      "description": "Opening stock price on the earnings release date."
+    },
+    "high_price": {
+      "name": "high_price",
+      
+      
+      "description": "Highest stock price reached on the earnings release date."
+    },
+    "low_price": {
+      "name": "low_price",
+      
+      
+      "description": "Lowest stock price reached on the earnings release date."
+    },
+    "vibrate_ratio": {
+      "name": "vibrate_ratio",
+      
+      
+      "description": "Volatility ratio, measuring price fluctuation relative to the opening price."
+    },
+    "insertion_timestamp": {
+      "name": "insertion_timestamp",
+      
+      
+      "description": "Timestamp indicating when this record was inserted into the database."
+    }
+  }
+  

@@ -1,0 +1,1802 @@
+
+{
+  "quotetime": {
+    "name": "quotetime",
+    
+    
+    "description": "Time of quote"
+    
+  },
+  "bid": {
+    "name": "bid",
+    "description": "Highest price a buyer will currently pay for a security"
+    
+  },
+  "bid_eod": {
+    "name": "bid_eod",
+    "description": "Previous Closing Bid. Highest price the buyer will pay for an option at the time of previous market close"
+  },
+  "ask": {
+    "name": "ask",
+    "description": "Lowest price at which a seller will currently sell a security"
+  },
+  "ask_eod": {
+    "name": "ask_eod",
+    "description": "Previous Closing Ask. Lowest price at which the seller will sell an option at the time of previous market close"
+  },
+  "close_eod": {
+    "name": "close_eod",
+    "description": "Previous closing price. The price at close of the most recent trading day"
+  },
+  "last": {
+    "name": "last",
+    
+    
+    
+    
+    "description": "Last Price. Current price for stocks and implied price for indexes"
+    
+  },
+  "change": {
+    "name": "change",
+    
+    
+    
+    
+    "description": "Change between the current and previous night's stock price"
+    
+  },
+  "changepercent": {
+    "name": "changepercent",
+    
+    
+    
+    
+    "description": "Percent change between the current and previous night's stock price"
+    
+  },
+  "changeopen": {
+    "name": "changeopen",
+    
+    
+    
+    
+    "description": "Change between the current and opening stock price"
+    
+  },
+  "changepercentopen": {
+    "name": "changepercentopen",
+    "description": "Percentage change between the current and opening stock price"
+    
+  },
+  "change_eod": {
+    "name": "change_eod",
+
+    
+    
+    
+    
+    
+    "description": "Previous Day Change. Change between the day before last's closing option bid/ask mid-price and previous day's closing value"
+  },
+  "changepercent_eod": {
+    "name": "changepercent_eod",
+
+    
+    
+    
+    
+    
+    "description": "Percentage change between the day before last's closing option bid/ask mid-price and previous day's closing value"
+  },
+  "highprice52wk_eod": {
+    "name": "highprice52wk_eod",
+
+    
+    
+    
+    
+    
+    "description": "52 Week High. Highest closing stock price during previous 52 weeks"
+  },
+  "lowprice52wk_eod": {
+    "name": "lowprice52wk_eod",
+    
+    
+    
+    
+    
+    "description": "52 Week Low. Lowest closing stock price during previous 52 weeks"
+  },
+  "dividenddate_eod": {
+    "name": "dividenddate_eod",
+
+    
+    
+    
+    
+    
+    "description": "Dividend Date. Stock/ETF's nearest prior announced dividend date"
+  },
+  "dividendamount_eod": {
+    "name": "dividendamount_eod",
+
+    
+    
+    
+    
+    
+    "description": "Dividend Amount. Stock/ETF's dividend amount"
+  },
+  "dividendfrequency_eod": {
+    "name": "dividendfrequency_eod",
+   
+    
+    
+    
+    
+    
+    "description": "Dividend Frequency. Stock dividend frequency"
+  },
+  "dividendyield_eod": {
+    "name": "dividendyield_eod",
+   
+    
+    
+    
+    
+    "description": "Dividend yield for indices"
+  },
+  "optvol_eod": {
+    "name": "optvol_eod",
+
+    
+    
+   
+    
+    
+    "description": "Previous Day Options Volume is the total number of contracts bought and sold for the previous day, for a particular strike price"
+  },
+  "optvol": {
+    "name": "optvol",
+
+    
+   
+    
+    
+    "description": "Options Volume is the total number of contracts bought and sold for that day, for a particular strike price"
+  },
+  "optvolcall_eod": {
+    "name": "optvolcall_eod",
+   
+    
+    
+    
+    
+    
+    "description": "Previous Day's Call Option Volume. Total number of call option contracts traded during the previous day"
+  },
+  "optvolcall": {
+    "name": "optvolcall",
+
+    
+    
+    
+    
+    
+    "description": "Call Options Volume is the total number of contracts bought and sold for that day, for a particular strike price"
+  },
+  "optvolput_eod": {
+    "name": "optvolput_eod",
+
+
+    "description": "Previous Day's Put Option Volume. Total number of Put option contracts traded during the previous day"
+  },
+  "optvolput": {
+    "name": "optvolput",
+ 
+    
+    
+    
+    
+    
+    "description": "Put Options Volume is the total number of contracts bought and sold for that day, for a particular strike price"
+  },
+  "openinterest_eod": {
+    "name": "openinterest_eod",
+ 
+    
+    
+    
+    "description": "Open Interest at Previous close. Open Interest refers to the total number of open contracts i.e. contracts which have been traded but not yet liquidated (liquidity indicator)"
+  },
+  "openinterest": {
+    "name": "openinterest",
+
+    
+    
+    
+    
+    "description": "Open Interest at Previous close. Open Interest refers to the total number of open contracts i.e. contracts which have been traded but not yet liquidated (liquidity indicator)"
+  },
+  "openinterestcall_eod": {
+    "name": "openinterestcall_eod",
+   
+    
+    
+    
+    
+    
+    "description": "Call Open Interest at Previous close. Open Interest refers to the total number of open contracts i.e. contracts which have been traded but not yet liquidated (liquidity indicator)"
+  },
+  "openinterestput_eod": {
+    "name": "openinterestput_eod",
+   
+    
+    
+    
+    
+    "description": "Put Open Interest at Previous close. Open Interest refers to the total number of open contracts i.e. contracts which have been traded but not yet liquidated (liquidity indicator)"
+  },
+  "stockvolume_eod": {
+    "name": "stockvolume_eod",
+   
+    
+    
+    
+    
+    
+    "description": "Previous Day's Stock Volume. Stock Volume is the actual number of stock shares traded on a particular day. SPX volume is composed as weighted volume from its components"
+  },
+  "stockvolume": {
+    "name": "stockvolume",
+
+    
+    
+    
+    
+    
+    "description": "Stock Volume is the actual number of stock shares traded on a particular day"
+  },
+  "avgoptvol1wk_eod": {
+    "name": "avgoptvol1wk_eod",
+
+    
+    
+    
+    
+    
+    "description": "1WK Avg Opt Volume is the average daily options volume (the total number of option contracts traded during the day) for the previous calendar week (only trading days are included). Updated around 7:30-8:00 PM EST, so the current average is for the previous day"
+  },
+  "avgoptoi1wk_eod": {
+    "name": "avgoptoi1wk_eod",
+  
+    
+    
+    
+    
+    
+    "description": "1WK Avg Opt OI is the average daily options open interest (the total number of option contracts for a security that haven't been closed or delivered) for the previous calendar week (only trading days are included). Updated around 7:30-8:00 PM EST, so it is delayed one day from our reception"
+  },
+  "avgoptvol1mo_eod": {
+    "name": "avgoptvol1mo_eod",
+ 
+    
+    
+    
+    
+    
+    "description": "1MO Avg Opt Volume is the average daily options volume (the total number of traded options contracts traded during the day) for the last calendar month (only trading days are included), updated around 7:30-8:00 PM EST"
+  },
+  "avgoptoi1mo_eod": {
+    "name": "avgoptoi1mo_eod",
+   
+    
+    
+    
+    
+    "description": "1MO Avg Opt OI is the average daily options open interest (the total number of traded options contracts that haven't been closed or delivered) for the last calendar month (only trading days are included). Updated around 7:30-8:00 PM EST, so it is delayed one day from our reception"
+  },
+  "callputvolumeratio": {
+    "name": "callputvolumeratio",
+    
+    
+    
+    
+    
+    "description": "Call/Put Volume Ratio. Ratio of total calls volume / total puts volume"
+  },
+  "callputvolumeratio_eod": {
+    "name": "callputvolumeratio_eod",
+    
+    
+    
+    
+    
+    "description": "Previous Day's Call/Put Ratio. Total calls volume / total puts volume for the previous day."
+  },
+  "putcallvolumeratio": {
+    "name": "putcallvolumeratio",
+
+    
+    
+    
+    
+    
+    "description": "Put/Call Volume Ratio. Ratio of total puts volume / total calls volume"
+  },
+  "putcallvolumeratio_eod": {
+    "name": "putcallvolumeratio_eod",
+
+    
+    
+    
+    
+    
+    "description": "Previous Day's Put/Call Ratio. Total puts volume / total calls volume for the previous day"
+  },
+  "hv10_eod": {
+    "name": "hv10_eod",
+    
+    
+   
+    
+    
+    "description": "Historical Volatility 10 Days. Actual volatility that occurred to the underlying stock during the prior 10 trading days"
+  },
+  "hv20_eod": {
+    "name": "hv20_eod",
+
+    
+    
+   
+    
+    
+    "description": "Historical Volatility 20 Days. Actual volatility that occurred to the underlying stock during the prior 20 trading days"
+  },
+  "hv20": {
+    "name": "hv20",
+
+   
+    
+    
+    "description": "Historical Volatility 20 Days. Actual volatility that occurred to the underlying stock during the prior 20 trading days"
+  },
+  "hv30_eod": {
+    "name": "hv30_eod",
+
+    
+   
+    
+    
+    "description": "Historical Volatility 30 Days. Actual volatility that occurred to the underlying stock during the prior 30 trading days"
+  },
+  "hv60_eod": {
+    "name": "hv60_eod",
+
+    
+   
+    
+    
+    "description": "Historical Volatility 60 Days. Actual volatility that occurred to the underlying stock during prior 60 trading days"
+  },
+  "hv90_eod": {
+    "name": "hv90_eod",
+ 
+   
+    
+    
+    "description": "Historical Volatility 90 Days. Actual volatility that occurred to the underlying stock during the prior 90 trading days"
+  },
+  "hv120_eod": {
+    "name": "hv120_eod",
+
+   
+    
+    
+    "description": "Historical Volatility 120 Days. Actual volatility that occurred to the underlying stock during the prior 120 trading days"
+  },
+  "hv150_eod": {
+    "name": "hv150_eod",
+
+    
+   
+    
+    
+    "description": "Historical Volatility 150 Days. Actual volatility that occurred to the underlying stock during the prior 150 trading days"
+  },
+  "hv180_eod": {
+    "name": "hv180_eod",
+
+   
+    
+    
+    "description": "Historical Volatility 180 Days. Actual volatility that occurred to the underlying stock during the prior 180 trading days"
+  },
+  "hv30hl_eod": {
+    "name": "hv30hl_eod",
+
+    
+   
+    
+    
+    "description": "HV30 High Low Indicator. High/Low indicators show whether the current value of the Historical Volatility (HV30) is closer to its minimum or maximum value reached for the prior 30 days"
+  },
+  "hv60hl_eod": {
+    "name": "hv60hl_eod",
+
+    
+   
+    
+    
+    "description": "HV60 High Low Indicator. High/Low indicators show whether the current value of the Historical Volatility (HV60) is closer to its minimum or maximum value reached for the prior 60 days"
+  },
+  "hv90hl_eod": {
+    "name": "hv90hl_eod",
+ 
+   
+    
+    
+    "description": "HV90 High Low Indicator. High/Low indicators show whether the current value of the Historical Volatility (HV90) is closer to its minimum or maximum value reached for the prior 90 days"
+  },
+  "hv120hl_eod": {
+    "name": "hv120hl_eod",
+  
+   
+    
+    
+    "description": "HV120 High Low Indicator. High/Low indicators show whether the current value of the Historical Volatility (HV120) is closer to its minimum or maximum value reached for the prior 120 days"
+  },
+  "hv150hl_eod": {
+    "name": "hv150hl_eod",
+ 
+   
+    
+    
+    "description": "HV150 High Low Indicator. High/Low indicators show whether the current value of the Historical Volatility (HV150) is closer to its minimum or maximum value reached for the prior 150 days"
+  },
+  "hv180hl_eod": {
+    "name": "hv180hl_eod",
+
+    
+   
+    
+    
+    "description": "HV180 High Low Indicator. High/Low indicators show whether the current value of the Historical Volatility (HV180) is closer to its minimum or maximum value reached for the prior 180 days"
+  },
+  "ivx30_eod": {
+    "name": "ivx30_eod",
+
+    
+    
+    
+    
+    "description": "Previous Closing IVX30. IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX30 is calculated for the forward 30 calendar days"
+  },
+  "ivx30chg_eod": {
+    "name": "ivx30chg_eod",
+
+    
+   
+    
+    
+    "description": "Previous Day's IVX30 Change. Derived by comparing the previous closing Implied Volatility Index (IVX30) against the day before yesterday's closing value. This value is the total change for the previous day"
+  },
+  "ivx30chgpercent_eod": {
+    "name": "ivx30chgpercent_eod",
+
+    
+    
+    
+    "description": "Previous Day's IVX30 Change %. Derived by comparing the previous closing Implied Volatility Index (IVX30) against the day before yesterday's closing value, this difference is then expressed as a percent change. This value is the total change for the previous day"
+  },
+  "ivx60_eod": {
+    "name": "ivx60_eod",
+
+    
+    
+    
+    
+    "description": "Previous Closing IVX60. IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX60 is calculated for the forward 60 calendar days"
+  },
+  "ivx60chg_eod": {
+    "name": "ivx60chg_eod",
+
+    
+   
+    
+    
+    "description": "Previous Day's IVX60 Change. Derived by comparing the previous closing Implied Volatility Index (IVX60) against the day before yesterday's closing value. This value is the total change for the previous day"
+  },
+  "ivx60chgpercent_eod": {
+    "name": "ivx60chgpercent_eod",
+
+    
+    
+    
+    "description": "Previous Day's IVX60 Change %. Derived by comparing the previous closing Implied Volatility Index (IVX60) against the day before yesterday's closing value, this difference is then expressed as a percent change. This value is the total change for the previous day"
+  },
+  "ivx90_eod": {
+    "name": "ivx90_eod",
+
+    
+    
+    
+    
+    "description": "Previous Closing IVX90. IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX90 is calculated for the forward 90 calendar days"
+  },
+  "ivx90chg_eod": {
+    "name": "ivx90chg_eod",
+
+    
+   
+    
+    
+    "description": "Previous Day's IVX90 Change. Derived by comparing the previous closing Implied Volatility Index (IVX60) against the day before yesterday's closing value. This value is the total change for the previous day"
+  },
+  "ivx90chgpercent_eod": {
+    "name": "ivx90chgpercent_eod",
+
+    
+    
+    
+    
+    "description": "Previous Day's IVX90 Change %. Derived by comparing the previous closing Implied Volatility Index (IVX60) against the day before yesterday's closing value., this difference is then expressed as a percent change. This value is the total change for the previous day"
+  },
+  "ivx120_eod": {
+    "name": "ivx120_eod",
+
+    
+    
+    
+    
+    "description": "Previous Closing IVX120. IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX120 is calculated for the forward 120 calendar days"
+  },
+  "ivx120chg_eod": {
+    "name": "ivx120chg_eod",
+
+    
+    
+    
+    "description": "Previous Day's IVX120 Change. Derived by comparing the previous closing Implied Volatility Index (IVX120) against the day before yesterday's closing value. This value is the total change for the previous day"
+  },
+  "ivx120chgpercent_eod": {
+    "name": "ivx120chgpercent_eod",
+
+    
+    
+    
+    
+    "description": "Previous Day's IVX120 Change %. Derived by comparing the previous closing Implied Volatility Index (IVX120) against the day before yesterday's closing value, this difference is then expressed as a percent change. This value is the total change for the previous day"
+  },
+  "ivx150_eod": {
+    "name": "ivx150_eod",
+ 
+    
+    
+    
+    "description": "Previous Closing IVX150. IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX150 is calculated for the forward 150 calendar days"
+  },
+  "ivx150chg_eod": {
+    "name": "ivx150chg_eod",
+
+    
+    
+    
+    
+    "description": "Previous Day's IVX150 Change. Derived by comparing the previous closing Implied Volatility Index (IVX150) against the day before yesterday's closing value. This value is the total change for the previous day"
+  },
+  "ivx150chgpercent_eod": {
+    "name": "ivx150chgpercent_eod",
+
+    
+    
+    
+    
+    "description": "Previous Day's IVX150 Change %. Derived by comparing the previous closing Implied Volatility Index (IVX150) against the day before yesterday's closing value, this difference is then expressed as a percent change. This value is the total change for the previous day"
+  },
+  "ivx180_eod": {
+    "name": "ivx180_eod",
+ 
+    
+    
+    
+    
+    "description": "Previous Closing IVX180. IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX180 is calculated for the forward 180 calendar days"
+  },
+  "ivx180chg_eod": {
+    "name": "ivx180chg_eod",
+
+    
+    
+    
+    
+    "description": "Previous Day's IVX180 Change. Derived by comparing the previous closing Implied Volatility Index (IVX180) against the day before yesterday's closing value. This value is the total change for the previous day"
+  },
+  "ivx180chgpercent_eod": {
+    "name": "ivx180chgpercent_eod",
+
+    
+    
+    
+    
+    "description": "Previous Day's IVX180 Change %. Derived by comparing the previous closing Implied Volatility Index (IVX180) against the day before yesterday's closing value, this difference is then expressed as a percent change. This value is the total change for the previous day"
+  },
+  "ivx7": {
+    "name": "ivx7",
+
+    
+    
+    
+    "description": "IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX7 is calculated for the forward 7 calendar days"
+    
+  },
+  "ivx7chg": {
+    "name": "ivx7chg",
+
+    
+    
+    "description": "IVX 7 Change. Derived by comparing the current Implied Volatility Index (IVX7) against the previous night's value, this difference is then expressed as a change"
+    
+  },
+  "ivx7chgpercent": {
+    "name": "ivx7chgpercent",
+ 
+    "description": "Derived by comparing the current Implied Volatility Index (IVX7) against the previous night's value, this difference is then expressed as a percent change"
+    
+  },
+  "ivx7chgopen": {
+    "name": "ivx7chgopen",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX7) against the most recent opening value (9:30AM EST), this difference is then expressed as a change"
+    
+  },
+  "ivx7chgpercentopen": {
+    "name": "ivx7chgpercentopen",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX7) against the most recent opening value (9:30AM EST), this difference is then expressed as a percent change"
+    
+  },
+  "ivx14": {
+    "name": "ivx14",
+ 
+    
+    
+    
+    "description": "IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX14 is calculated for the forward 14 calendar days"
+    
+  },
+  "ivx14chg": {
+    "name": "ivx14chg",
+
+    
+    
+    
+    "description": "IVX 14 Change. Derived by comparing the current Implied Volatility Index (IVX14) against the previous night's value, this difference is then expressed as a change"
+    
+  },
+  "ivx14chgpercent": {
+    "name": "ivx14chgpercent",
+
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX14) against the previous night's value, this difference is then expressed as a percent change"
+    
+  },
+  "ivx14chgopen": {
+    "name": "ivx14chgopen",
+
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX14) against the most recent opening value (9:30AM EST), this difference is then expressed as a change"
+    
+  },
+  "ivx14chgpercentopen": {
+    "name": "ivx14chgpercentopen",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX14) against the most recent opening value (9:30AM EST), this difference is then expressed as a percent change"
+    
+  },
+  "ivx21": {
+    "name": "ivx21",
+ 
+    
+    
+    "description": "IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX21 is calculated for the forward 21 calendar days"
+    
+  },
+  "ivx21chg": {
+    "name": "ivx21chg",
+
+    
+    
+    
+    "description": "IVX 21 Change. Derived by comparing the current Implied Volatility Index (IVX21) against the previous night's value, this difference is then expressed as a change"
+    
+  },
+  "ivx21chgpercent": {
+    "name": "ivx21chgpercent",
+ 
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX21) against the previous night's value, this difference is then expressed as a percent change"
+    
+  },
+  "ivx21chgopen": {
+    "name": "ivx21chgopen",
+ 
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX21) against the most recent opening value (9:30AM EST), this difference is then expressed as a change"
+    
+  },
+  "ivx21chgpercentopen": {
+    "name": "ivx21chgpercentopen",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX21) against the most recent opening value (9:30AM EST), this difference is then expressed as a percent change"
+    
+  },
+  "ivx30": {
+    "name": "ivx30",
+
+    
+    
+    
+    "description": "IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX30 is calculated for the forward 30 calendar days"
+    
+  },
+  "ivx30chg": {
+    "name": "ivx30chg",
+  
+    
+    
+    "description": "IVX 30 Change. Derived by comparing the current Implied Volatility Index (IVX30) against the previous night's value, this difference is then expressed as a change"
+    
+  },
+  "ivx30chgpercent": {
+    "name": "ivx30chgpercent",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX30) against the previous night's value, this difference is then expressed as a percent change"
+    
+  },
+  "ivx30chgopen": {
+    "name": "ivx30chgopen",
+ 
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX30) against the most recent opening value (9:30AM EST), this difference is then expressed as a change"
+    
+  },
+  "ivx30chgpercentopen": {
+    "name": "ivx30chgpercentopen",
+
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX30) against the most recent opening value (9:30AM EST), this difference is then expressed as a percent change"
+    
+  },
+  "ivx60": {
+    "name": "ivx60",
+  
+    
+    
+    
+    "description": "IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX60 is calculated for the forward 60 calendar days"
+  },
+  "ivx60chg": {
+    "name": "ivx60chg",
+   
+    
+    
+    
+    
+    "description": "IVX 60 Change. Derived by comparing the current Implied Volatility Index (IVX60) against the previous night's value, this difference is then expressed as a change"
+    
+  },
+  "ivx60chgpercent": {
+    "name": "ivx60chgpercent",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX60) against the previous night's value, this difference is then expressed as a percent change"
+  },
+  "ivx60chgopen": {
+    "name": "ivx60chgopen",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX60) against the most recent opening value (9:30AM EST), this difference is then expressed as a change"
+    
+  },
+  "ivx60chgpercentopen": {
+    "name": "ivx60chgpercentopen",
+ 
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX60) against the most recent opening value (9:30AM EST), this difference is then expressed as a percent change"
+    
+  },
+  "ivx90": {
+    "name": "ivx90",
+ 
+    
+    
+    
+    
+    "description": "IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX90 is calculated for the forward 90 calendar days"
+  },
+  "ivx90chg": {
+    "name": "ivx90chg",
+
+    
+    
+    "description": "IVX 90 Change . Derived by comparing the current Implied Volatility Index (IVX90) against the previous night's value, this difference is then expressed as a change"
+    
+  },
+  "ivx90chgpercent": {
+    "name": "ivx90chgpercent",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX90) against the previous night's value, this difference is then expressed as a percent change"
+  },
+  "ivx90chgopen": {
+    "name": "ivx90chgopen",
+
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX90) against the most recent opening value (9:30AM EST), this difference is then expressed as a change"
+    
+  },
+  "ivx90chgpercentopen": {
+    "name": "ivx90chgpercentopen",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX90) against the most recent opening value (9:30AM EST), this difference is then expressed as a percent change"
+    
+  },
+  "ivx120": {
+    "name": "ivx120",
+
+    
+    
+    "description": "IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX120 is calculated for the forward 120 calendar days"
+    
+  },
+  "ivx120chg": {
+    "name": "ivx120chg",
+
+    
+    
+    
+    "description": "IVX 120 Change. Derived by comparing the current Implied Volatility Index (IVX120) against the previous night's value, this difference is then expressed as a change"
+    
+  },
+  "ivx120chgpercent": {
+    "name": "ivx120chgpercent",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX120) against the previous night's value, this difference is then expressed as a percent change"
+    
+  },
+  "ivx120chgopen": {
+    "name": "ivx120chgopen",
+
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX120) against the most recent opening value (9:30AM EST), this difference is then expressed as a change"
+    
+  },
+  "ivx120chgpercentopen": {
+    "name": "ivx120chgpercentopen",
+
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX120) against the most recent opening value (9:30AM EST), this difference is then expressed as a percent change"
+    
+  },
+  "ivx150": {
+    "name": "ivx150",
+
+    
+    
+    "description": "IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX150 is calculated for the forward 150 calendar days"
+    
+  },
+  "ivx150chg": {
+    "name": "ivx150chg",
+ 
+    
+    
+    
+    "description": "IVX 150 Change. Derived by comparing the current Implied Volatility Index (IVX150) against the previous night's value, this difference is then expressed as a change"
+    
+  },
+  "ivx150chgpercent": {
+    "name": "ivx150chgpercent",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX150) against the previous night's value, this difference is then expressed as a percent change"
+    
+  },
+  "ivx150chgopen": {
+    "name": "ivx150chgopen",
+
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX150) against the most recent opening value (9:30AM EST), this difference is then expressed as a change"
+    
+  },
+  "ivx150chgpercentopen": {
+    "name": "ivx150chgpercentopen",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX150) against the most recent opening value (9:30AM EST), this difference is then expressed as a percent change"
+    
+  },
+  "ivx180": {
+    "name": "ivx180",
+   
+    
+    
+    
+    "description": "IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX180 is calculated for the forward 180 calendar days"
+    
+  },
+  "ivx180chg": {
+    "name": "ivx180chg",
+ 
+    
+    
+    "description": "IVX 180 Change. Derived by comparing the current Implied Volatility Index (IVX180) against the previous night's value, this difference is then expressed as a change"
+    
+  },
+  "ivx180chgpercent": {
+    "name": "ivx180chgpercent",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX180) against the previous night's value, this difference is then expressed as a percent change"
+    
+  },
+  "ivx180chgopen": {
+    "name": "ivx180chgopen",
+  
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX180) against the most recent opening value (9:30AM EST), this difference is then expressed as a change"
+    
+  },
+  "ivx180chgpercentopen": {
+    "name": "ivx180chgpercentopen",
+
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX180) against the most recent opening value (9:30AM EST), this difference is then expressed as a percent change"
+    
+  },
+  "ivx270": {
+    "name": "ivx270",
+   
+    
+    
+    "description": "IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX270 is calculated for the forward 270 calendar days"
+    
+  },
+  "ivx270chg": {
+    "name": "ivx270chg",
+  
+    
+    
+    
+    "description": "IVX 270 Change. Derived by comparing the current Implied Volatility Index (IVX270) against the previous night's value, this difference is then expressed as a change"
+    
+  },
+  "ivx270chgpercent": {
+    "name": "ivx270chgpercent",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX270) against the previous night's value, this difference is then expressed as a percent change"
+    
+  },
+  "ivx270chgopen": {
+    "name": "ivx270chgopen",
+
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX270) against the most recent opening value (9:30AM EST), this difference is then expressed as a change"
+    
+  },
+  "ivx270chgpercentopen": {
+    "name": "ivx270chgpercentopen",
+
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX270) against the most recent opening value (9:30AM EST), this difference is then expressed as a percent change"
+    
+  },
+  "ivx360": {
+    "name": "ivx360",
+  
+    
+    
+    "description": "IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX360 is calculated for the forward 360 calendar days"
+    
+  },
+  "ivx360chg": {
+    "name": "ivx360chg",
+    
+    
+    
+    "description": "IVX 360 Change. Derived by comparing the current Implied Volatility Index (IVX360) against the previous night's value, this difference is then expressed as a change"
+    
+  },
+  "ivx360chgpercent": {
+    "name": "ivx360chgpercent",
+  
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX360) against the previous night's value, this difference is then expressed as a percent change"
+    
+  },
+  "ivx360chgopen": {
+    "name": "ivx360chgopen",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX360) against the most recent opening value (9:30AM EST), this difference is then expressed as a change"
+    
+  },
+  "ivx360chgpercentopen": {
+    "name": "ivx360chgpercentopen",
+
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX360) against the most recent opening value (9:30AM EST), this difference is then expressed as a percent change"
+    
+  },
+  "ivx720": {
+    "name": "ivx720",
+  
+    
+    
+    "description": "IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX720 is calculated for the forward 720 calendar days"
+    
+  },
+  "ivx720chg": {
+    "name": "ivx720chg",
+
+    
+    
+    "description": "IVX 720 Change. Derived by comparing the current Implied Volatility Index (IVX720) against the previous night's value, this difference is then expressed as a change"
+    
+  },
+  "ivx720chgpercent": {
+    "name": "ivx720chgpercent",
+ 
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX720) against the previous night's value, this difference is then expressed as a percent change"
+    
+  },
+  "ivx720chgopen": {
+    "name": "ivx720chgopen",
+
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX720) against the most recent opening value (9:30AM EST), this difference is then expressed as a change"
+    
+  },
+  "ivx720chgpercentopen": {
+    "name": "ivx720chgpercentopen",
+
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX720) against the most recent opening value (9:30AM EST), this difference is then expressed as a percent change"
+    
+  },
+  "ivx1080": {
+    "name": "ivx1080",
+
+    
+    
+    
+    "description": "IVX is the composite measure of the stock's implied volatility calculated from an option's price using proprietary methodology. See IVolatility knowledge base for more details. IVX1080 is calculated for the forward 1080 calendar days"
+    
+  },
+  "ivx1080chg": {
+    "name": "ivx1080chg",
+ 
+    
+    
+    "description": "IVX 1080 Change. Derived by comparing the current Implied Volatility Index (IVX1080) against the previous night's value, this difference is then expressed as a change"
+    
+  },
+  "ivx1080chgpercent": {
+    "name": "ivx1080chgpercent",
+   
+    
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX1080) against the previous night's value, this difference is then expressed as a percent change"
+    
+  },
+  "ivx1080chgopen": {
+    "name": "ivx1080chgopen",
+  
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX1080) against the most recent opening value (9:30AM EST), this difference is then expressed as a change"
+    
+  },
+  "ivx1080chgpercentopen": {
+    "name": "ivx1080chgpercentopen",
+
+    
+    
+    "description": "Derived by comparing the current Implied Volatility Index (IVX1080) against the most recent opening value (9:30AM EST), this difference is then expressed as a percent change"
+    
+  },
+  "ivx30hv20_eod": {
+    "name": "ivx30hv20_eod",
+
+    
+    
+    
+    
+    "description": "Opening IVX30/HV20 ratio. Ratio of today's opening Implied Volatility Index (IVX30) for the forward 30 calendar days to previous closing historical volatility for the prior 20 trading days"
+  },
+  "ivx30hv20": {
+    "name": "ivx30hv20",
+
+    
+    
+    
+    
+    "description": "Opening IVX30/HV20 ratio. Ratio of today's opening Implied Volatility Index (IVX30) for the forward 30 calendar days to previous closing historical volatility for the prior 20 trading days"
+  },
+  "correlation10d_eod": {
+    "name": "correlation10d_eod",
+
+    
+    
+    
+    "description": "Correlation for 10 calendar days. This is a statistical measure of how closely together two markets move"
+  },
+  "correlation20d_eod": {
+    "name": "correlation20d_eod",
+  
+    
+    
+    
+    "description": "Correlation for 20 calendar days. This is a statistical measure of how closely together two markets move"
+  },
+  "correlation30d_eod": {
+    "name": "correlation30d_eod",
+
+    "description": "Correlation for 30 calendar days. This is a statistical measure of how closely together two markets move"
+  },
+  "correlation60d_eod": {
+    "name": "correlation60d_eod",
+
+    
+    
+    
+    
+    "description": "Correlation for 60 calendar days. This is a statistical measure of how closely together two markets move"
+  },
+  "correlation90d_eod": {
+    "name": "correlation90d_eod",
+
+    
+    
+    
+    "description": "Correlation for 90 calendar days. This is a statistical measure of how closely together two markets move"
+  },
+  "correlation120d_eod": {
+    "name": "correlation120d_eod",
+ 
+    
+    
+    
+    
+    "description": "Correlation for 120 calendar days. This is a statistical measure of how closely together two markets move"
+  },
+  "correlation150d_eod": {
+    "name": "correlation150d_eod",
+
+    
+    
+    
+    
+    "description": "Correlation for 150 calendar days. This is a statistical measure of how closely together two markets move"
+  },
+  "correlation180d_eod": {
+    "name": "correlation180d_eod",
+ 
+    
+    
+    
+    
+    "description": "Correlation for 180 calendar days. This is a statistical measure of how closely together two markets move"
+  },
+  "beta10d_eod": {
+    "name": "beta10d_eod",
+
+    
+    
+    
+    "description": "Beta for 10 calendar days. This is a measure of how a stock moves in relation to the movement of a broader stock market index or benchmark"
+  },
+  "beta20d_eod": {
+    "name": "beta20d_eod",
+   
+    
+    
+    
+    "description": "Beta for 20 calendar days. This is a measure of how a stock moves in relation to the movement of a broader stock market index or benchmark"
+  },
+  "beta30d_eod": {
+    "name": "beta30d_eod",
+  
+    
+    
+    
+    
+    "description": "Beta for 30 calendar days. This is a measure of how a stock moves in relation to the movement of a broader stock market index or benchmark"
+  },
+  "beta60d_eod": {
+    "name": "beta60d_eod",
+
+    
+    
+    
+    
+    "description": "Beta for 60 calendar days. This is a measure of how a stock moves in relation to the movement of a broader stock market index or benchmark"
+  },
+  "beta90d_eod": {
+    "name": "beta90d_eod",
+   
+    
+    
+    
+    
+    "description": "Beta for 90 calendar days. This is a measure of how a stock moves in relation to the movement of a broader stock market index or benchmark"
+  },
+  "beta120d_eod": {
+    "name": "beta120d_eod",
+
+    
+    
+    
+    
+    "description": "Beta for 120 calendar days. This is a measure of how a stock moves in relation to the movement of a broader stock market index or benchmark"
+  },
+  "beta150d_eod": {
+    "name": "beta150d_eod",
+
+    
+    
+    
+    "description": "Beta for 150 calendar days. This is a measure of how a stock moves in relation to the movement of a broader stock market index or benchmark"
+  },
+  "beta180d_eod": {
+    "name": "beta180d_eod",
+  
+    
+    
+    "description": "Beta for 180 calendar days. This is a measure of how a stock moves in relation to the movement of a broader stock market index or benchmark"
+  },
+  "bidsize": {
+    "name": "bidsize",
+
+    
+    
+    "description": "The minimum quantity of a security a buyer is willing to purchase at a specified bid price"
+  },
+  "asksize": {
+    "name": "asksize",
+   
+    
+    
+    
+    "description": "The amount of a security that a seller is offering to sell at the ask price"
+  },
+  "outstandingshares_eod": {
+    "name": "outstandingshares_eod",
+  
+    
+    
+    
+    
+    "description": "Shares Outstanding. Number of shares outstanding for stock"
+  },
+  "marketcap_eod": {
+    "name": "marketcap_eod",
+
+    
+    
+    
+    "description": "Market Cap. Prev. Close * Shares outstanding"
+  },
+  "eps_eod": {
+    "name": "eps_eod",
+
+    
+    
+    
+    
+    "description": "Earnings per share for last reported earnings"
+  },
+  "pe_eod": {
+    "name": "pe_eod",
+
+    
+    
+    "description": "Price/Earnings ratio"
+  },
+  "industry": {
+    "name": "industry",
+
+    
+    "description": "Industry of the underlying company"
+  },
+  "cumulativeprice_eod": {
+    "name": "cumulativeprice_eod",
+    "caption": "CumPr",
+    
+    
+    
+    
+    
+    "description": "The sum of all trades reported today"
+  },
+  "cumulativevalue_eod": {
+    "name": "cumulativevalue_eod",
+
+    
+    
+    
+    
+    "description": "The sum of (all_trades * trade_size) for all trades reported today"
+  },
+  "pcbsize_eod": {
+    "name": "pcbsize_eod",
+
+    
+    
+    
+    "description": "The minimum quantity of a security a buyer is willing to purchase at a specified bid price at the time of previous close"
+  },
+  "pcasize_eod": {
+    "name": "pcasize_eod",
+
+    
+    
+    "description": "The amount of a security that a seller is offering to sell at the ask price at the time of previous close"
+  },
+  "vwap_eod": {
+    "name": "vwap_eod",
+ 
+    
+    
+    
+    "description": "Previous Day VWAP is calculated by adding up the dollars traded for every transaction (price multiplied by number of shares traded) and then dividing by the total shares traded for the day"
+  },
+  "vwap": {
+    "name": "vwap",
+
+    
+    
+    
+    "description": "VWAP is calculated by adding up the dollars traded for every transaction (price multiplied by number of shares traded) and then dividing by the total shares traded for the day"
+  },
+  "ivp30_eod": {
+    "name": "ivp30_eod",
+  
+    
+    
+    
+    "description": "IV Percentile. How often the IV was under the current IV in the past year. Closing values used as data points"
+  },
+  "ivp30": {
+    "name": "ivp30",
+
+    
+    
+    
+    "description": "IV Percentile. How often the IV was under the current IV in the past year. Closing values used as data points"
+  },
+  "ivp60_eod": {
+    "name": "ivp60_eod",
+
+    
+    
+    "description": "IV Percentile. How often the IV was under the current IV in the past year. Closing values used as data points"
+  },
+  "ivp90_eod": {
+    "name": "ivp90_eod",
+
+    
+    
+    
+    "description": "IV Percentile. How often the IV was under the current IV in the past year. Closing values used as data points"
+  },
+  "ivp120_eod": {
+    "name": "ivp120_eod",
+ 
+    
+    
+    "description": "IV Percentile. How often the IV was under the current IV in the past year. Closing values used as data points"
+  },
+  "ivp150_eod": {
+    "name": "ivp150_eod",
+
+    
+    
+    
+    
+    "description": "IV Percentile. How often the IV was under the current IV in the past year. Closing values used as data points"
+  },
+  "ivp180_eod": {
+    "name": "ivp180_eod",
+
+    
+    
+    
+    "description": "IV Percentile. How often the IV was under the current IV in the past year. Closing values used as data points"
+  },
+  "ivr30_eod": {
+    "name": "ivr30_eod",
+
+    
+    
+    
+    "description": "IV Rank for 30 calendar days (%).The ATM average implied volatility relative to the highest and lowest values over the past 1-year. IVR 30 = (Current IV - 1-year IV30 low)/(1-year IV30 high - 1-year IV30 low)*100%."
+  },
+  "ivr30": {
+    "name": "ivr30",
+
+    
+    
+    
+    "description": "An IVR30 of 90 indicates that the current IV30 is at its 90th percentile relative to its maximum IV30 over the past year"
+  },
+  "ivr60_eod": {
+    "name": "ivr60_eod",
+
+    
+    
+    
+    "description": "IV Rank for 60 calendar days (%).The ATM average implied volatility relative to the highest and lowest values over the past 1-year. IVR 60 = (Current IV - 1-year IV60 low)/(1-year IV60 high - 1-year IV60 low)*100%."
+  },
+  "ivr90_eod": {
+    "name": "ivr90_eod",
+  
+    
+    
+    "description": "IV Rank for 90 calendar days (%).The ATM average implied volatility relative to the highest and lowest values over the past 1-year. IVR 90 = (Current IV - 1-year IV90 low)/(1-year IV90 high - 1-year IV90 low)*100%."
+  },
+  "ivr120_eod": {
+    "name": "ivr120_eod",
+ 
+    
+    
+    
+    "description": "IV Rank for 120 calendar days (%).The ATM average implied volatility relative to the highest and lowest values over the past 1-year. IVR 120 = (Current IV - 1-year IV120 low)/(1-year IV120 high - 1-year IV120 low)*100%."
+  },
+  "ivr150_eod": {
+    "name": "ivr150_eod",
+
+    
+    
+    
+    "description": "IV Rank for 150 calendar days (%).The ATM average implied volatility relative to the highest and lowest values over the past 1-year. IVR 150 = (Current IV - 1-year IV150 low)/(1-year IV150 high - 1-year IV150 low)*100%."
+  },
+  "ivr180_eod": {
+    "name": "ivr180_eod",
+
+    
+    
+    
+    "description": "IV Rank for 180 calendar days (%).The ATM average implied volatility relative to the highest and lowest values over the past 1-year. IVR 180 = (Current IV - 1-year IV180 low)/(1-year IV180 high - 1-year IV180 low)*100%."
+  },
+  "highdate52wk_eod": {
+    "name": "highdate52wk_eod",
+
+    
+    
+    
+    
+    "description": "52 Week High Date. Date of 52 week high"
+  },
+  "lowdate52wk_eod": {
+    "name": "lowdate52wk_eod",
+
+    
+    
+    
+    
+    "description": "52 Week Low Date. Date of 52 week low"
+  },
+  "hvp10_eod": {
+    "name": "hvp10_eod",
+
+    
+    
+    
+    "description": "HV Percentile. How often the HV was under the current HV in the past year. Closing values used as data points"
+  },
+  "hvp20_eod": {
+    "name": "hvp20_eod",
+ 
+    
+    
+    "description": "HV Percentile. How often the HV was under the current HV in the past year. Closing values used as data points"
+  },
+  "hvp30_eod": {
+    "name": "hvp30_eod",
+ 
+    
+    "description": "HV Percentile. How often the HV was under the current HV in the past year. Closing values used as data points"
+  },
+  "hvp60_eod": {
+    "name": "hvp60_eod",
+ 
+    
+    
+    
+    "description": "HV Percentile. How often the HV was under the current HV in the past year. Closing values used as data points"
+  },
+  "hvp90_eod": {
+    "name": "hvp90_eod",
+
+    
+    
+    
+    "description": "HV Percentile. How often the HV was under the current HV in the past year. Closing values used as data points"
+  },
+  "hvp120_eod": {
+    "name": "hvp120_eod",
+
+    
+    
+    
+    "description": "HV Percentile. How often the HV was under the current HV in the past year. Closing values used as data points"
+  },
+  "hvp150_eod": {
+    "name": "hvp150_eod",
+
+    
+    
+    
+    
+    "description": "HV Percentile. How often the HV was under the current HV in the past year. Closing values used as data points"
+  },
+  "hvp180_eod": {
+    "name": "hvp180_eod",
+
+    
+    
+    
+    "description": "HV Percentile. How often the HV was under the current HV in the past year. Closing values used as data points"
+  },
+  "open": {
+    "name": "open",
+
+    "description": "Opening price for that day"
+    
+  },
+  "high": {
+    "name": "high",
+ 
+    "description": "Highest price achieved that day"
+    
+  },
+  "low": {
+    "name": "low",
+
+    "description": "Lowest price achieved that day"
+    
+  },
+  "ivxhigh30": {
+    "name": "ivxhigh30",
+
+   
+    
+    
+    "description": "IVX30 High. The maximum IVX30 values achieved by the instrument over the past 52 weeks"
+  },
+  "ivxlow30": {
+    "name": "ivxlow30",
+    
+    
+   
+    
+    
+    "description": "IVX30 Low. The minimum IVX30 values achieved by the instrument over the past 52 weeks"
+  },
+  "ivx30highlow": {
+    "name": "ivx30highlow",
+    
+    
+    
+    
+    "description": "IVX30 Hi/Lo. The maximum and minimum (high/low) IVX30 values achieved by the instrument over the past 52 weeks"
+
+  },
+  "ivx60highlow": {
+    "name": "ivx60highlow",
+    "caption": "IVX60 H/L (%)",
+    
+    
+    
+    
+    "description": "IVX60 Hi/Lo. The maximum and minimum (high/low) IVX60 values achieved by the instrument over the past 52 weeks"
+
+  },
+  "ivx90highlow": {
+    "name": "ivx90highlow",
+
+    
+    
+    
+    "description": "IVX90 Hi/Lo. The maximum and minimum (high/low) IVX90 values achieved by the instrument over the past 52 weeks"
+    
+  },
+  "ivx120highlow": {
+    "name": "ivx120highlow",
+
+    
+    
+    
+    "description": "IVX120 Hi/Lo. The maximum and minimum (high/low) IVX120 values achieved by the instrument over the past 52 weeks"
+  
+  },
+  "ivx150highlow": {
+    "name": "ivx150highlow",
+
+    
+    
+    
+    "description": "IVX150 Hi/Lo. The maximum and minimum (high/low) IVX150 values achieved by the instrument over the past 52 weeks"
+
+  },
+  "ivx180highlow": {
+    "name": "ivx180highlow",
+
+    
+  
+    "description": "IVX180 Hi/Lo. The maximum and minimum (high/low) IVX180 values achieved by the instrument over the past 52 weeks"
+
+  },
+  "ivx30highlowdate": {
+    "name": "ivx30highlowdate",
+
+    
+    
+    "description": "IVX30 Hi/Lo Date. The dates at which the maximum and minimum (high/low) IVX30 values were achieved by the instrument over the past 52 weeks. Notation: (high date)/(low date)"
+
+  },
+  "ivx60highlowdate": {
+    "name": "ivx60highlowdate",
+  
+    
+    
+    
+    "description": "IVX60 Hi/Lo Date. The dates at which the maximum and minimum (high/low) IVX60 values were achieved by the instrument over the past 52 weeks. Notation: (high date)/(low date)"
+  
+  },
+  "ivx90highlowdate": {
+    "name": "ivx90highlowdate",
+
+    
+    
+    
+    
+    "description": "IVX90 Hi/Lo Date. The dates at which the maximum and minimum (high/low) IVX90 values were achieved by the instrument over the past 52 weeks. Notation: (high date)/(low date)"
+   
+  },
+  "ivx120highlowdate": {
+    "name": "ivx120highlowdate",
+
+    
+    
+    
+    "description": "IVX120 Hi/Lo Date. The dates at which the maximum and minimum (high/low) IVX120 values were achieved by the instrument over the past 52 weeks. Notation: (high date)/(low date)"
+
+  },
+  "ivx150highlowdate": {
+    "name": "ivx150highlowdate",
+
+    
+    
+    "description": "IVX150 Hi/Lo Date. The dates at which the maximum and minimum (high/low) IVX150 values were achieved by the instrument over the past 52 weeks. Notation: (high date)/(low date)"
+
+  },
+  "ivx180highlowdate": {
+    "name": "ivx180highlowdate",
+
+    
+    
+    
+    "description": "IVX180 Hi/Lo Date. The dates at which the maximum and minimum (high/low) IVX180 values were achieved by the instrument over the past 52 weeks. Notation: (high date)/(low date)"
+  
+  },
+  "callputivxratio": {
+    "name": "callputivxratio",
+
+    
+    
+    "description": "IVX calls / IVX puts for 30 calendar days"
+    
+  },
+  "d10_eod": {
+    "name": "d10_eod",
+
+    
+    
+   
+    
+    
+    "description": "10d skew for 30d. Calculated as a difference between Put and Call IV for given delta values of 10%"
+  },
+  "d10": {
+    "name": "d10",
+  
+   
+    
+    
+    "description": "10d skew for 30d. Calculated as a difference between Put and Call IV for given delta values of 10%"
+  },
+  "d25_eod(hiddenBy1015task)": {
+    "name": "d25_eod",
+ 
+    
+    
+    "description": "25d skew for 30d. Calculated as a difference between Put and Call IV for given delta values of 25%"
+  },
+  "d25(hiddenBy1015task)": {
+    "name": "d25",
+
+   
+    
+    
+    "description": "25d skew for 30d. Calculated as a difference between Put and Call IV for given delta values of 25%"
+  }
+}
+

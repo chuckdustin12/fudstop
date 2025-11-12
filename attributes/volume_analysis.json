@@ -1,0 +1,63 @@
+{
+    "ticker": {
+      "name": "ticker",
+      
+      
+      "description": "The ticker symbol."
+    },
+    "avg_price": {
+      "name": "avg_price",
+      
+      
+      "description": "Average price traded on the day."
+    },
+    "total_num": {
+      "name": "total_num",
+      
+      
+      "description": "Total number of trades executed on the day."
+    },
+    "total_volume": {
+      "name": "total_volume",
+      
+      
+      "description": "Total trading volume for the underlying ticker on the day."
+    },
+    "buy_volume": {
+      "name": "buy_volume",
+      
+      
+      "description": "Total volume of buy trades executed for the underlying ticker on the day."
+    },
+    "sell_volume": {
+      "name": "sell_volume",
+      
+      
+      "description": "Total volume of sell trades executed for the underlying ticker on the day."
+    },
+    "neut_volume": {
+      "name": "neut_volume",
+      
+      
+      "description": "Total volume of neutral trades executed for the underlying ticker on the day."
+    },
+    "buy_pct": {
+      "name": "buy_pct",
+      
+      
+      "description": "The percentage of buy volume for the underlying ticker (65%+ = accumulation condition)."
+    },
+    "sell_pct": {
+      "name": "sell_pct",
+      
+      
+      "description": "The percentage of sell volume for the underlying ticker (65%+ = fire sale condition)."
+    },
+    "neut_pct": {
+      "name": "neut_pct",
+      
+      
+      "description": "The percentage of neutral volume for the underlying ticker (65%+ = neutral zone condition)."
+    }
+  }
+  

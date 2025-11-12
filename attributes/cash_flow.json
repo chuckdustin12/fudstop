@@ -1,0 +1,147 @@
+{
+    "quoteid": {
+      "name": "quoteid",
+      
+      
+      "description": "Unique identifier for the security quote."
+    },
+    "type": {
+      "name": "type",
+      
+      
+      "description": "Type of financial statement being reported."
+    },
+    "fiscalyear": {
+      "name": "fiscalyear",
+      
+      
+      "description": "Fiscal year for which the cash flow statement is reported."
+    },
+    "fiscalperiod": {
+      "name": "fiscalperiod",
+      
+      
+      "description": "Fiscal period (quarterly or annually) for which the cash flow statement is reported."
+    },
+    "enddate": {
+      "name": "enddate",
+      
+      
+      "description": "End date of the reporting period."
+    },
+    "currencyid": {
+      "name": "currencyid",
+      
+      
+      "description": "Identifier for the currency in which financial values are reported."
+    },
+    "publishdate": {
+      "name": "publishdate",
+      
+      
+      "description": "Date when the financial statement was published."
+    },
+    "cashfromoperatingactivities": {
+      "name": "cashfromoperatingactivities",
+      
+      
+      "description": "Total cash flow generated from operating activities, including net income and adjustments."
+    },
+    "netincome": {
+      "name": "netincome",
+      
+      
+      "description": "Net income reported by the company for the period."
+    },
+    "depreciationandamortization": {
+      "name": "depreciationandamortization",
+      
+      
+      "description": "Total depreciation and amortization expenses for the period."
+    },
+    "deferredtaxes": {
+      "name": "deferredtaxes",
+      
+      
+      "description": "Deferred tax expenses or benefits recognized in the financial statement."
+    },
+    "noncashitems": {
+      "name": "noncashitems",
+      
+      
+      "description": "Total non-cash items, such as stock-based compensation and impairments."
+    },
+    "changesinworkingcapital": {
+      "name": "changesinworkingcapital",
+      
+      
+      "description": "Net changes in working capital, including accounts receivable, inventory, and payables."
+    },
+    "cashfrominvestingactivities": {
+      "name": "cashfrominvestingactivities",
+      
+      
+      "description": "Total cash flow from investing activities, including capital expenditures and asset sales."
+    },
+    "capitalexpenditures": {
+      "name": "capitalexpenditures",
+      
+      
+      "description": "Capital expenditures (CapEx) related to the acquisition or maintenance of assets."
+    },
+    "otherinvestingcashflowitemstotal": {
+      "name": "otherinvestingcashflowitemstotal",
+      
+      
+      "description": "Other investing cash flow items, including purchases or sales of securities."
+    },
+    "cashfromfinancingactivities": {
+      "name": "cashfromfinancingactivities",
+      
+      
+      "description": "Total cash flow from financing activities, including stock issuance and debt repayment."
+    },
+    "financingcashflowitems": {
+      "name": "financingcashflowitems",
+      
+      
+      "description": "Total financing cash flow items, such as issuance or repurchase of shares."
+    },
+    "totalcashdividendspaid": {
+      "name": "totalcashdividendspaid",
+      
+      
+      "description": "Total cash dividends paid to shareholders during the period."
+    },
+    "issuanceretirementofstocknet": {
+      "name": "issuanceretirementofstocknet",
+      
+      
+      "description": "Net cash inflow or outflow from issuance or repurchase of company stock."
+    },
+    "issuanceretirementofdebtnet": {
+      "name": "issuanceretirementofdebtnet",
+      
+      
+      "description": "Net cash inflow or outflow from issuance or repayment of company debt."
+    },
+    "foreignexchangeeffects": {
+      "name": "foreignexchangeeffects",
+      
+      
+      "description": "Foreign exchange effects on cash flow due to currency translation adjustments."
+    },
+    "netchangeincash": {
+      "name": "netchangeincash",
+      
+      
+      "description": "Net change in cash balance for the period, calculated as total cash inflows minus total cash outflows."
+    },
+    "ticker": {
+      "name": "ticker",
+      
+      
+      "description": "Stock ticker symbol representing the company."
+    }
+  }
+  

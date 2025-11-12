@@ -1,0 +1,39 @@
+Metadata-Version: 2.1
+Name: fudstop4
+Version: 1.3.2
+Summary: Advanced market data API aggregator for analysis and real-time feeds.
+Home-page: https://github.com/your-username/fudstop2
+Author: Chuck Dustin
+Author-email: chuckdustin12@gmail.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: beautifulsoup4==4.12.2
+Requires-Dist: yt-dlp==2025.2.19
+Requires-Dist: Authlib==1.4.1
+Requires-Dist: absl-py==2.0.0
+Requires-Dist: aiofiles==23.2.1
+Requires-Dist: aiohappyeyeballs==2.6.1
+Requires-Dist: aiohttp==3.12.13
+Requires-Dist: aiosignal==1.3.1
+Requires-Dist: annotated-types==0.7.0
+Requires-Dist: anyio==3.7.1
+Requires-Dist: asttokens==3.0.0
+Requires-Dist: async-timeout==4.0.3
+Requires-Dist: asyncgui==0.6.3
+Requires-Dist: asyncio==3.4.3
+Requires-Dist: asynckivy==0.6.4
+Requires-Dist: asyncpg==0.29.0
+Requires-Dist: attrs==23.1.0
+Requires-Dist: backcall==0.2.0
+Requires-Dist: backoff==2.2.1
+Requires-Dist: backports.tarfile==1.2.0
+Requires-Dist: bleach==6.2.0
+Requires-Dist: blinker==1.7.0
+Requires-Dist: blobfile==3.0.0
+Requires-Dist: yarl==1.18.3
+Requires-Dist: yfinance==0.2.65
+Requires-Dist: zipp==3.17.0

@@ -1,0 +1,33 @@
+{
+    "src_id": {
+      "name": "src_id",
+      
+      
+      "description": "Unique identifier for the economic event from the data source."
+    },
+    "publish_datetime": {
+      "name": "publish_datetime",
+      
+      
+      "description": "The exact timestamp when the economic event is scheduled to be published (ISO 8601 format)."
+    },
+    "publish_date": {
+      "name": "publish_date",
+      
+      
+      "description": "The date when the economic event is scheduled to be published."
+    },
+    "source": {
+      "name": "source",
+      
+      
+      "description": "The source of the economic event data (e.g., Federal Reserve, BLS, ECB)."
+    },
+    "event_name": {
+      "name": "event_name",
+      
+      
+      "description": "The name of the economic event (e.g., GDP Report, CPI Release, Interest Rate Decision)."
+    }
+  }
+  

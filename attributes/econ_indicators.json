@@ -1,0 +1,99 @@
+{
+    "def_id": {
+      "name": "def_id",
+      
+      
+      "description": "Unique identifier for the economic indicator definition."
+    },
+    "src_id": {
+      "name": "src_id",
+      
+      
+      "description": "Identifier for the data source of the economic indicator."
+    },
+    "region_id": {
+      "name": "region_id",
+      
+      
+      "description": "Numerical identifier for the geographic region associated with the indicator."
+    },
+    "publish_time": {
+      "name": "publish_time",
+      
+      
+      "description": "The exact time the economic indicator was published (ISO 8601 format)."
+    },
+    "publish_date": {
+      "name": "publish_date",
+      
+      
+      "description": "The date on which the economic indicator was published."
+    },
+    "unit": {
+      "name": "unit",
+      
+      
+      "description": "The unit of measurement for the economic indicator (e.g., percentage, index value)."
+    },
+    "prior_value": {
+      "name": "prior_value",
+      
+      
+      "description": "The previously reported value of the economic indicator."
+    },
+    "period": {
+      "name": "period",
+      
+      
+      "description": "The time period that the economic indicator refers to (e.g., Q1 2024, May 2023)."
+    },
+    "source": {
+      "name": "source",
+      
+      
+      "description": "The organization or entity responsible for publishing the economic indicator (e.g., Federal Reserve, Bureau of Labor Statistics)."
+    },
+    "type": {
+      "name": "type",
+      
+      
+      "description": "Category or classification of the economic indicator."
+    },
+    "name": {
+      "name": "name",
+      
+      
+      "description": "The name of the economic indicator (e.g., GDP Growth Rate, Inflation Rate)."
+    },
+    "indicator_type": {
+      "name": "indicator_type",
+      
+      
+      "description": "The type of indicator, such as leading, lagging, or coincident."
+    },
+    "frequency": {
+      "name": "frequency",
+      
+      
+      "description": "The frequency at which the indicator is published (e.g., monthly, quarterly, annually)."
+    },
+    "fx_type": {
+      "name": "fx_type",
+      
+      
+      "description": "Indicates the foreign exchange impact classification of the indicator."
+    },
+    "region_code": {
+      "name": "region_code",
+      
+      
+      "description": "The country or region code associated with the economic indicator."
+    },
+    "frequency_name": {
+      "name": "frequency_name",
+      
+      
+      "description": "The textual representation of the frequency (e.g., 'Monthly', 'Quarterly')."
+    }
+  }
+  

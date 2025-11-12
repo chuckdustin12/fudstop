@@ -1,0 +1,1 @@
+The `research_kickoff_tool` tool has been disabled. Do not send any more messages `to=research_kickoff_tool`. If the user asked you to use this tool, tell them that it is unavailable. Otherwise, continue the conversation as normal.

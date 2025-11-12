@@ -1,0 +1,213 @@
+{
+    "ts": {
+      "name": "ts",
+      
+      
+      "description": "Timestamp for the recorded RSI data."
+    },
+    "o": {
+      "name": "o",
+      
+      
+      "description": "Opening price of the asset at the given timestamp."
+    },
+    "c": {
+      "name": "c",
+      
+      
+      "description": "Closing price of the asset at the given timestamp."
+    },
+    "h": {
+      "name": "h",
+      
+      
+      "description": "Highest price reached within the given timestamp."
+    },
+    "l": {
+      "name": "l",
+      
+      
+      "description": "Lowest price reached within the given timestamp."
+    },
+    "v": {
+      "name": "v",
+      
+      
+      "description": "Trading volume of the asset for the given timestamp."
+    },
+    "vwap": {
+      "name": "vwap",
+      
+      
+      "description": "Volume Weighted Average Price (VWAP) for the asset during the given period."
+    },
+    "rsi": {
+      "name": "rsi",
+      
+      
+      "description": "Relative Strength Index (RSI), a momentum oscillator that measures the speed and change of price movements."
+    },
+    "td_buy_count": {
+      "name": "td_buy_count",
+      
+      
+      "description": "Number of consecutive bullish TD Sequential buy signals."
+    },
+    "td_sell_count": {
+      "name": "td_sell_count",
+      
+      
+      "description": "Number of consecutive bearish TD Sequential sell signals."
+    },
+    "macd_curvature": {
+      "name": "macd_curvature",
+      
+      
+      "description": "Current trend of the MACD (e.g., upward, downward, neutral)."
+    },
+    "timespan": {
+      "name": "timespan",
+      
+      
+      "description": "The timespan of the data point (e.g., 1min, 5min, 1h, 1d)."
+    },
+    "ticker": {
+      "name": "ticker",
+      
+      
+      "description": "Stock ticker symbol associated with the RSI data."
+    },
+    "insertion_timestamp": {
+      "name": "insertion_timestamp",
+      
+      
+      "description": "Timestamp when this RSI data was inserted into the database."
+    },
+    "bullish_engulfing": {
+      "name": "bullish_engulfing",
+      
+      
+      "description": "Boolean flag indicating if a bullish engulfing candlestick pattern has formed."
+    },
+    "bearish_engulfing": {
+      "name": "bearish_engulfing",
+      
+      
+      "description": "Boolean flag indicating if a bearish engulfing candlestick pattern has formed."
+    },
+    "middle_band": {
+      "name": "middle_band",
+      
+      
+      "description": "The middle band of a Bollinger Band, calculated as the moving average."
+    },
+    "upper_band": {
+      "name": "upper_band",
+      
+      
+      "description": "The upper Bollinger Band, calculated as moving average + (standard deviation * multiplier)."
+    },
+    "lower_band": {
+      "name": "lower_band",
+      
+      
+      "description": "The lower Bollinger Band, calculated as moving average - (standard deviation * multiplier)."
+    },
+    "upper_bb_trend": {
+      "name": "upper_bb_trend",
+      
+      
+      "description": "Current trend of the upper Bollinger Band (e.g., expanding, contracting)."
+    },
+    "lower_bb_trend": {
+      "name": "lower_bb_trend",
+      
+      
+      "description": "Current trend of the lower Bollinger Band (e.g., expanding, contracting)."
+    },
+    "candle_above_upper": {
+      "name": "candle_above_upper",
+      
+      
+      "description": "Boolean flag indicating if the entire candlestick is above the upper Bollinger Band."
+    },
+    "candle_below_lower": {
+      "name": "candle_below_lower",
+      
+      
+      "description": "Boolean flag indicating if the entire candlestick is below the lower Bollinger Band."
+    },
+    "at_upper_band": {
+      "name": "at_upper_band",
+      
+      
+      "description": "Boolean flag indicating if the price is touching the upper Bollinger Band."
+    },
+    "obv": {
+      "name": "obv",
+      
+      
+      "description": "On-Balance Volume (OBV) indicator, which tracks cumulative volume based on price direction."
+    },
+    "candle_completely_above_upper": {
+      "name": "candle_completely_above_upper",
+      
+      
+      "description": "Boolean flag indicating if the entire candle body and wicks are above the upper Bollinger Band."
+    },
+    "candle_completely_below_lower": {
+      "name": "candle_completely_below_lower",
+      
+      
+      "description": "Boolean flag indicating if the entire candle body and wicks are below the lower Bollinger Band."
+    },
+    "candle_partially_below_lower": {
+      "name": "candle_partially_below_lower",
+      
+      
+      "description": "Boolean flag indicating if part of the candle body or wick is below the lower Bollinger Band."
+    },
+    "candle_partially_above_upper": {
+      "name": "candle_partially_above_upper",
+      
+      
+      "description": "Boolean flag indicating if part of the candle body or wick is above the upper Bollinger Band."
+    },
+    "volume_diff": {
+      "name": "volume_diff",
+      
+      
+      "description": "The difference in volume compared to the previous period."
+    },
+    "volume_pct_change": {
+      "name": "volume_pct_change",
+      
+      
+      "description": "The percentage change in volume compared to the previous period."
+    },
+    "volume_increasing_streak": {
+      "name": "volume_increasing_streak",
+      
+      
+      "description": "The number of consecutive periods with increasing volume."
+    },
+    "volume_decreasing_streak": {
+      "name": "volume_decreasing_streak",
+      
+      
+      "description": "The number of consecutive periods with decreasing volume."
+    },
+    "body_completely_above_upper": {
+      "name": "body_completely_above_upper",
+      
+      
+      "description": "Boolean flag indicating if the entire candle body is above the upper Bollinger Band."
+    },
+    "body_completely_below_lower": {
+      "name": "body_completely_below_lower",
+      
+      
+      "description": "Boolean flag indicating if the entire candle body is below the lower Bollinger Band."
+    }
+  }
+  

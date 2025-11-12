@@ -1,0 +1,51 @@
+{
+    "ticker": {
+      "name": "ticker",
+      
+      
+      "description": "Stock or option symbol representing the security."
+    },
+    "call_put": {
+      "name": "call_put",
+      
+      
+      "description": "Indicates whether the option is a Call or a Put."
+    },
+    "expiry": {
+      "name": "expiry",
+      
+      
+      "description": "Expiration date of the option contract."
+    },
+    "strike": {
+      "name": "strike",
+      
+      
+      "description": "Strike price of the option contract at which it can be exercised."
+    },
+    "mark": {
+      "name": "mark",
+      
+      
+      "description": "Current mark price of the option contract."
+    },
+    "oi": {
+      "name": "oi",
+      
+      
+      "description": "Open Interest. Total number of outstanding option contracts that have not been settled or closed."
+    },
+    "type": {
+      "name": "type",
+      
+      
+      "description": "Type of option contract (e.g., European, American, FLEX options)."
+    },
+    "report_date": {
+      "name": "report_date",
+      
+      
+      "description": "Date when the option contract details were last reported."
+    }
+  }
+  

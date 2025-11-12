@@ -1,0 +1,1 @@
+Error parsing function call: Could not parse args as JSON: unexpected character: line 1 column 1 (char 0)
