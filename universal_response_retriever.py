@@ -8,19 +8,24 @@ A dynamic, all-in-one Python "response retriever" that:
   • Automatically detects the content type (JSON, NDJSON, CSV/TSV, Excel, XML, HTML tables, Parquet, gzip).
   • Parses and normalizes the data into a tidy pandas DataFrame.
   • Optionally follows basic pagination (HTTP Link headers or common JSON "next" fields).
-  • Provides a simple CLI for quick usage and export.
+  • Provides both:
+      - A CLI (flags/args), and
+      - An INTERACTIVE terminal mode (prompted wizard).
 
 Dependencies (install as needed):
     pandas, requests
 Optional (for more formats / better parsing):
     lxml (for HTML/XML), xmltodict (for XML), pyarrow or fastparquet (for Parquet), openpyxl (Excel .xlsx)
 
-Usage (CLI):
+Usage (flags/args CLI):
     python universal_response_retriever.py \
         --source https://api.github.com/repos/pandas-dev/pandas/issues \
         --out issues.parquet --out-format parquet --max-pages 2
 
-    python universal_response_retriever.py --source ./sample.xml
+Interactive terminal mode (no flags):
+    python universal_response_retriever.py
+    # or explicitly:
+    python universal_response_retriever.py --interactive
 
 Programmatic:
     from universal_response_retriever import retrieve_to_df
@@ -42,6 +47,7 @@ import time
 import types
 import zipfile
 import warnings
+import ast
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, Union
@@ -219,7 +225,7 @@ def _sniff_format(b: bytes, content_type: Optional[str], filename: Optional[str]
 
     # JSON-ish detection
     trimmed = sample.lstrip()
-    if trimmed.startswith("{") or trimmed.startswith("["):
+    if trimmed.startswith("{") or trimmed.startswith("[" ):
         # Could be JSON; detect NDJSON by line structure
         lines = sample.splitlines()
         if len(lines) > 1 and all(
@@ -504,20 +510,6 @@ def parse_json_to_df(
         path = _choose_record_path(obj, prefer_record_path)
         meta["record_path"] = path
         if path:
-            # Build meta keys by walking parents (collect scalar keys)
-            def collect_meta_keys(d: Dict[str, Any], path_keys: List[str]) -> List[str]:
-                keys: List[str] = []
-                cur = d
-                for k in path_keys[:-1]:
-                    if isinstance(cur, dict) and k in cur:
-                        parent = cur[k]
-                        if isinstance(parent, dict):
-                            for mk, mv in parent.items():
-                                if not isinstance(mv, (list, dict)):
-                                    keys.append(".".join(path_keys[:path_keys.index(k)+1] + [mk]))
-                        cur = parent
-                return list(dict.fromkeys(keys))  # unique preserve order
-
             # json_normalize with record_path
             df = pd.json_normalize(obj, record_path=path, errors="ignore")
             # Optionally attach top-level scalars as metadata columns
@@ -849,14 +841,40 @@ def _extract_next_url(meta: FetchMeta, body_bytes: bytes) -> Optional[str]:
 
 
 # -----------------------------
-# CLI
+# CLI (flags) and Interactive (prompts)
 # -----------------------------
+
+def _coerce_blank_to_none(s: Optional[str]) -> Optional[str]:
+    if s is None:
+        return None
+    if isinstance(s, str) and s.strip() == "":
+        return None
+    return s
+
+
+def _try_parse_dictish(s: Optional[str]) -> Optional[Dict[str, Any]]:
+    """Parse a JSON or Python-literal dict string. Returns None for blank."""
+    s = _coerce_blank_to_none(s)
+    if s is None:
+        return None
+    try:
+        return json.loads(s)
+    except Exception:
+        try:
+            v = ast.literal_eval(s)
+            if isinstance(v, dict):
+                return v
+        except Exception:
+            pass
+    raise ValueError("Could not parse as JSON or Python dict.")
+
 
 def _cli():
     import argparse
 
     p = argparse.ArgumentParser(description="Universal Response Retriever → tidy DataFrame")
-    p.add_argument("--source", required=True, help="URL or local/ uploaded file path")
+    p.add_argument("--interactive", action="store_true", help="Run in interactive prompt mode.")
+    p.add_argument("--source", required=False, help="URL or local/ uploaded file path")
     p.add_argument("--method", default="GET", help="HTTP method for URL sources (default: GET)")
     p.add_argument("--headers", default=None, help="JSON dict of HTTP headers")
     p.add_argument("--params", default=None, help="JSON dict of query params")
@@ -875,18 +893,29 @@ def _cli():
     p.add_argument("--out-format", default=None, choices=["csv", "parquet", "json"], help="Force output format")
     args = p.parse_args()
 
-    headers = json.loads(args.headers) if args.headers else None
-    params = json.loads(args.params) if args.params else None
+    # If interactive flag is provided OR no --source given, go interactive
+    if args.interactive or not args.source:
+        return _interactive_cli()
+
+    # Normalize blanks
+    args.out = _coerce_blank_to_none(args.out)
+    args.out_format = _coerce_blank_to_none(args.out_format)
+    args.prefer_record_path = _coerce_blank_to_none(args.prefer_record_path)
+
+    headers = _try_parse_dictish(args.headers)
+    params = _try_parse_dictish(args.params)
 
     # `data` can be JSON or raw string
     data = args.data
-    if data and data.strip().startswith("{"):
-        try:
-            data = json.loads(data)
-        except Exception:
-            pass
+    if data:
+        data = _coerce_blank_to_none(data)
+        if data and data.strip().startswith("{"):
+            try:
+                data = json.loads(data)
+            except Exception:
+                pass
 
-    json_body = json.loads(args.json_body) if args.json_body else None
+    json_body = _try_parse_dictish(args.json_body)
 
     df, meta = retrieve_to_df(
         args.source,
@@ -924,7 +953,7 @@ def _cli():
             except Exception as e:
                 sys.stderr.write(f"Parquet write failed (pyarrow/fastparquet required): {e}\n")
                 sys.stderr.write("Falling back to CSV...\n")
-                df.to_csv(args.out if args.out.endswith(".csv") else args.out + ".csv", index=False)
+                df.to_csv(args.out if str(args.out).endswith(".csv") else str(args.out) + ".csv", index=False)
         elif out_fmt == "json":
             df.to_json(args.out, orient="records", lines=False, date_format="iso")
         else:
@@ -932,5 +961,164 @@ def _cli():
         print(f"\nSaved output → {args.out}")
 
 
+def _interactive_cli():
+    print("\nUniversal Response Retriever — Interactive Mode")
+    print("Press Enter to accept defaults. Type 'q' to quit any time.\n")
+
+    def ask(prompt: str, default: Optional[str] = None, required: bool = False) -> Optional[str]:
+        d = f" [{default}]" if default is not None else ""
+        while True:
+            value = input(f"{prompt}{d}: ").strip()
+            if value.lower() == "q":
+                sys.exit(0)
+            if value == "" and default is not None:
+                return default
+            if value == "" and not required:
+                return None
+            if value != "":
+                return value
+            print("Please enter a value or press Enter for default.")
+
+    def ask_yes_no(prompt: str, default: bool = False) -> bool:
+        d = "Y/n" if default else "y/N"
+        while True:
+            v = input(f"{prompt} ({d}): ").strip().lower()
+            if v == "q":
+                sys.exit(0)
+            if v == "" and default is not None:
+                return default
+            if v in ("y", "yes"):
+                return True
+            if v in ("n", "no"):
+                return False
+            print("Please answer y or n.")
+
+    def parse_dictish(name: str) -> Optional[Dict[str, Any]]:
+        s = ask(f"Enter {name} as JSON or Python dict (or leave blank)", default=None, required=False)
+        if s in (None, ""):
+            return None
+        try:
+            return json.loads(s)
+        except Exception:
+            try:
+                v = ast.literal_eval(s)
+                if isinstance(v, dict):
+                    return v
+            except Exception:
+                pass
+        print(f"Could not parse {name}. Try again or leave blank.")
+        return parse_dictish(name)
+
+    # Gather inputs
+    source = ask("Source URL or local file path", required=True)
+
+    method = ask("HTTP method for URL sources", default="GET") or "GET"
+    headers = parse_dictish("headers")
+    params = parse_dictish("query params")
+    body_choice = ask("Provide a request body? type 'json' for JSON, 'raw' for raw string, or leave blank", default=None)
+    data = None
+    json_body = None
+    if body_choice:
+        if body_choice.lower() == "json":
+            json_body = parse_dictish("JSON body") or None
+        elif body_choice.lower() == "raw":
+            data = ask("Enter raw body string", default=None, required=False)
+
+    prefer_record_path = ask("Prefer record path for nested JSON (e.g., data.items)", default=None)
+    max_pages_str = ask("Max pages to follow (pagination)", default="1")
+    try:
+        max_pages = max(1, int(max_pages_str or "1"))
+    except Exception:
+        max_pages = 1
+
+    no_paginate = not ask_yes_no("Enable pagination if hints exist?", default=True)
+
+    # Normalization toggles
+    coerce_types = ask_yes_no("Coerce common types (booleans/datetimes/numerics)?", default=True)
+    snake_case = ask_yes_no("Snake-case column names?", default=True)
+    explode_lists = ask_yes_no("Explode list columns?", default=True)
+    max_depth_str = ask("Max depth for flattening", default="2")
+    try:
+        max_depth = max(0, int(max_depth_str or "2"))
+    except Exception:
+        max_depth = 2
+
+    # Output
+    save_out = ask_yes_no("Save output to a file?", default=False)
+    out = None
+    out_format = None
+    if save_out:
+        out = ask("Output file path", default="out.csv", required=True)
+        # Infer format if extension present
+        ext = Path(out).suffix.lower().lstrip(".")
+        if ext in ("csv", "parquet", "json"):
+            out_format = ext
+        else:
+            out_format = ask("Output format (csv/parquet/json)", default="csv")
+
+    # Execute
+    print("\nFetching & normalizing...")
+    try:
+        df, meta = retrieve_to_df(
+            source,
+            method=method,
+            params=params,
+            data=data,
+            json_body=json_body,
+            headers=headers,
+            prefer_record_path=prefer_record_path,
+            coerce_types=coerce_types,
+            snake_case_cols=snake_case,
+            max_depth=max_depth,
+            explode_lists=explode_lists,
+            paginate=not no_paginate,
+            max_pages=max_pages,
+        )
+    except Exception as e:
+        print(f"\nERROR: {e}")
+        sys.exit(1)
+
+    # Preview
+    print("\n--- Result Preview ---")
+    print(f"Shape: {df.shape[0]} rows × {df.shape[1]} columns")
+    with pd.option_context("display.max_columns", 80, "display.width", 200):
+        print(df.head(20))
+
+    # Meta
+    print("\n--- Fetch Meta ---")
+    try:
+        print(json.dumps(meta, indent=2, default=str))
+    except Exception:
+        print(str(meta))
+
+    # Save
+    if out:
+        print("\nSaving output...")
+        try:
+            if out_format == "csv":
+                df.to_csv(out, index=False)
+            elif out_format == "parquet":
+                try:
+                    df.to_parquet(out, index=False)
+                except Exception as e:
+                    sys.stderr.write(f"Parquet write failed (pyarrow/fastparquet required): {e}\n")
+                    sys.stderr.write("Falling back to CSV...\n")
+                    df.to_csv(out if str(out).endswith(".csv") else str(out) + ".csv", index=False)
+            elif out_format == "json":
+                df.to_json(out, orient="records", lines=False, date_format="iso")
+            else:
+                print(f"Unknown format '{out_format}', writing CSV instead.")
+                df.to_csv(out if str(out).endswith(".csv") else str(out) + ".csv", index=False)
+            print(f"Saved → {out}")
+        except Exception as e:
+            print(f"Failed to save file: {e}")
+
+    print("\nDone.\n")
+
+
 if __name__ == "__main__":
-    _cli()
+    # If no args OR explicit --interactive is present anywhere → use interactive mode.
+    if len(sys.argv) == 1 or "--interactive" in sys.argv[1:]:
+        _interactive_cli()
+    else:
+        _cli()
