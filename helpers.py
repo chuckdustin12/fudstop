@@ -13,7 +13,7 @@ import hashlib
 import random
 import string
 import time
-def generate_webull_headers(access_token:str='dc_us_tech1.19a6fcda12a-2e07bf88dbc248e9b0fbf07298960da3'):
+def generate_webull_headers(access_token:str=None):
     """
     Dynamically generates headers for a Webull request.
     Offsets the current system time by 6 hours (in milliseconds) for 't_time'.

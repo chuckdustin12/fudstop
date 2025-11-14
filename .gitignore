@@ -13,3 +13,10 @@ test4.py
 test6.py
 test7.py
 test8.py
+tests/
+gpt_messages/
+extracted_filing_data/
+dist/
+build/
+attributes/
+audio_lines/
